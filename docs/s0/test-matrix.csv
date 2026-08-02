@@ -1,0 +1,17 @@
+case_id,device_id,os_oem,mode,category,trigger_type,expected,target_count,completed,passed,failed,p50_ms,p95_ms,evidence_file,notes
+R-AUTO-STABLE-100-COROT,23078RKD5C,Android 13 / MIUI 14,RECORD_ONLY,block,automatic_stable_batch,identify_candidate,100,100,100,0,100,110,results/miui14-23078rkd5c-v006-unrestricted-fgs-autostart-idle35-record-only-stable100-20260802.report.json,"6 s source gap; battery unlimited; autostart; user-started FGS; no actions"
+R-STRESS-SHORT-010-COROT,23078RKD5C,Android 13 / MIUI 14,RECORD_ONLY,stress,automatic_short_batch,identify_candidate_realtime,10,10,2,8,47992,58792,results/miui14-23078rkd5c-v005-unrestricted-fgs-autostart-idle35-record-only-auto10-eventual-20260802.report.json,"Realtime 2/10; eventual 10/10; MIUI Greeze freeze/thaw observed"
+F-A11Y-RECONNECT-001-COROT,23078RKD5C,Android 13 / MIUI 14,RECORD_ONLY,fault,accessibility_reconnect,recover_without_stale_candidate,1,1,1,0,94,94,results/miui14-23078rkd5c-v006-accessibility-reconnect-probe-20260802.report.json,"Historical UsageStats marked collector_warmup and not forwarded"
+B-AUTO-100,,,ARMED_BLOCK,block,automatic_batch,block,100,0,0,0,,,,
+B-MANUAL-100,,,ARMED_BLOCK,block,manual_click,block,100,0,0,0,,,,
+A-SETTINGS-100,,,ARMED_BLOCK,allow,allowed_settings,allow,100,0,0,0,,,,
+A-BROWSER-100,,,ARMED_BLOCK,allow,allowed_browser,allow,100,0,0,0,,,,
+C-DESKTOP-050,,,RECORD_ONLY,context,allowed_home,allow,50,0,0,0,,,,
+C-LOCK-020,,,RECORD_ONLY,context,lock_unlock,allow,20,0,0,0,,,,
+C-RECENTS-020,,,RECORD_ONLY,context,recents_switch,allow,20,0,0,0,,,,
+C-MULTIWINDOW-010,,,RECORD_ONLY,context,multi_window,allow,10,0,0,0,,,,
+F-CLOCK-JUMP-005,,,RECORD_ONLY,fault,clock_jump,reset_context,5,0,0,0,,,,
+F-A11Y-RESTART-010,,,RECORD_ONLY,fault,accessibility_restart,recover,10,0,0,0,,,,
+F-USAGE-REVOKE-010,,,RECORD_ONLY,fault,usage_access_revoked,degrade_safely,10,0,0,0,,,,
+I-UNKNOWN-010,,,ARMED_BLOCK,identity,identity_unknown,no_action,10,0,0,0,,,,
+P-IDLE-8H,,,RECORD_ONLY,performance,idle_8_hours,no_anr,1,0,0,0,,,,

@@ -1,0 +1,135 @@
+{
+  "reportSchema": "s0-report-2",
+  "generatedAt": "2026-08-02T05:33:44.329754+00:00",
+  "realtimeSignalMaxAgeMs": 500,
+  "targetEntryMatchToleranceMs": 500,
+  "eventCount": 158,
+  "sampleCounts": {
+    "total": 10,
+    "block": 10,
+    "automaticBlock": 10,
+    "manualBlock": 0,
+    "allowTotal": 0,
+    "allowedFlow": 0,
+    "homeContextBreak": 0,
+    "armedActionEligible": 0
+  },
+  "metrics": {
+    "targetEventAcquisitionCombined": {
+      "successes": 2,
+      "total": 10,
+      "pointEstimate": 0.2,
+      "wilson95": [
+        0.05668215145437519,
+        0.5098375284633583
+      ]
+    },
+    "targetEventAcquisitionAccessibility": {
+      "successes": 2,
+      "total": 10,
+      "pointEstimate": 0.2,
+      "wilson95": [
+        0.05668215145437519,
+        0.5098375284633583
+      ]
+    },
+    "targetEventAcquisitionUsageStats": {
+      "successes": 2,
+      "total": 10,
+      "pointEstimate": 0.2,
+      "wilson95": [
+        0.05668215145437519,
+        0.5098375284633583
+      ]
+    },
+    "blockCandidateIdentification": {
+      "successes": 2,
+      "total": 10,
+      "pointEstimate": 0.2,
+      "wilson95": [
+        0.05668215145437519,
+        0.5098375284633583
+      ]
+    },
+    "targetEventAcquisitionCombinedEventually": {
+      "successes": 10,
+      "total": 10,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.7224672001371107,
+        0.9999999999999999
+      ]
+    },
+    "targetEventAcquisitionAccessibilityEventually": {
+      "successes": 10,
+      "total": 10,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.7224672001371107,
+        0.9999999999999999
+      ]
+    },
+    "targetEventAcquisitionUsageStatsEventually": {
+      "successes": 2,
+      "total": 10,
+      "pointEstimate": 0.2,
+      "wilson95": [
+        0.05668215145437519,
+        0.5098375284633583
+      ]
+    },
+    "blockCandidateIdentificationEventually": {
+      "successes": 10,
+      "total": 10,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.7224672001371107,
+        0.9999999999999999
+      ]
+    },
+    "allowedFlowFalseBlock": {
+      "successes": 0,
+      "total": 0,
+      "pointEstimate": null,
+      "wilson95": [
+        null,
+        null
+      ]
+    },
+    "finalLeaveTarget": {
+      "successes": 0,
+      "total": 0,
+      "pointEstimate": null,
+      "wilson95": [
+        null,
+        null
+      ]
+    }
+  },
+  "latencyMs": {
+    "candidateP50": 47992,
+    "candidateP95": 58792,
+    "firstActionP50": null,
+    "firstActionP95": null,
+    "leaveTargetP50": null,
+    "leaveTargetP95": null,
+    "accessibilityReceiptP50": 47970,
+    "accessibilityReceiptP95": 58770,
+    "usageStatsReceiptP50": 435,
+    "usageStatsReceiptP95": 479,
+    "candidateSignalAgeP50": 47970,
+    "candidateSignalAgeP95": 58771,
+    "groundTruthReceiptP50": 49359,
+    "groundTruthReceiptP95": 58872
+  },
+  "safetyViolations": [],
+  "sampleGatePassed": false,
+  "thresholdGatePassed": false,
+  "provisionalDecision": "NOT_READY",
+  "notes": [
+    "NOT_READY is not automatically a technical No-Go; it also covers incomplete sample counts.",
+    "Primary acquisition and candidate metrics require receipt within the realtime age threshold; Eventually metrics only prove delayed delivery.",
+    "Lock-screen, recents, multi-window, and device/OEM coverage require the signed manual matrix."
+  ],
+  "warnings": []
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Jump Terminator S0</string>
+    <string name="accessibility_service_name">Jump Terminator S0 观察器</string>
+    <string name="accessibility_description">仅用于 S0 技术验证：记录前台切换；只有显式武装且精确命中测试包时，才执行一次返回及可选主页动作。</string>
+    <string name="observation_channel_name">S0 前台观察状态</string>
+    <string name="observation_notification_title">Jump Terminator S0 正在观察</string>
+    <string name="observation_notification_text">前台保活验证已开启；动作仍由应用内模式控制。</string>
+    <string name="observation_notification_stop">停止</string>
+</resources>
