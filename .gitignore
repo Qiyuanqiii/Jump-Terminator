@@ -19,3 +19,8 @@ docs/s0/results/*.txt
 !docs/s0/results/miui14-23078rkd5c-v010-deferred-truth-record-only-stable10-20260802.report.json
 !docs/s0/results/miui14-23078rkd5c-v010-testsource006-record-only-negative15-20260802.report.json
 !docs/s0/results/miui14-23078rkd5c-v010-home-then-chrome-context-break-probe-20260802.report.json
+!docs/s0/results/miui14-23078rkd5c-v012-armed-manual-single-inline-20260802.report.json
+!docs/s0/results/miui14-23078rkd5c-v012-testsource006-armed-negative15-20260802.report.json
+!docs/s0/results/miui14-23078rkd5c-v012-armed-deferred-truth-stable100-greeze-gap8-20260802.report.json
+!docs/s0/results/miui14-23078rkd5c-v013-armed-partial-wakelock-stable100-stopped33-gap8-20260802.report.json
+!docs/s0/results/miui14-23078rkd5c-v012-armed-recents-locked-stable100-stopped42-greeze-failures-20260802.report.json

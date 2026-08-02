@@ -172,6 +172,40 @@ class S0ReportTest(unittest.TestCase):
             report["metrics"]["blockCandidateIdentificationEventually"]["pointEstimate"],
         )
 
+    def test_delayed_verification_stays_with_its_original_action_chain(self):
+        target = "com.jumpterminator.testtarget"
+        events = [
+            issued(1_000, "delayed", 1, "block", target, "automatic_batch"),
+            target_entered(1_050, "delayed", 1, target),
+            event(1_080, "transition_candidate", target, {"targetEnteredElapsedMs": 1_050}),
+            event(1_090, "policy_decision", target, {"shouldAct": True, "targetEnteredElapsedMs": 1_050}),
+            event(1_100, "action_attempt", target, {"stage": "back", "targetEnteredElapsedMs": 1_050}),
+            issued(7_000, "delayed", 2, "block", target, "automatic_batch"),
+            event(
+                7_010,
+                "action_verification",
+                target,
+                {"stage": "back", "leftTarget": True, "totalLatencyMs": 5_960},
+            ),
+            target_entered(7_050, "delayed", 2, target),
+            event(7_080, "transition_candidate", target, {"targetEnteredElapsedMs": 7_050}),
+            event(7_090, "policy_decision", target, {"shouldAct": True, "targetEnteredElapsedMs": 7_050}),
+            event(7_100, "action_attempt", target, {"stage": "back", "targetEnteredElapsedMs": 7_050}),
+            event(
+                7_200,
+                "action_verification",
+                target,
+                {"stage": "back", "leftTarget": True, "targetEnteredElapsedMs": 7_050},
+            ),
+        ]
+        events.sort(key=lambda item: item["_time"])
+
+        report = analyse(events, make_samples(events))
+
+        self.assertEqual(2, report["metrics"]["finalLeaveTarget"]["successes"])
+        self.assertEqual(2, report["metrics"]["finalLeaveTarget"]["total"])
+        self.assertEqual(5_960, report["latencyMs"]["leaveTargetP95"])
+
 
 if __name__ == "__main__":
     unittest.main()

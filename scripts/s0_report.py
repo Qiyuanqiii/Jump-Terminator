@@ -236,21 +236,62 @@ def analyse(events: list[dict[str, Any]], samples: list[Sample]) -> dict[str, An
             < sample.ended_ms
         )
 
+    def matching_action_chain_event(sample: Sample, event: dict[str, Any]) -> bool:
+        if not matching_package(sample, event):
+            return False
+        data = event.get("data") or {}
+        chain_target_entered = data.get("targetEnteredElapsedMs")
+        if not isinstance(chain_target_entered, (int, float)):
+            if event.get("kind") == "action_verification":
+                total_latency = data.get("totalLatencyMs")
+                if isinstance(total_latency, (int, float)):
+                    chain_target_entered = int(event["_time"]) - int(total_latency)
+            elif event.get("kind") == "action_attempt":
+                candidate_age = data.get("candidateAgeMs")
+                if isinstance(candidate_age, (int, float)):
+                    chain_target_entered = int(event["_time"]) - int(candidate_age)
+        truth_target_entered = target_entered_time(sample)
+        if isinstance(chain_target_entered, (int, float)) and truth_target_entered is not None:
+            return abs(int(chain_target_entered) - truth_target_entered) <= TARGET_ENTRY_MATCH_TOLERANCE_MS
+        return event in sample.events
+
+    def action_events(sample: Sample) -> list[dict[str, Any]]:
+        return [
+            event
+            for event in events
+            if event.get("kind") == "action_attempt"
+            and matching_action_chain_event(sample, event)
+        ]
+
+    def verification_events(sample: Sample) -> list[dict[str, Any]]:
+        return [
+            event
+            for event in events
+            if event.get("kind") == "action_verification"
+            and matching_action_chain_event(sample, event)
+        ]
+
+    def policy_events(sample: Sample) -> list[dict[str, Any]]:
+        return [
+            event
+            for event in events
+            if event.get("kind") == "policy_decision"
+            and matching_action_chain_event(sample, event)
+        ]
+
     def action_seen(sample: Sample) -> bool:
-        return has_event(sample, "action_attempt")
+        return bool(action_events(sample))
 
     def policy_armed(sample: Sample) -> bool:
-        return has_event(
-            sample,
-            "policy_decision",
-            lambda event: bool((event.get("data") or {}).get("shouldAct")),
+        return any(
+            bool((event.get("data") or {}).get("shouldAct"))
+            for event in policy_events(sample)
         )
 
     def finally_left(sample: Sample) -> bool:
-        return has_event(
-            sample,
-            "action_verification",
-            lambda event: bool((event.get("data") or {}).get("leftTarget")),
+        return any(
+            bool((event.get("data") or {}).get("leftTarget"))
+            for event in verification_events(sample)
         )
 
     acted_samples = [sample for sample in block_samples if policy_armed(sample)]
@@ -277,23 +318,27 @@ def analyse(events: list[dict[str, Any]], samples: list[Sample]) -> dict[str, An
     safety_violations: list[str] = []
     for sample in samples:
         matched_candidate_events = candidate_events(sample, realtime=False)
-        action_events = [event for event in sample.events if event.get("kind") == "action_attempt"]
-        verification_events = [event for event in sample.events if event.get("kind") == "action_verification"]
+        matched_action_events = action_events(sample)
+        matched_verification_events = verification_events(sample)
         latency_origin_ms = target_entered_time(sample) or sample.started_ms
         if matched_candidate_events:
             candidate_latencies.append(
                 max(0, int(matched_candidate_events[0]["_time"]) - latency_origin_ms),
             )
-        if action_events:
-            action_latencies.append(max(0, int(action_events[0]["_time"]) - latency_origin_ms))
+        if matched_action_events:
+            action_latencies.append(
+                max(0, int(matched_action_events[0]["_time"]) - latency_origin_ms),
+            )
         successful_verifications = [
-            event for event in verification_events if bool((event.get("data") or {}).get("leftTarget"))
+            event
+            for event in matched_verification_events
+            if bool((event.get("data") or {}).get("leftTarget"))
         ]
         if successful_verifications:
             leave_latencies.append(
                 max(0, int(successful_verifications[0]["_time"]) - latency_origin_ms),
             )
-        stages = [(event.get("data") or {}).get("stage") for event in action_events]
+        stages = [(event.get("data") or {}).get("stage") for event in matched_action_events]
         if stages.count("back") > 1 or stages.count("home") > 1 or len(stages) > 2:
             safety_violations.append(f"{sample.run_id}#{sample.sequence}: repeated global action")
 

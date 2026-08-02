@@ -264,6 +264,7 @@ class JumpAccessibilityService : AccessibilityService() {
                     data = mapOf(
                         "reason" to "target_no_longer_foreground",
                         "observedPackage" to foregroundBeforeAction,
+                        "targetEnteredElapsedMs" to candidate.targetEnteredElapsedMs,
                     ),
                 )
                 actionInFlight = false
@@ -278,26 +279,89 @@ class JumpAccessibilityService : AccessibilityService() {
                     "stage" to "back",
                     "dispatched" to dispatched,
                     "dispatchIsNotSuccessProof" to true,
+                    "targetEnteredElapsedMs" to candidate.targetEnteredElapsedMs,
                     "candidateAgeMs" to (SystemClock.elapsedRealtime() - candidate.targetEnteredElapsedMs),
                 ),
             )
+            if (dispatched && verifyAfterBackInline(candidate)) {
+                return@postDelayed
+            }
             handler.postDelayed(
-                { verifyAfterBack(candidate, homeFallbackEnabled) },
-                VERIFY_DELAY_MS,
+                { verifyAfterBack(candidate, homeFallbackEnabled, attempt = 1) },
+                BACK_VERIFY_INTERVAL_MS,
             )
         }, PRE_ACTION_CONFIRM_DELAY_MS)
     }
 
-    private fun verifyAfterBack(candidate: TransitionCandidate, homeFallbackEnabled: Boolean) {
+    /**
+     * MIUI may freeze the observer before a delayed Handler callback runs,
+     * even while the user-started foreground service remains active. Keep the
+     * current callback alive for a small, bounded interval so a successful
+     * Back can be verified from the live accessibility window first.
+     */
+    private fun verifyAfterBackInline(candidate: TransitionCandidate): Boolean {
+        val deadlineElapsedMs = SystemClock.elapsedRealtime() + INLINE_VERIFY_BUDGET_MS
+        var poll = 0
+        while (SystemClock.elapsedRealtime() < deadlineElapsedMs) {
+            SystemClock.sleep(INLINE_VERIFY_POLL_MS)
+            poll += 1
+            val observedPackage = resolveAccessibilityForegroundPackage()
+            if (observedPackage != null && observedPackage != candidate.targetPackage) {
+                recorder.record(
+                    kind = "action_verification",
+                    packageName = candidate.targetPackage,
+                    data = mapOf(
+                        "stage" to "back",
+                        "attempt" to 0,
+                        "verificationPath" to "inline_poll",
+                        "inlinePoll" to poll,
+                        "leftTarget" to true,
+                        "observedPackage" to observedPackage,
+                        "targetEnteredElapsedMs" to candidate.targetEnteredElapsedMs,
+                        "totalLatencyMs" to (SystemClock.elapsedRealtime() - candidate.targetEnteredElapsedMs),
+                    ),
+                )
+                actionInFlight = false
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun verifyAfterBack(
+        candidate: TransitionCandidate,
+        homeFallbackEnabled: Boolean,
+        attempt: Int,
+    ) {
         val observedPackage = resolveForegroundPackage()
-        val leftTarget = observedPackage != candidate.targetPackage
+        val leftTarget = observedPackage != null && observedPackage != candidate.targetPackage
+        if (!leftTarget && attempt < BACK_VERIFY_MAX_ATTEMPTS) {
+            recorder.record(
+                kind = "action_verification_pending",
+                packageName = candidate.targetPackage,
+                data = mapOf(
+                    "stage" to "back",
+                    "attempt" to attempt,
+                    "observedPackage" to observedPackage,
+                    "targetEnteredElapsedMs" to candidate.targetEnteredElapsedMs,
+                    "totalLatencyMs" to (SystemClock.elapsedRealtime() - candidate.targetEnteredElapsedMs),
+                ),
+            )
+            handler.postDelayed(
+                { verifyAfterBack(candidate, homeFallbackEnabled, attempt + 1) },
+                BACK_VERIFY_INTERVAL_MS,
+            )
+            return
+        }
         recorder.record(
             kind = "action_verification",
             packageName = candidate.targetPackage,
             data = mapOf(
                 "stage" to "back",
+                "attempt" to attempt,
                 "leftTarget" to leftTarget,
                 "observedPackage" to observedPackage,
+                "targetEnteredElapsedMs" to candidate.targetEnteredElapsedMs,
                 "totalLatencyMs" to (SystemClock.elapsedRealtime() - candidate.targetEnteredElapsedMs),
             ),
         )
@@ -314,6 +378,7 @@ class JumpAccessibilityService : AccessibilityService() {
                 "stage" to "home",
                 "dispatched" to dispatched,
                 "dispatchIsNotSuccessProof" to true,
+                "targetEnteredElapsedMs" to candidate.targetEnteredElapsedMs,
             ),
         )
         handler.postDelayed({
@@ -323,13 +388,16 @@ class JumpAccessibilityService : AccessibilityService() {
                 packageName = candidate.targetPackage,
                 data = mapOf(
                     "stage" to "home",
-                    "leftTarget" to (afterHomePackage != candidate.targetPackage),
+                    "leftTarget" to (
+                        afterHomePackage != null && afterHomePackage != candidate.targetPackage
+                    ),
                     "observedPackage" to afterHomePackage,
+                    "targetEnteredElapsedMs" to candidate.targetEnteredElapsedMs,
                     "totalLatencyMs" to (SystemClock.elapsedRealtime() - candidate.targetEnteredElapsedMs),
                 ),
             )
             actionInFlight = false
-        }, VERIFY_DELAY_MS)
+        }, HOME_VERIFY_DELAY_MS)
     }
 
     private fun resolveAccessibilityForegroundPackage(): String? = try {
@@ -359,6 +427,10 @@ class JumpAccessibilityService : AccessibilityService() {
     companion object {
         private const val FOREGROUND_SNAPSHOT_DELAY_MS = 150L
         private const val PRE_ACTION_CONFIRM_DELAY_MS = 120L
-        private const val VERIFY_DELAY_MS = 600L
+        private const val INLINE_VERIFY_POLL_MS = 20L
+        private const val INLINE_VERIFY_BUDGET_MS = 120L
+        private const val BACK_VERIFY_INTERVAL_MS = 80L
+        private const val BACK_VERIFY_MAX_ATTEMPTS = 4
+        private const val HOME_VERIFY_DELAY_MS = 600L
     }
 }
