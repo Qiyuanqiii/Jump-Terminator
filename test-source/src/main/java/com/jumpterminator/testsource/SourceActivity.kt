@@ -62,6 +62,32 @@ class SourceActivity : Activity() {
         }
     }
 
+    @Deprecated("S0 keeps API 28 compatibility; migrated to Activity Result APIs in S1")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != TARGET_REQUEST_CODE || resultCode != RESULT_OK || data == null) return
+        val resultRunId = data.getStringExtra("run_id") ?: return
+        val resultSequence = data.getIntExtra("sequence", -1)
+        val targetEnteredElapsedMs = data.getLongExtra("target_entered_elapsed_ms", -1L)
+        if (
+            resultRunId != runId ||
+            resultSequence != sequence ||
+            targetEnteredElapsedMs < 0L
+        ) {
+            return
+        }
+        TruthEmitter.emit(
+            context = this,
+            phase = "target_entered",
+            runId = resultRunId,
+            sequence = resultSequence,
+            triggerType = activeTriggerType,
+            expected = activeExpected,
+            targetPackage = TARGET_PACKAGE,
+            originElapsedMs = targetEnteredElapsedMs,
+        )
+    }
+
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
         super.onDestroy()
@@ -157,7 +183,7 @@ class SourceActivity : Activity() {
         }
         waitingForReturn = true
         try {
-            startActivity(intent)
+            startActivityForResult(intent, TARGET_REQUEST_CODE)
             updateStatus("已触发 #$sequence；剩余 $remaining 次")
         } catch (error: Exception) {
             waitingForReturn = false
@@ -220,6 +246,7 @@ class SourceActivity : Activity() {
     companion object {
         private const val TARGET_PACKAGE = "com.jumpterminator.testtarget"
         private const val TARGET_ACTIVITY = "com.jumpterminator.testtarget.TargetActivity"
+        private const val TARGET_REQUEST_CODE = 4200
         // MIUI 14 launch mode freezes background UIDs for up to five seconds.
         // The acceptance batch waits past that OEM window; the separate stress
         // batch retains the short cadence that reproduces nested-freeze failures.

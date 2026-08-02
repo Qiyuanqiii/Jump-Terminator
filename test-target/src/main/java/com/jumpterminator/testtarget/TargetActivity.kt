@@ -2,10 +2,12 @@ package com.jumpterminator.testtarget
 
 import android.app.Activity
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
@@ -26,8 +28,14 @@ class TargetActivity : Activity() {
         sequence = intent.getIntExtra("sequence", -1)
         triggerType = intent.getStringExtra("trigger_type") ?: "unknown"
         expected = intent.getStringExtra("expected") ?: "block"
+        setResult(
+            RESULT_OK,
+            Intent()
+                .putExtra("run_id", runId)
+                .putExtra("sequence", sequence)
+                .putExtra("target_entered_elapsed_ms", SystemClock.elapsedRealtime()),
+        )
         setContentView(buildContent())
-        TruthEmitter.emit(this, "target_entered", runId, sequence, triggerType, expected)
 
         val autoFinishMs = intent.getLongExtra("auto_finish_ms", 0L)
         if (autoFinishMs > 0L) handler.postDelayed({ finish() }, autoFinishMs)
@@ -35,7 +43,6 @@ class TargetActivity : Activity() {
 
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
-        TruthEmitter.emit(this, "target_destroyed", runId, sequence, triggerType, expected)
         super.onDestroy()
     }
 

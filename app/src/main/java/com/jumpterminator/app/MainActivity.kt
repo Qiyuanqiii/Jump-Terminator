@@ -86,7 +86,7 @@ class MainActivity : Activity() {
         }
 
         root.addView(text("Jump Terminator · S0", 26f, Color.rgb(13, 71, 161)))
-        root.addView(text("技术可行性验证诊断版 · 0.0.6-s0", 14f, Color.DKGRAY))
+        root.addView(text("技术可行性验证诊断版 · 0.0.10-s0", 14f, Color.DKGRAY))
         root.addView(spacer(12))
         root.addView(text(
             "安全边界：默认仅记录。武装后也只会精确处理随包测试来源 → 测试目标，且每个候选最多执行一次返回和一次可选主页；不会处理其他应用。",

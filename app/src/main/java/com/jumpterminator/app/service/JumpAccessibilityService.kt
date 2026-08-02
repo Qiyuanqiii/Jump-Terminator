@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.accessibility.AccessibilityEvent
+import com.jumpterminator.app.core.ForegroundSignalGate
 import com.jumpterminator.app.core.S0Policy
 import com.jumpterminator.app.core.S0PolicyInput
 import com.jumpterminator.app.core.TransitionCandidate
@@ -117,6 +118,71 @@ class JumpAccessibilityService : AccessibilityService() {
 
     private fun processForeground(packageName: String, elapsedMs: Long, evidence: String) {
         if (!::transitionTracker.isInitialized) return
+        val receiptElapsedMs = SystemClock.elapsedRealtime()
+        val signalAgeMs = receiptElapsedMs - elapsedMs
+        if (!ForegroundSignalGate.shouldDriveTracker(elapsedMs, receiptElapsedMs)) {
+            // A delayed event is evidence that foreground history is incomplete.
+            // Fail open and forget all source attribution before observing again.
+            transitionTracker.reset()
+            val recoveryPackage = resolveForegroundPackage()
+            if (recoveryPackage != null) {
+                // This is a live snapshot taken after the reset. It can safely
+                // seed the current foreground state, but can never create a
+                // candidate because no source context survives the reset.
+                transitionTracker.observeForeground(
+                    packageName = recoveryPackage,
+                    eventElapsedMs = receiptElapsedMs,
+                    evidence = "stale_recovery_snapshot",
+                )
+            }
+            recorder.record(
+                kind = "foreground_signal_suppressed",
+                packageName = packageName,
+                data = mapOf(
+                    "reason" to "stale_signal",
+                    "eventElapsedMs" to elapsedMs,
+                    "signalAgeMs" to signalAgeMs,
+                    "maxTrackerSignalAgeMs" to ForegroundSignalGate.MAX_TRACKER_SIGNAL_AGE_MS,
+                    "evidence" to evidence,
+                    "sourceContextReset" to true,
+                    "recoveryPackage" to recoveryPackage,
+                ),
+            )
+            return
+        }
+        if (evidence == "usage_stats") {
+            val liveAccessibilityPackage = resolveAccessibilityForegroundPackage()
+            if (
+                !ForegroundSignalGate.isUsageSignalConsistent(
+                    signaledPackage = packageName,
+                    liveAccessibilityPackage = liveAccessibilityPackage,
+                )
+            ) {
+                // UsageStats can publish OEM lifecycle events in an order that
+                // conflicts with the window the accessibility service can see
+                // right now. Fail open, then seed only the live window. The
+                // reset guarantees this recovery snapshot cannot act.
+                transitionTracker.reset()
+                transitionTracker.observeForeground(
+                    packageName = liveAccessibilityPackage!!,
+                    eventElapsedMs = receiptElapsedMs,
+                    evidence = "usage_conflict_recovery_snapshot",
+                )
+                recorder.record(
+                    kind = "foreground_signal_suppressed",
+                    packageName = packageName,
+                    data = mapOf(
+                        "reason" to "usage_accessibility_conflict",
+                        "eventElapsedMs" to elapsedMs,
+                        "signalAgeMs" to signalAgeMs,
+                        "evidence" to evidence,
+                        "sourceContextReset" to true,
+                        "recoveryPackage" to liveAccessibilityPackage,
+                    ),
+                )
+                return
+            }
+        }
         val settings = settingsRepository.load()
         transitionTracker.updateConfiguration(settings.sourcePackage, contextBreakPackages)
         val candidate = transitionTracker.observeForeground(packageName, elapsedMs, evidence) ?: return
@@ -172,12 +238,7 @@ class JumpAccessibilityService : AccessibilityService() {
 
     private fun observeForegroundSnapshot() {
         if (!::transitionTracker.isInitialized || !::recorder.isInitialized) return
-        val observedPackage = try {
-            rootInActiveWindow?.packageName?.toString()
-                ?: windows.firstOrNull { it.isActive }?.root?.packageName?.toString()
-        } catch (_: RuntimeException) {
-            null
-        }
+        val observedPackage = resolveAccessibilityForegroundPackage()
         recorder.record(
             kind = "foreground_snapshot",
             packageName = observedPackage,
@@ -271,11 +332,15 @@ class JumpAccessibilityService : AccessibilityService() {
         }, VERIFY_DELAY_MS)
     }
 
-    private fun resolveForegroundPackage(): String? = try {
-        rootInActiveWindow?.packageName?.toString() ?: transitionTracker.currentPackage()
+    private fun resolveAccessibilityForegroundPackage(): String? = try {
+        rootInActiveWindow?.packageName?.toString()
+            ?: windows.firstOrNull { it.isActive }?.root?.packageName?.toString()
     } catch (_: RuntimeException) {
-        transitionTracker.currentPackage()
+        null
     }
+
+    private fun resolveForegroundPackage(): String? =
+        resolveAccessibilityForegroundPackage() ?: transitionTracker.currentPackage()
 
     private fun resolveContextBreakPackages(): Set<String> {
         val packages = mutableSetOf(

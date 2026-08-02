@@ -12,7 +12,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | --- | --- |
 | 文档版本 | v1.1 |
 | 文档日期 | 2026-08-02 |
-| 项目状态 | S0 可行性验证进行中：MIUI 14 记录模式稳定批次已通过，动作与设备矩阵仍待完成 |
+| 项目状态 | S0 可行性验证进行中：MIUI 14 延迟真值校准与记录模式负样本预检已通过，动作与设备矩阵仍待完成 |
 | 首要适配平台 | Redmi/Xiaomi，MIUI 14 |
 | 稳定版目标平台 | Android 9-Android 16 |
 | 前瞻兼容轨道 | Android 17 Beta/正式版兼容测试 |
@@ -23,11 +23,13 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 
 ## 当前执行状态：S0
 
-2026-08-01 已启动 S0 技术可行性验证。当前仓库已包含可编译的主诊断 App、测试来源 App、测试目标 App、无障碍与 UsageStats 双时间线、一次性 Back/Home 验证链、标注真值、JSONL 导出、统计脚本和实体设备测试矩阵。Android 工程使用 Kotlin；当前诊断版本为 `v0.0.6-s0`。
+2026-08-01 已启动 S0 技术可行性验证。当前仓库已包含可编译的主诊断 App、测试来源 App、测试目标 App、无障碍与 UsageStats 双时间线、一次性 Back/Home 验证链、标注真值、JSONL 导出、统计脚本和实体设备测试矩阵。Android 工程使用 Kotlin；当前诊断版本为 `v0.0.10-s0`。
 
-2026-08-02 已在 Redmi `23078RKD5C`（Android 13、MIUI 14）完成第一轮正式记录模式基线。在电池策略“无限制”、允许自启动、由用户明确启动前台服务并静置 35 分钟后，稳定节奏自动 100 次取得：实时目标事件获取 `100/100`、应阻止候选识别 `100/100`，两者 Wilson 95% 区间均为 `96.30%-100%`；候选生成 P50/P95 为 `100/110 ms`，无安全违规、ANR 或广播超时。公开证据见 [统计报告](docs/s0/results/miui14-23078rkd5c-v006-unrestricted-fgs-autostart-idle35-record-only-stable100-20260802.report.json)；包含设备时间线的原始 JSONL 仅保存在本地，不进入公开仓库。
+2026-08-02 已在 Redmi `23078RKD5C`（Android 13、MIUI 14）完成第一轮记录模式稳定 100 次：实时目标事件获取与候选识别均为 `100/100`，候选生成 P50/P95 为 `100/110 ms`。复核发现当时测试目标会在进入时立即发送真值广播，该广播可能唤醒观察进程，因此这份 [v0.0.6 报告](docs/s0/results/miui14-23078rkd5c-v006-unrestricted-fgs-autostart-idle35-record-only-stable100-20260802.report.json)只作为长批次历史基准，不再单独充当无偏采集验收证据。
 
-同一设备的短间隔压力样本只有 `2/10` 在 500 ms 内到达，但最终 `10/10` 到达，延迟约 48-59 秒；设备日志显示 MIUI Greeze 冻结行为。因此当前结果证明正常单次/稳定节奏的公开 API 观察链可行，也暴露了快速连续拉起的 OEM 风险。18 项 Android 核心单元测试、6 项报告工具测试与 Android lint 已通过。由于允许流程、真实 Back/Home 动作、手动样本、负样本、对照设备和 Android 9 设备仍未完成，报告保持 `NOT_READY`，**现在不能宣告 S0 Go**。运行、采样和评审方法见 [S0 运行手册](docs/s0/README.md)，决策状态见 [S0 Go/No-Go 记录](docs/s0/go-no-go.md)。
+v0.0.10 改为目标退出后由来源回传原始进入时刻，避免目标侧真值广播影响观察进程。在同一配置下，延迟真值校准取得实时目标事件 `10/10`、候选 `10/10`，候选 P50/P95 为 `110/140 ms`，动作与安全违规均为 0；见 [延迟真值报告](docs/s0/results/miui14-23078rkd5c-v010-deferred-truth-record-only-stable10-20260802.report.json)。设置 5、Chrome 5、桌面 5 的记录模式负样本取得 `0/15` 动作、0 候选、0 安全违规；桌面后不返回来源而直接打开 Chrome 的额外探针也没有复用旧来源上下文。公开证据见 [负样本报告](docs/s0/results/miui14-23078rkd5c-v010-testsource006-record-only-negative15-20260802.report.json)和[上下文断路报告](docs/s0/results/miui14-23078rkd5c-v010-home-then-chrome-context-break-probe-20260802.report.json)。记录模式本来就禁止动作，因此这些结果只是武装前安全预检，不能替代 200 个武装允许样本。
+
+同一设备的短间隔压力样本只有 `2/10` 在 500 ms 内到达，但最终 `10/10` 到达，延迟约 48-59 秒；设备日志显示 MIUI Greeze 冻结行为。因此当前结果证明正常单次/稳定节奏的公开 API 观察链可行，也暴露了快速连续拉起的 OEM 风险。26 项 Android 核心单元测试、6 项报告工具测试与三模块 Android lint 已通过。由于真实 Back/Home 动作、武装允许样本、手动样本、完整负样本、对照设备和 Android 9 设备仍未完成，报告保持 `NOT_READY`，**现在不能宣告 S0 Go**。运行、采样和评审方法见 [S0 运行手册](docs/s0/README.md)，决策状态见 [S0 Go/No-Go 记录](docs/s0/go-no-go.md)。
 
 ## 1. 立项结论与技术边界
 

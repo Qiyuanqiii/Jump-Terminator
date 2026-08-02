@@ -16,3 +16,6 @@ docs/s0/results/*.txt
 !docs/s0/results/miui14-23078rkd5c-v006-unrestricted-fgs-autostart-idle35-record-only-stable100-20260802.report.json
 !docs/s0/results/miui14-23078rkd5c-v006-accessibility-reconnect-probe-20260802.report.json
 !docs/s0/results/miui14-23078rkd5c-v005-unrestricted-fgs-autostart-idle35-record-only-auto10-eventual-20260802.report.json
+!docs/s0/results/miui14-23078rkd5c-v010-deferred-truth-record-only-stable10-20260802.report.json
+!docs/s0/results/miui14-23078rkd5c-v010-testsource006-record-only-negative15-20260802.report.json
+!docs/s0/results/miui14-23078rkd5c-v010-home-then-chrome-context-break-probe-20260802.report.json

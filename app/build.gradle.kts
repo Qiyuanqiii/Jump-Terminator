@@ -10,8 +10,8 @@ android {
         applicationId = "com.jumpterminator.app"
         minSdk = 28
         targetSdk = 36
-        versionCode = 6
-        versionName = "0.0.6-s0"
+        versionCode = 10
+        versionName = "0.0.10-s0"
         testInstrumentationRunner = "android.app.Instrumentation"
     }
 

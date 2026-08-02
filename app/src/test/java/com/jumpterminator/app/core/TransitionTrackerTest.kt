@@ -70,4 +70,17 @@ class TransitionTrackerTest {
         assertNull(tracker.observeForeground("target", 2_250L, "usage_stats"))
         assertEquals("target", tracker.currentPackage())
     }
+
+    @Test
+    fun `live snapshot may reseed source after fail-open reset`() {
+        val tracker = tracker()
+        tracker.observeForeground("source", 1_000L, "accessibility")
+        tracker.reset()
+        assertNull(tracker.observeForeground("source", 2_000L, "stale_recovery_snapshot"))
+
+        val candidate = tracker.observeForeground("target", 2_100L, "accessibility")
+
+        assertEquals("source", candidate?.sourcePackage)
+        assertEquals("target", candidate?.targetPackage)
+    }
 }

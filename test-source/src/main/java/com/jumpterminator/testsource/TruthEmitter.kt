@@ -18,6 +18,7 @@ object TruthEmitter {
         triggerType: String,
         expected: String,
         targetPackage: String,
+        originElapsedMs: Long = SystemClock.elapsedRealtime(),
     ) {
         val intent = Intent(ACTION)
             .setComponent(ComponentName(APP_PACKAGE, RECEIVER_CLASS))
@@ -29,7 +30,7 @@ object TruthEmitter {
             .putExtra("expected", expected)
             .putExtra("target_package", targetPackage)
             .putExtra("origin_package", context.packageName)
-            .putExtra("origin_elapsed_ms", SystemClock.elapsedRealtime())
+            .putExtra("origin_elapsed_ms", originElapsedMs)
         context.sendBroadcast(intent)
     }
 }
