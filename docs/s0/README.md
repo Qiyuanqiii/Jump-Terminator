@@ -14,8 +14,10 @@
 - `test-matrix.csv`：需要在每台实体设备上填写的基线矩阵；
 - `go-no-go.md`：最终评审模板。
 
-三个 APK 均不申请 `INTERNET` 权限。动作代码还包含不可配置的硬边界：只有
+三个 S0 APK 均不申请 `INTERNET` 权限。动作代码还包含不可配置的硬边界：只有
 `com.jumpterminator.testsource` → `com.jumpterminator.testtarget` 才可能执行全局动作；其他跳转一律记录但不动作。
+
+根目录构建脚本现也会编译独立的 S0.2 Shizuku 实验 APK；它不改变本页的 S0 No-Go 结论，运行方法见 [S0.2 手册](../s02/README.md)。
 
 ## 1. 构建
 
@@ -37,6 +39,7 @@ Set-Location 'D:\GitProjects\Jump Terminator'
 构建产物：
 
 - `app/build/outputs/apk/debug/app-debug.apk`
+- `s02-shizuku-poc/build/outputs/apk/debug/s02-shizuku-poc-debug.apk`（独立 S0.2 实验）
 - `test-source/build/outputs/apk/debug/test-source-debug.apk`
 - `test-target/build/outputs/apk/debug/test-target-debug.apk`
 

@@ -1,0 +1,112 @@
+{
+  "schema": "s0.2-report-1",
+  "eventCount": 587,
+  "sessionCount": 2,
+  "executors": [
+    "adb_shell_companion"
+  ],
+  "sessions": {
+    "f9ce125964ee4f5d9f37c3f1a271acbf": {
+      "scenario": "allowed-negative",
+      "mode": "armed",
+      "events": 65
+    },
+    "a7c7b08ec9994984aff3f0c066831665": {
+      "scenario": "block",
+      "mode": "armed",
+      "events": 522
+    }
+  },
+  "sampleCounts": {
+    "requestedBlock": 100,
+    "requestedAllowed": 15,
+    "targetDetected": 100,
+    "backDispatched": 100,
+    "leftTarget": 100,
+    "returnedSource": 100,
+    "allowedProbes": 15,
+    "allowedPreserved": 15
+  },
+  "metrics": {
+    "targetDetection": {
+      "successes": 100,
+      "total": 100,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.9630065017930143,
+        1.0
+      ]
+    },
+    "backDispatch": {
+      "successes": 100,
+      "total": 100,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.9630065017930143,
+        1.0
+      ]
+    },
+    "finalLeaveTarget": {
+      "successes": 100,
+      "total": 100,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.9630065017930143,
+        1.0
+      ]
+    },
+    "returnToSource": {
+      "successes": 100,
+      "total": 100,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.9630065017930143,
+        1.0
+      ]
+    },
+    "allowedFlowFalseBlock": {
+      "successes": 0,
+      "total": 15,
+      "pointEstimate": 0.0,
+      "wilson95": [
+        0.0,
+        0.20388330103584862
+      ]
+    },
+    "allowedProbePreserved": {
+      "successes": 15,
+      "total": 15,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.7961166989641515,
+        1.0
+      ]
+    }
+  },
+  "latencyUpperBoundMs": {
+    "targetDetectionP50": 99,
+    "targetDetectionP95": 220,
+    "backRequestP50": 130,
+    "backRequestP95": 252,
+    "leaveTargetP50": 234,
+    "leaveTargetP95": 361,
+    "inputDurationP50": 33,
+    "inputDurationP95": 43,
+    "pollDurationP50": 21,
+    "pollDurationP95": 39
+  },
+  "safetyViolations": [],
+  "timeoutCount": 0,
+  "failedEventCount": 0,
+  "blockSessionsComplete": true,
+  "allowedSessionsComplete": true,
+  "sampleGatePassed": true,
+  "thresholdGatePassed": true,
+  "provisionalDecision": "PROCEED_TO_SHIZUKU_POC",
+  "notes": [
+    "This is a bounded privileged-companion experiment, not a consumer-app S0 Go.",
+    "Latency values are conservative upper bounds from the last observed source sample.",
+    "PROCEED_TO_SHIZUKU_POC only authorizes a bounded Kotlin UserService prototype."
+  ],
+  "warnings": []
+}

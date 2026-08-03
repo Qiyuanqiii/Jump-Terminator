@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "JumpTerminator"
-include(":app", ":test-source", ":test-target")
+include(":app", ":test-source", ":test-target", ":s02-shizuku-poc")

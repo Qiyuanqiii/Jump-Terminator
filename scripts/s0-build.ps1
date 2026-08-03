@@ -32,6 +32,7 @@ try {
 
     Get-Item -LiteralPath @(
         (Join-Path $workspaceRoot 'app\build\outputs\apk\debug\app-debug.apk'),
+        (Join-Path $workspaceRoot 's02-shizuku-poc\build\outputs\apk\debug\s02-shizuku-poc-debug.apk'),
         (Join-Path $workspaceRoot 'test-source\build\outputs\apk\debug\test-source-debug.apk'),
         (Join-Path $workspaceRoot 'test-target\build\outputs\apk\debug\test-target-debug.apk')
     ) | Select-Object FullName, Length, LastWriteTime

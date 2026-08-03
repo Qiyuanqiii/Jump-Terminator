@@ -12,7 +12,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | --- | --- |
 | 文档版本 | v1.1 |
 | 文档日期 | 2026-08-02 |
-| 项目状态 | **S0 当前架构 No-Go（主设备）**：MIUI 14 会冻结观察进程，S1 暂停，等待架构或产品承诺调整 |
+| 项目状态 | **Standard S0 No-Go；S0.2 Shizuku PoC 可行**：普通应用观察进程会被 MIUI 14 冻结；特权伴侣仅获准进入架构验证，不代表消费者版 Go |
 | 首要适配平台 | Redmi/Xiaomi，MIUI 14 |
 | 稳定版目标平台 | Android 9-Android 16 |
 | 前瞻兼容轨道 | Android 17 Beta/正式版兼容测试 |
@@ -21,7 +21,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | 基础权限 | 无障碍服务、使用情况访问；前台服务通知，以及 OEM 后台运行引导 |
 | 增强能力 | Shizuku，可选且不得影响基础模式 |
 
-## 当前执行状态：S0
+## 当前执行状态：S0 No-Go；S0.2 PoC 可行
 
 2026-08-01 启动 S0 技术可行性验证。仓库现已包含可编译的主诊断 App、测试来源 App、测试目标 App、无障碍与 UsageStats 双时间线、一次性 Back/Home 验证链、延迟真值、JSONL 导出、统计脚本和实体设备测试矩阵。Android 工程使用 Kotlin；当前诊断版本为 `v0.0.12-s0`。
 
@@ -31,7 +31,11 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 
 设备日志把漏处理与 MIUI Greeze 直接关联：观察 App UID 被列入冻结集合，随后出现 60 秒 `S0_TRUTH` 广播超时、解冻和 ANR。电池无限制、自启动、用户启动的前台服务及 device-idle 白名单仍会复现；实验性 Partial WakeLock 复测为 `25/33`，MIUI 最近任务锁复测为 `26/42`，两者都失败，且已回退/解除。详见 [MIUI Greeze 调查记录](docs/s0/miui14-greeze-investigation.md)。
 
-因此，**S0 对“普通消费者 App + 公开 API + MIUI 14 上可靠撤销跳转”的当前架构判定为 No-Go，S1 不启动**。这不等于 Android 上所有实现路径都不可行；项目需要先改走 OEM/设备管理/特权伴侣架构，或把产品承诺降为尽力而为的记录与提醒，再开启新的可行性门。报告工具因完整跨设备样本矩阵未齐会显示 `NOT_READY`，该机器字段不覆盖本次基于硬门槛失败作出的人工 No-Go。26 项 Android 核心单元测试、7 项报告工具测试与三模块 Android lint 已通过。运行与复核方法见 [S0 运行手册](docs/s0/README.md)，正式决策见 [S0 Go/No-Go 记录](docs/s0/go-no-go.md)。
+因此，**S0 对“普通消费者 App + 公开 API + MIUI 14 上可靠撤销跳转”的当前架构判定为 No-Go，原计划 S1 不自动启动**。这不等于 Android 上所有实现路径都不可行；项目需要先改走 OEM/设备管理/特权伴侣架构，或把产品承诺降为尽力而为的记录与提醒，再开启新的可行性门。报告工具因完整跨设备样本矩阵未齐会显示 `NOT_READY`，该机器字段不覆盖本次基于硬门槛失败作出的人工 No-Go。运行与复核方法见 [S0 运行手册](docs/s0/README.md)，正式决策见 [S0 Go/No-Go 记录](docs/s0/go-no-go.md)。
+
+2026-08-03 完成 S0.2 特权伴侣重开门验证。ADB/shell 上界实验先以 100 次固定测试跳转和 15 次允许流程通过门槛；随后使用 Kotlin + Shizuku UserService 在独立 `shell` UID 进程中重复同一边界，得到目标检测、单次 Back、离开目标、返回来源均 `100/100`，允许流程误动作 `0/15`，安全违规、超时和失败事件均为 0。Shizuku 路径的 P95 保守上界为检测/Back 125 ms、离开目标 214 ms，机器判定为 `SHIZUKU_POC_FEASIBLE`。见 [S0.2 运行与证据](docs/s02/README.md)、[S0.2 门槛决策](docs/s02/decision.md)和[聚合报告](docs/s02/results/miui14-23078rkd5c-s02-shizuku-block100-allow15-20260803.report.json)。
+
+该结果只证明“固定测试来源 → 固定测试目标 → 至多一次 Back”的特权执行面在这台 MIUI 14 设备上可行。它不推翻 Standard S0 No-Go，不授权消费者发布，也尚未验证重启、Shizuku 断连、多用户、真实第三方应用、force-stop、suspend 或 disable。下一步必须先重定 Advanced 产品承诺、安全协议和降级模型，再决定新的实现阶段。当前工程包含 26 项 Android 核心单元测试与 13 项报告工具测试；构建和 lint 复核命令记录在对应运行手册中。
 
 ## 1. 立项结论与技术边界
 
@@ -86,6 +90,8 @@ Device Owner 模式保留给后续企业版或专用设备版，不属于大众�
 ### 1.5 Shizuku 增强模式
 
 Shizuku 在 Android 11 及以上可通过无线调试启动，无需 Root 或长期连接电脑，但重启后通常需要重新启动服务。不同 Android 和 OEM 对 shell 身份的能力限制不同。
+
+S0.2 已在 Redmi `23078RKD5C`（Android 13、MIUI 14）验证 Kotlin UserService 能以 `shell` UID 独立监测固定测试 Activity 并发送一次 Back；此证据只覆盖非持久、测试包限定的 L1 动作，不覆盖 L3-L5。
 
 增强模式必须遵守：
 

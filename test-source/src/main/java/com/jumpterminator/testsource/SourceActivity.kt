@@ -36,6 +36,13 @@ class SourceActivity : Activity() {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(buildContent())
+        handleS02Automation(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleS02Automation(intent)
     }
 
     override fun onResume() {
@@ -206,6 +213,48 @@ class SourceActivity : Activity() {
         }
     }
 
+    /**
+     * Test-only entry point for the S0.2 ADB companion harness. It removes
+     * coordinate-dependent UI automation while keeping every transition in
+     * this dedicated source APK. Only fixed counts and fixed negative probes
+     * are accepted; production packages remain unreachable from this path.
+     */
+    private fun handleS02Automation(commandIntent: Intent?) {
+        if (commandIntent == null) return
+        val batchCount = commandIntent.getIntExtra(EXTRA_S02_BATCH_COUNT, -1)
+        if (batchCount in S02_ALLOWED_BATCH_COUNTS) {
+            commandIntent.removeExtra(EXTRA_S02_BATCH_COUNT)
+            handler.post { startBatch(batchCount, STABLE_LOOP_GAP_MS) }
+            return
+        }
+
+        val allowedProbe = commandIntent.getStringExtra(EXTRA_S02_ALLOWED_PROBE) ?: return
+        commandIntent.removeExtra(EXTRA_S02_ALLOWED_PROBE)
+        handler.postDelayed({
+            when (allowedProbe) {
+                S02_PROBE_SETTINGS -> launchAllowed(
+                    Intent(Settings.ACTION_SETTINGS),
+                    "s02_allowed_settings",
+                    "com.android.settings",
+                )
+                S02_PROBE_BROWSER -> {
+                    val browserIntent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://example.com/jump-terminator-s02"),
+                    )
+                    val target = browserIntent.resolveActivity(packageManager)?.packageName
+                        ?: "browser_or_chooser"
+                    launchAllowed(browserIntent, "s02_allowed_browser", target)
+                }
+                S02_PROBE_HOME -> {
+                    val homeIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+                    val target = homeIntent.resolveActivity(packageManager)?.packageName ?: "launcher"
+                    launchAllowed(homeIntent, "s02_allowed_home", target)
+                }
+            }
+        }, S02_PROBE_START_DELAY_MS)
+    }
+
     private fun emitIssued(triggerType: String, expected: String, targetPackage: String) {
         activeTriggerType = triggerType
         activeExpected = expected
@@ -247,10 +296,17 @@ class SourceActivity : Activity() {
         private const val TARGET_PACKAGE = "com.jumpterminator.testtarget"
         private const val TARGET_ACTIVITY = "com.jumpterminator.testtarget.TargetActivity"
         private const val TARGET_REQUEST_CODE = 4200
-        // MIUI 14 launch mode freezes background UIDs for up to five seconds.
-        // The acceptance batch waits past that OEM window; the separate stress
-        // batch retains the short cadence that reproduces nested-freeze failures.
+        // The controlled cadence avoids overlapping target instances. S0 later
+        // proved that a six-second gap is not immunity from MIUI Greeze, so all
+        // acceptance decisions still use the complete realtime report.
         private const val STABLE_LOOP_GAP_MS = 6_000L
         private const val STRESS_LOOP_GAP_MS = 1_200L
+        private const val EXTRA_S02_BATCH_COUNT = "jt_s02_batch_count"
+        private const val EXTRA_S02_ALLOWED_PROBE = "jt_s02_allowed_probe"
+        private const val S02_PROBE_SETTINGS = "settings"
+        private const val S02_PROBE_BROWSER = "browser"
+        private const val S02_PROBE_HOME = "home"
+        private const val S02_PROBE_START_DELAY_MS = 500L
+        private val S02_ALLOWED_BATCH_COUNTS = setOf(1, 10, 100)
     }
 }

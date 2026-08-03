@@ -3,15 +3,19 @@ plugins {
 }
 
 android {
-    namespace = "com.jumpterminator.testsource"
+    namespace = "com.jumpterminator.s02"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.jumpterminator.testsource"
+        applicationId = "com.jumpterminator.s02"
         minSdk = 28
         targetSdk = 36
-        versionCode = 7
-        versionName = "0.0.7-s02"
+        versionCode = 2
+        versionName = "0.0.2-s02"
+    }
+
+    buildFeatures {
+        aidl = true
     }
 
     buildTypes {
@@ -24,10 +28,19 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    lint {
+        disable += "AndroidGradlePluginVersion"
+    }
 }
 
 kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
+}
+
+dependencies {
+    implementation("dev.rikka.shizuku:api:13.1.5")
+    implementation("dev.rikka.shizuku:provider:13.1.5")
 }
