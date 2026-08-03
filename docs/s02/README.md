@@ -103,6 +103,8 @@ python -m unittest scripts.test_s02_report -v
 
 `SHIZUKU_POC_FEASIBLE` 只授权 Advanced 架构设计与继续验证。进入真实实现前至少还需：
 
+2026-08-03 已完成其中第一轮生命周期与断连验证；断连、重启和恢复通过，但显式 force-stop 后伴侣仍执行一次 Back，因此后续状态为 [`STOP_UNTIL_FORCE_STOP_FAIL_SAFE`](../s03/decision.md)。
+
 1. 明确 Standard 与 Advanced 的产品承诺、安装渠道和降级提示；
 2. 验证 UI 进程被杀、锁屏/息屏、重启、Shizuku 断连和重新授权；
 3. 将允许流程负样本扩到发布级统计规模，并覆盖支付、安装器、系统设置、浏览器和桌面；

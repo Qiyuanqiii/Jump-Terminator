@@ -1,0 +1,520 @@
+{
+  "schema": "s0.3-report-1",
+  "eventCount": 47,
+  "sessionCount": 7,
+  "requiredScenarios": [
+    "ui-kill",
+    "ui-force-stop",
+    "shizuku-graceful-stop",
+    "shizuku-disconnect",
+    "disconnect-recovery",
+    "reboot",
+    "post-reboot-recovery"
+  ],
+  "scenarioCoverage": {
+    "ui-kill": true,
+    "ui-force-stop": true,
+    "shizuku-graceful-stop": true,
+    "shizuku-disconnect": true,
+    "disconnect-recovery": true,
+    "reboot": true,
+    "post-reboot-recovery": true
+  },
+  "missingOrInvalidScenarios": [],
+  "sessions": [
+    {
+      "sessionId": "2fb0c66e52e74f778929b99623b528bd",
+      "scenario": "ui-kill",
+      "eventCount": 7,
+      "observationValid": true,
+      "gatePassed": true,
+      "checks": {
+        "scenarioCompleted": true,
+        "runnerErrorFree": true,
+        "cleanupStoppedAllTestProcesses": true,
+        "probeHadShizukuServer": true,
+        "probeHadCompanion": true,
+        "probeHadUi": true,
+        "uiProcessCrashed": true,
+        "companionSurvivedUiCrash": true,
+        "serverSurvivedUiCrash": true,
+        "boundedActionCompletedAfterUiCrash": true
+      },
+      "observed": {
+        "probe": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 9417,
+          "companionPid": 9495,
+          "uiPid": 9435,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "fault": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 9417,
+          "companionPid": 9495,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "companionResult": {
+          "ready": true,
+          "detections": 1,
+          "backs": 1,
+          "dispatchedBacks": 1,
+          "leaves": 1,
+          "returnedSource": 1,
+          "terminalKind": "complete",
+          "terminalReason": "count_reached",
+          "serviceErrors": 0,
+          "timeouts": 0
+        },
+        "preReboot": null,
+        "postReboot": null,
+        "cleanup": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        }
+      }
+    },
+    {
+      "sessionId": "7decf7b7dcaa4262b804fd1b109a2d33",
+      "scenario": "reboot",
+      "eventCount": 5,
+      "observationValid": true,
+      "gatePassed": true,
+      "checks": {
+        "scenarioCompleted": true,
+        "runnerErrorFree": true,
+        "cleanupStoppedAllTestProcesses": true,
+        "bootIdChanged": true,
+        "bootCompleted": true,
+        "coldStartHadNoPrivilegedOrTestProcesses": true
+      },
+      "observed": {
+        "probe": null,
+        "fault": null,
+        "companionResult": null,
+        "preReboot": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "postReboot": {
+          "bootId": "ed031f1b-6665-496d-b186-a2376fc090e4",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": true
+        },
+        "cleanup": {
+          "bootId": "ed031f1b-6665-496d-b186-a2376fc090e4",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": true
+        }
+      }
+    },
+    {
+      "sessionId": "867b83465304441d9bddce88f734ed80",
+      "scenario": "shizuku-disconnect",
+      "eventCount": 7,
+      "observationValid": true,
+      "gatePassed": true,
+      "checks": {
+        "scenarioCompleted": true,
+        "runnerErrorFree": true,
+        "cleanupStoppedAllTestProcesses": true,
+        "probeHadShizukuServer": true,
+        "probeHadCompanion": true,
+        "probeHadUi": true,
+        "shizukuServerStopped": true,
+        "companionStoppedWithServer": true,
+        "testTransitionWasLaunched": true,
+        "failedOpenWithoutPrivilegedAction": true
+      },
+      "observed": {
+        "probe": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 12333,
+          "companionPid": 12416,
+          "uiPid": 12352,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "fault": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 12352,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "companionResult": {
+          "ready": true,
+          "detections": 0,
+          "backs": 0,
+          "dispatchedBacks": 0,
+          "leaves": 0,
+          "returnedSource": 0,
+          "terminalKind": null,
+          "terminalReason": null,
+          "serviceErrors": 0,
+          "timeouts": 0
+        },
+        "preReboot": null,
+        "postReboot": null,
+        "cleanup": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        }
+      }
+    },
+    {
+      "sessionId": "d18f9da839274405b1646f1216181792",
+      "scenario": "shizuku-graceful-stop",
+      "eventCount": 7,
+      "observationValid": true,
+      "gatePassed": true,
+      "checks": {
+        "scenarioCompleted": true,
+        "runnerErrorFree": true,
+        "cleanupStoppedAllTestProcesses": true,
+        "probeHadShizukuServer": true,
+        "probeHadCompanion": true,
+        "probeHadUi": true,
+        "shizukuServerStopped": true,
+        "companionStoppedWithServer": true,
+        "testTransitionWasLaunched": true,
+        "failedOpenWithoutPrivilegedAction": true
+      },
+      "observed": {
+        "probe": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 11592,
+          "companionPid": 11739,
+          "uiPid": 11619,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "fault": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 11619,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "companionResult": {
+          "ready": true,
+          "detections": 0,
+          "backs": 0,
+          "dispatchedBacks": 0,
+          "leaves": 0,
+          "returnedSource": 0,
+          "terminalKind": null,
+          "terminalReason": null,
+          "serviceErrors": 0,
+          "timeouts": 0
+        },
+        "preReboot": null,
+        "postReboot": null,
+        "cleanup": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        }
+      }
+    },
+    {
+      "sessionId": "dcf7e02a6e024485abad3a9fc027239e",
+      "scenario": "disconnect-recovery",
+      "eventCount": 7,
+      "observationValid": true,
+      "gatePassed": true,
+      "checks": {
+        "scenarioCompleted": true,
+        "runnerErrorFree": true,
+        "cleanupStoppedAllTestProcesses": true,
+        "probeHadShizukuServer": true,
+        "probeHadCompanion": true,
+        "probeHadUi": true,
+        "grantBindAndActionRecovered": true
+      },
+      "observed": {
+        "probe": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 12965,
+          "companionPid": 13037,
+          "uiPid": 12985,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "fault": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 12965,
+          "companionPid": 13037,
+          "uiPid": 12985,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "companionResult": {
+          "ready": true,
+          "detections": 1,
+          "backs": 1,
+          "dispatchedBacks": 1,
+          "leaves": 1,
+          "returnedSource": 1,
+          "terminalKind": "complete",
+          "terminalReason": "count_reached",
+          "serviceErrors": 0,
+          "timeouts": 0
+        },
+        "preReboot": null,
+        "postReboot": null,
+        "cleanup": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        }
+      }
+    },
+    {
+      "sessionId": "e998a3900e9d48449aff864b2d91975f",
+      "scenario": "post-reboot-recovery",
+      "eventCount": 7,
+      "observationValid": true,
+      "gatePassed": true,
+      "checks": {
+        "scenarioCompleted": true,
+        "runnerErrorFree": true,
+        "cleanupStoppedAllTestProcesses": true,
+        "probeHadShizukuServer": true,
+        "probeHadCompanion": true,
+        "probeHadUi": true,
+        "grantBindAndActionRecovered": true
+      },
+      "observed": {
+        "probe": {
+          "bootId": "ed031f1b-6665-496d-b186-a2376fc090e4",
+          "bootCompleted": true,
+          "shizukuServerPid": 9880,
+          "companionPid": 9984,
+          "uiPid": 9917,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "fault": {
+          "bootId": "ed031f1b-6665-496d-b186-a2376fc090e4",
+          "bootCompleted": true,
+          "shizukuServerPid": 9880,
+          "companionPid": 9984,
+          "uiPid": 9917,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "companionResult": {
+          "ready": true,
+          "detections": 1,
+          "backs": 1,
+          "dispatchedBacks": 1,
+          "leaves": 1,
+          "returnedSource": 1,
+          "terminalKind": "complete",
+          "terminalReason": "count_reached",
+          "serviceErrors": 0,
+          "timeouts": 0
+        },
+        "preReboot": null,
+        "postReboot": null,
+        "cleanup": {
+          "bootId": "ed031f1b-6665-496d-b186-a2376fc090e4",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        }
+      }
+    },
+    {
+      "sessionId": "f4764cec6d024977bbd91b3387b81ba0",
+      "scenario": "ui-force-stop",
+      "eventCount": 7,
+      "observationValid": true,
+      "gatePassed": false,
+      "checks": {
+        "scenarioCompleted": true,
+        "runnerErrorFree": true,
+        "cleanupStoppedAllTestProcesses": true,
+        "probeHadShizukuServer": true,
+        "probeHadCompanion": true,
+        "probeHadUi": true,
+        "uiPackageWasForceStopped": true,
+        "companionStateWasObserved": true,
+        "noPrivilegedActionAfterForceStop": false
+      },
+      "observed": {
+        "probe": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 10271,
+          "companionPid": 10359,
+          "uiPid": 10290,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "fault": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 10271,
+          "companionPid": 10359,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        },
+        "companionResult": {
+          "ready": true,
+          "detections": 1,
+          "backs": 1,
+          "dispatchedBacks": 1,
+          "leaves": 1,
+          "returnedSource": 1,
+          "terminalKind": "complete",
+          "terminalReason": "count_reached",
+          "serviceErrors": 0,
+          "timeouts": 0
+        },
+        "preReboot": null,
+        "postReboot": null,
+        "cleanup": {
+          "bootId": "b3631338-d6cc-4307-825d-b83ce0cd6969",
+          "bootCompleted": true,
+          "shizukuServerPid": 0,
+          "companionPid": 0,
+          "uiPid": 0,
+          "sourcePid": 0,
+          "targetPid": 0,
+          "keyguardLocked": false
+        }
+      }
+    }
+  ],
+  "device": {
+    "models": [
+      "23078RKD5C"
+    ],
+    "androidReleases": [
+      "13"
+    ]
+  },
+  "wallClockRangeMs": {
+    "first": 1785747472059,
+    "last": 1785748096171
+  },
+  "sampleGatePassed": true,
+  "forceStopFailSafePassed": false,
+  "shizukuLossFailSafePassed": true,
+  "rebootColdStartSafePassed": true,
+  "recoveryGatePassed": true,
+  "uiCrashResiliencePassed": true,
+  "safetyGatePassed": false,
+  "safetyViolations": [
+    "ui-force-stop#f4764cec6d024977bbd91b3387b81ba0: dispatched 1 privileged Back action(s) after explicit package force-stop"
+  ],
+  "provisionalDecision": "STOP_UNTIL_FORCE_STOP_FAIL_SAFE",
+  "notes": [
+    "UI crash continuation is a resilience observation, not authorization for an unbounded daemon.",
+    "An explicit package force-stop is treated as a user stop signal; privileged actions must cease.",
+    "Shizuku loss is required to fail open: the test transition may continue, but no Back may be sent.",
+    "This lifecycle gate covers one MIUI 14 device and fixed test packages only."
+  ],
+  "sourceEvidence": [
+    {
+      "file": "s03-ui-kill-20260803-165751.jsonl",
+      "sha256": "08B5738CE11EF70A4A99D99E715F10516C4A2E0AE3BA210B5A668D4054405EF3"
+    },
+    {
+      "file": "s03-ui-force-stop-20260803-165834.jsonl",
+      "sha256": "BDC3E29E81D68FF568E7758D11D25B346BCA850497619B0D5634065758474FF6"
+    },
+    {
+      "file": "s03-shizuku-graceful-stop-20260803-170027.jsonl",
+      "sha256": "AA25131F3F058897DBB895010066094F696A7D26E4459FBCA454619AB84463D7"
+    },
+    {
+      "file": "s03-shizuku-disconnect-20260803-170123.jsonl",
+      "sha256": "00E936D15A58DD8F4DE2EBD38E8E9CE871B01D992AD5000518029F7071B26917"
+    },
+    {
+      "file": "s03-disconnect-recovery-20260803-170216.jsonl",
+      "sha256": "AF5A73B5DE1FBE4CEBEFA8E73E92F5C3508DD73880CE39E7AAF3510481EE3DE9"
+    },
+    {
+      "file": "s03-reboot-20260803-170257.jsonl",
+      "sha256": "2A9346CFC5D2022FE9DFDB557B1AC63456BAA10971CB5C625FCD7793E07B3A87"
+    },
+    {
+      "file": "s03-post-reboot-recovery-20260803-170807.jsonl",
+      "sha256": "05BFDC7BC5F2424B43997A4657F9882E53BE4E4396ECC25E9C93AFE89A0DE421"
+    }
+  ],
+  "warnings": [],
+  "evidenceCompletedAt": "2026-08-03T09:08:16.171000Z"
+}
