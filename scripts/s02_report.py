@@ -73,6 +73,23 @@ def analyse(events: list[dict[str, Any]]) -> dict[str, Any]:
             for event in ready_events
         },
     )
+    owner_bound_sessions = sum(
+        1 for event in ready_events if (event.get("data") or {}).get("ownerBound") is True
+    )
+    crash_grace_values = sorted(
+        {
+            int((event.get("data") or {}).get("crashGraceMs"))
+            for event in ready_events
+            if isinstance((event.get("data") or {}).get("crashGraceMs"), (int, float))
+        },
+    )
+    owner_user_ids = sorted(
+        {
+            int((event.get("data") or {}).get("ownerUserId"))
+            for event in ready_events
+            if isinstance((event.get("data") or {}).get("ownerUserId"), (int, float))
+        },
+    )
 
     all_detections = [event for event in events if event.get("kind") == "target_detected"]
     backs = [event for event in events if event.get("kind") == "back_requested"]
@@ -252,12 +269,22 @@ def analyse(events: list[dict[str, Any]]) -> dict[str, Any]:
             data = event.get("data") or {}
             summary["scenario"] = data.get("scenario")
             summary["mode"] = data.get("mode")
+            summary["ownerBound"] = data.get("ownerBound")
+            summary["crashGraceMs"] = data.get("crashGraceMs")
+            summary["ownerUserId"] = data.get("ownerUserId")
 
     return {
         "schema": "s0.2-report-1",
         "eventCount": len(events),
         "sessionCount": len(ready_events),
         "executors": executors,
+        "authorization": {
+            "ownerBoundSessions": owner_bound_sessions,
+            "allSessionsOwnerBound": bool(ready_events)
+            and owner_bound_sessions == len(ready_events),
+            "crashGraceMs": crash_grace_values,
+            "ownerUserIds": owner_user_ids,
+        },
         "sessions": dict(session_summaries),
         "sampleCounts": {
             "requestedBlock": requested_block,

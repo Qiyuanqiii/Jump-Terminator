@@ -36,4 +36,6 @@ docs/s03/results/*.txt
 !docs/s0/results/miui14-23078rkd5c-v012-armed-recents-locked-stable100-stopped42-greeze-failures-20260802.report.json
 !docs/s02/results/miui14-23078rkd5c-s02-adb-privileged-upper-bound-block100-allow15-20260803.report.json
 !docs/s02/results/miui14-23078rkd5c-s02-shizuku-block100-allow15-20260803.report.json
+!docs/s02/results/miui14-23078rkd5c-s02-shizuku-v003-owner-bound-block100-allow15-20260803.report.json
 !docs/s03/results/miui14-23078rkd5c-s03-lifecycle-20260803.report.json
+!docs/s03/results/miui14-23078rkd5c-s03-lifecycle-v003-owner-bound-20260803.report.json

@@ -25,6 +25,10 @@ def complete_block_session(count=100, executor=None):
     }
     if executor:
         ready_data["executor"] = executor
+    if executor == "shizuku_user_service":
+        ready_data.update(
+            {"ownerBound": True, "crashGraceMs": 10_000, "ownerUserId": 0},
+        )
     events = [
         event(
             "ready",
@@ -85,6 +89,10 @@ def allowed_session(count=15, executor=None):
     }
     if executor:
         ready_data["executor"] = executor
+    if executor == "shizuku_user_service":
+        ready_data.update(
+            {"ownerBound": True, "crashGraceMs": 10_000, "ownerUserId": 0},
+        )
     events = [
         event(
             "ready",
@@ -151,6 +159,9 @@ class S02ReportTest(unittest.TestCase):
         self.assertTrue(report["thresholdGatePassed"])
         self.assertEqual("SHIZUKU_POC_FEASIBLE", report["provisionalDecision"])
         self.assertEqual([executor], report["executors"])
+        self.assertTrue(report["authorization"]["allSessionsOwnerBound"])
+        self.assertEqual([10_000], report["authorization"]["crashGraceMs"])
+        self.assertEqual([0], report["authorization"]["ownerUserIds"])
 
     def test_incomplete_allowed_session_does_not_pass_sample_gate(self):
         events = complete_block_session() + allowed_session()

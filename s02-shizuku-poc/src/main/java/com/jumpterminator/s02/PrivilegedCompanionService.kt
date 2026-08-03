@@ -1,5 +1,7 @@
 package com.jumpterminator.s02
 
+import android.os.IBinder
+import android.os.SystemClock
 import android.util.Log
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -14,6 +16,7 @@ import java.util.ArrayDeque
 class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
     private val lock = Any()
     private val queuedEvents = ArrayDeque<String>()
+    private val authorization = OwnerAuthorizationPolicy(CRASH_GRACE_MS)
 
     @Volatile
     private var running = false
@@ -36,13 +39,29 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
     @Volatile
     private var actions = 0
 
+    @Volatile
+    private var ownerToken: IBinder? = null
+
+    @Volatile
+    private var ownerDeathRecipient: IBinder.DeathRecipient? = null
+
+    @Volatile
+    private var activeOwnerUserId = -1
+
+    @Volatile
+    private var processExitScheduled = false
+
     override fun startMonitor(
         sessionId: String,
         requestedBlock: Int,
         requestedAllowed: Int,
         armed: Boolean,
+        ownerUid: Int,
+        ownerToken: IBinder,
     ): String {
         require(SESSION_PATTERN.matches(sessionId)) { "invalid sessionId" }
+        require(ownerUid >= 0) { "invalid ownerUid" }
+        val ownerUserId = ownerUid / PER_USER_RANGE
         val scenario = when {
             requestedBlock in ALLOWED_COUNTS && requestedAllowed == 0 -> "block"
             requestedBlock == 0 && requestedAllowed in 1..MAX_ALLOWED_PROBES -> {
@@ -53,6 +72,8 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
         }
         synchronized(lock) {
             check(!running) { "monitor is already running" }
+            check(!processExitScheduled) { "service exit is already scheduled" }
+            installOwnerLocked(sessionId, ownerUserId, ownerToken)
             running = true
             stopRequested = false
             activeSession = sessionId
@@ -79,13 +100,18 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
         return status()
     }
 
-    override fun status(): String = JSONObject()
-        .put("running", running)
-        .put("sessionId", activeSession)
-        .put("scenario", activeScenario)
-        .put("detections", detections)
-        .put("actions", actions)
-        .toString()
+    override fun status(): String {
+        val owner = authorization.snapshot()
+        return JSONObject()
+            .put("running", running)
+            .put("sessionId", activeSession)
+            .put("scenario", activeScenario)
+            .put("detections", detections)
+            .put("actions", actions)
+            .put("ownerAttached", owner.ownerAttached)
+            .put("ownerRevokedReason", owner.revokedReason)
+            .toString()
+    }
 
     override fun drainEvents(): String = synchronized(lock) {
         buildString {
@@ -102,8 +128,13 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
     }
 
     override fun destroy() {
+        authorization.revoke(activeSession, "destroy_requested")
         stopMonitor()
         worker?.join(2_000L)
+        synchronized(lock) {
+            detachOwnerLocked()
+            authorization.clear()
+        }
         System.exit(0)
     }
 
@@ -138,11 +169,23 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
                 "sourceComponent" to SOURCE_COMPONENT,
                 "targetComponent" to TARGET_COMPONENT,
                 "executor" to "shizuku_user_service",
+                "ownerBound" to true,
+                "ownerUserId" to activeOwnerUserId,
+                "crashGraceMs" to CRASH_GRACE_MS,
             ),
         )
 
         try {
             while (!stopRequested && System.currentTimeMillis() < timeoutAt) {
+                val expirationReason = authorization.expirationReason(
+                    sessionId,
+                    SystemClock.elapsedRealtime(),
+                )
+                if (expirationReason != null) {
+                    emitAuthorizationRevoked(sessionId, expirationReason)
+                    scheduleProcessExit(sessionId, expirationReason)
+                    return
+                }
                 val pollStart = System.currentTimeMillis()
                 val component = readTopComponent()
                 val pollEnd = System.currentTimeMillis()
@@ -206,7 +249,7 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
                                 "pollDurationMs" to (pollEnd - pollStart),
                             ),
                         )
-                        if (armed) dispatchBack(sessionId, entryLowerBound)
+                        if (armed && !dispatchBack(sessionId, entryLowerBound)) return
                     }
                     "other" -> sourceContext = false
                 }
@@ -271,10 +314,24 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
         } finally {
             running = false
             worker = null
+            if (authorization.shouldExitWhenIdle(sessionId)) {
+                scheduleProcessExit(sessionId, "owner_detached_after_session")
+            }
         }
     }
 
-    private fun dispatchBack(sessionId: String, entryLowerBound: Long) {
+    private fun dispatchBack(sessionId: String, entryLowerBound: Long): Boolean {
+        val packageStopped = readOwnerPackageStopped(activeOwnerUserId)
+        val denialReason = authorization.actionDenialReason(
+            sessionId,
+            SystemClock.elapsedRealtime(),
+            packageStopped,
+        )
+        if (denialReason != null) {
+            emitAuthorizationRevoked(sessionId, denialReason)
+            scheduleProcessExit(sessionId, denialReason)
+            return false
+        }
         val actionStart = System.currentTimeMillis()
         val process = ProcessBuilder(INPUT, "keyevent", "4")
             .redirectErrorStream(true)
@@ -302,6 +359,161 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
                 "inputDurationMs" to (actionEnd - actionStart),
             ),
         )
+        return true
+    }
+
+    private fun installOwnerLocked(sessionId: String, ownerUserId: Int, token: IBinder) {
+        detachOwnerLocked()
+        authorization.begin(sessionId)
+        val recipient = IBinder.DeathRecipient {
+            handleOwnerDeath(sessionId, ownerUserId)
+        }
+        this.ownerToken = token
+        ownerDeathRecipient = recipient
+        activeOwnerUserId = ownerUserId
+        try {
+            token.linkToDeath(recipient, 0)
+            check(token.isBinderAlive) { "owner binder is already dead" }
+        } catch (error: Throwable) {
+            this.ownerToken = null
+            ownerDeathRecipient = null
+            activeOwnerUserId = -1
+            authorization.revoke(sessionId, "owner_binder_unavailable")
+            throw IllegalStateException("unable to bind monitor ownership", error)
+        }
+    }
+
+    private fun detachOwnerLocked() {
+        val token = ownerToken
+        val recipient = ownerDeathRecipient
+        if (token != null && recipient != null) {
+            try {
+                token.unlinkToDeath(recipient, 0)
+            } catch (_: Throwable) {
+                // A dead owner is already detached from the Binder driver.
+            }
+        }
+        ownerToken = null
+        ownerDeathRecipient = null
+        activeOwnerUserId = -1
+    }
+
+    private fun handleOwnerDeath(sessionId: String, ownerUserId: Int) {
+        Thread(
+            {
+                val packageStopped = readOwnerPackageStopped(ownerUserId)
+                val decision = authorization.ownerDied(
+                    sessionId,
+                    SystemClock.elapsedRealtime(),
+                    packageStopped,
+                )
+                if (!decision.applies) return@Thread
+                val revokedReason = decision.revokedReason
+                if (revokedReason != null) {
+                    emitAuthorizationRevoked(sessionId, revokedReason)
+                    scheduleProcessExit(sessionId, revokedReason)
+                    return@Thread
+                }
+
+                val deadline = decision.graceDeadlineElapsedMs ?: return@Thread
+                emit(
+                    sessionId,
+                    "owner_detached",
+                    data = mapOf(
+                        "reason" to "owner_process_died",
+                        "ownerPackageStopped" to false,
+                        "graceDeadlineElapsedMs" to deadline,
+                    ),
+                )
+                val remaining = (deadline - SystemClock.elapsedRealtime()).coerceAtLeast(1L)
+                try {
+                    Thread.sleep(remaining)
+                } catch (_: InterruptedException) {
+                    return@Thread
+                }
+                val expirationReason = authorization.expirationReason(
+                    sessionId,
+                    SystemClock.elapsedRealtime(),
+                ) ?: return@Thread
+                emitAuthorizationRevoked(sessionId, expirationReason)
+                scheduleProcessExit(sessionId, expirationReason)
+            },
+            "jt-s02-owner-death",
+        ).apply {
+            isDaemon = true
+            start()
+        }
+    }
+
+    private fun emitAuthorizationRevoked(sessionId: String, reason: String) {
+        emit(
+            sessionId,
+            "authorization_revoked",
+            data = mapOf(
+                "reason" to reason,
+                "ownerUserId" to activeOwnerUserId,
+            ),
+        )
+    }
+
+    private fun scheduleProcessExit(sessionId: String, reason: String) {
+        val shouldSchedule = synchronized(lock) {
+            if (processExitScheduled) {
+                false
+            } else {
+                processExitScheduled = true
+                stopRequested = true
+                worker?.interrupt()
+                true
+            }
+        }
+        if (!shouldSchedule) return
+        emit(
+            sessionId,
+            "service_exit_requested",
+            data = mapOf("reason" to reason),
+        )
+        Thread(
+            {
+                val activeWorker = worker
+                if (activeWorker != null && activeWorker !== Thread.currentThread()) {
+                    try {
+                        activeWorker.join(2_000L)
+                    } catch (_: InterruptedException) {
+                        Thread.currentThread().interrupt()
+                    }
+                }
+                synchronized(lock) {
+                    detachOwnerLocked()
+                    authorization.clear()
+                }
+                try {
+                    Thread.sleep(EXIT_LOG_FLUSH_MS)
+                } catch (_: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                }
+                System.exit(0)
+            },
+            "jt-s02-process-exit",
+        ).apply {
+            isDaemon = false
+            start()
+        }
+    }
+
+    private fun readOwnerPackageStopped(ownerUserId: Int): Boolean? {
+        if (ownerUserId < 0) return null
+        return try {
+            val process = ProcessBuilder(DUMPSYS, "package", OWNER_PACKAGE)
+                .redirectErrorStream(true)
+                .start()
+            val output = BufferedReader(InputStreamReader(process.inputStream)).use {
+                it.readText()
+            }
+            if (process.waitFor() != 0) null else PackageStoppedStateParser.parse(output, ownerUserId)
+        } catch (_: Throwable) {
+            null
+        }
     }
 
     private fun readTopComponent(): String = try {
@@ -345,9 +557,14 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub() {
         private const val LOG_TAG = "JT_S02_SHIZUKU"
         private const val SOURCE_COMPONENT = "com.jumpterminator.testsource/.SourceActivity"
         private const val TARGET_COMPONENT = "com.jumpterminator.testtarget/.TargetActivity"
+        private const val OWNER_PACKAGE = "com.jumpterminator.s02"
         private const val SH = "/system/bin/sh"
         private const val INPUT = "/system/bin/input"
+        private const val DUMPSYS = "/system/bin/dumpsys"
         private const val POLL_SLEEP_MS = 30L
+        private const val CRASH_GRACE_MS = 10_000L
+        private const val EXIT_LOG_FLUSH_MS = 100L
+        private const val PER_USER_RANGE = 100_000
         private const val MAX_QUEUED_EVENTS = 1_000
         private const val MAX_ALLOWED_PROBES = 60
         private val SESSION_PATTERN = Regex("[a-f0-9]{32}")

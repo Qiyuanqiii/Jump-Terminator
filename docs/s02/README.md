@@ -20,17 +20,17 @@ S0.2 不再尝试给普通进程叠加后台豁免，而是回答一个更窄的
 | --- | ---: | ---: | ---: | ---: | --- |
 | 普通 App / 公开 API（S0） | 92/100 实时 | 92/100 | 92/92 | 0/15 | No-Go |
 | ADB/shell 上界 | 100/100 | 100/100 | 100/100 | 0/15 | 可进入 Shizuku PoC |
-| Kotlin + Shizuku UserService | 100/100 | 100/100 | 100/100 | 0/15 | `SHIZUKU_POC_FEASIBLE` |
+| Kotlin + Shizuku owner-bound UserService v3 | 100/100 | 100/100 | 100/100 | 0/15 | `SHIZUKU_POC_FEASIBLE` |
 
 Shizuku 正式样本的 Wilson 95% 下界为 96.30%（100/100 指标）；延迟均为从最后一次观察到来源开始计算的保守上界：
 
 | 指标 | P50 | P95 |
 | --- | ---: | ---: |
-| 目标检测 | 59 ms | 125 ms |
-| Back 请求 | 59 ms | 125 ms |
-| 离开目标 | 167 ms | 214 ms |
-| `input keyevent 4` 执行 | 48 ms | 70 ms |
-| 单次前台轮询 | 25 ms | 38 ms |
+| 目标检测 | 53 ms | 116 ms |
+| Back 请求 | 71 ms | 139 ms |
+| 离开目标 | 158 ms | 211 ms |
+| `input keyevent 4` 执行 | 37 ms | 56 ms |
+| 单次前台轮询 | 21 ms | 38 ms |
 
 15 个负样本全部保持允许且未出现 Back。需要注意，`0/15` 的 Wilson 95% 上界仍为 20.39%，所以它只是当前安全门的冒烟样本，不足以证明发布级 `≤2%` 误拦截率；零失败时至少需要 189 个负样本才能把该上界压到 2% 以下。
 
@@ -47,6 +47,10 @@ UserService 只接受以下硬编码边界：
 - 正样本批量只允许 1、10 或 100；
 - 负样本最多 60 个，并且必须处于武装模式；
 - 每个来源到目标序列至多发送一次 Back；
+- 每个监控会话必须绑定普通控制进程创建的 owner Binder；
+- owner 死亡后按用户检查控制包 stopped 状态；force-stop 或状态未知立即撤权退出；
+- 普通 UI 崩溃只保留 10 秒宽限，并在会话结束或宽限到期后退出；
+- 每次 Back 前重新验证当前会话与 stopped 状态；
 - 短暂无法解析前台时记为 `unknown`，不得据此清除来源上下文或执行动作；
 - UserService 不发送 Home，不执行 force-stop、suspend、disable，也不修改持久系统状态；
 - 普通 S0 App 必须保持未武装，避免两个执行面同时动作；
@@ -96,6 +100,8 @@ python -m unittest scripts.test_s02_report -v
 
 - [ADB/shell 上界聚合报告](results/miui14-23078rkd5c-s02-adb-privileged-upper-bound-block100-allow15-20260803.report.json)
 - [Kotlin + Shizuku 聚合报告](results/miui14-23078rkd5c-s02-shizuku-block100-allow15-20260803.report.json)
+- [owner-bound v3 聚合报告](results/miui14-23078rkd5c-s02-shizuku-v003-owner-bound-block100-allow15-20260803.report.json)
+- [S0.3 生命周期通过报告](../s03/results/miui14-23078rkd5c-s03-lifecycle-v003-owner-bound-20260803.report.json)
 - [S0.2 门槛决策](decision.md)
 - [S0 原架构 No-Go](../s0/go-no-go.md)
 
@@ -103,10 +109,10 @@ python -m unittest scripts.test_s02_report -v
 
 `SHIZUKU_POC_FEASIBLE` 只授权 Advanced 架构设计与继续验证。进入真实实现前至少还需：
 
-2026-08-03 已完成其中第一轮生命周期与断连验证；断连、重启和恢复通过，但显式 force-stop 后伴侣仍执行一次 Back，因此后续状态为 [`STOP_UNTIL_FORCE_STOP_FAIL_SAFE`](../s03/decision.md)。
+2026-08-03 第一轮生命周期验证发现 force-stop 硬失败；owner-bound v3 修复后重新执行七类场景并全部通过，当前状态为 [`LIFECYCLE_GATE_PASSED`](../s03/decision.md)。这只解除该 PoC 阻塞，以下发布前工作仍未完成。
 
 1. 明确 Standard 与 Advanced 的产品承诺、安装渠道和降级提示；
-2. 验证 UI 进程被杀、锁屏/息屏、重启、Shizuku 断连和重新授权；
+2. 在已通过的七类生命周期样本上，扩大普通崩溃竞态、重复目标、锁屏/息屏和重新授权循环；
 3. 将允许流程负样本扩到发布级统计规模，并覆盖支付、安装器、系统设置、浏览器和桌面；
 4. 验证多用户、双开、分屏、PiP 和设备锁定状态；
 5. 把测试包硬编码边界替换为经过签名、用户身份、规则和当前前台二次校验的最小协议；

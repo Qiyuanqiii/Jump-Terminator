@@ -6,8 +6,10 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Binder
 import android.os.Bundle
 import android.os.IBinder
+import android.os.Process
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -18,6 +20,7 @@ import java.util.UUID
 class MainActivity : Activity() {
     private lateinit var statusView: TextView
     private lateinit var serviceArgs: Shizuku.UserServiceArgs
+    private val ownerToken = Binder()
     private var service: IPrivilegedCompanion? = null
     private var pendingCommand: MonitorCommand? = null
     private var pendingControl: String? = null
@@ -60,7 +63,7 @@ class MainActivity : Activity() {
             .daemon(true)
             .processNameSuffix("s02_companion")
             .debuggable(true)
-            .version(2)
+            .version(3)
             .tag("jump-terminator-s02")
         setContentView(buildContent())
         Shizuku.addBinderReceivedListenerSticky(binderReceivedListener)
@@ -185,6 +188,8 @@ class MainActivity : Activity() {
                 command.requestedBlock,
                 command.requestedAllowed,
                 command.armed,
+                Process.myUid(),
+                ownerToken,
             )
             pendingCommand = null
             renderStatus("监控已启动：$result")

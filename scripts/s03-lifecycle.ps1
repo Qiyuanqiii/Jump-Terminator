@@ -207,6 +207,7 @@ function Get-CompanionSummary {
     $detections = @($events | Where-Object kind -eq 'target_detected')
     $backs = @($events | Where-Object kind -eq 'back_requested')
     $leaves = @($events | Where-Object kind -eq 'left_target')
+    $revocations = @($events | Where-Object kind -eq 'authorization_revoked')
     $terminal = @($events | Where-Object kind -in @('complete', 'timeout', 'service_error') | Select-Object -Last 1)
     return [ordered]@{
         ready = [bool](@($events | Where-Object kind -eq 'ready').Count)
@@ -219,6 +220,10 @@ function Get-CompanionSummary {
         terminalReason = if ($terminal.Count) { $terminal[0].data.reason } else { $null }
         serviceErrors = @($events | Where-Object kind -eq 'service_error').Count
         timeouts = @($events | Where-Object kind -eq 'timeout').Count
+        authorizationRevocations = $revocations.Count
+        authorizationReasons = @($revocations | ForEach-Object { $_.data.reason } | Sort-Object -Unique)
+        ownerDetachments = @($events | Where-Object kind -eq 'owner_detached').Count
+        serviceExitRequests = @($events | Where-Object kind -eq 'service_exit_requested').Count
     }
 }
 

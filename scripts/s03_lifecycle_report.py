@@ -13,7 +13,7 @@ from typing import Any, Iterable
 
 
 SCHEMA = "s0.3-1"
-REPORT_SCHEMA = "s0.3-report-1"
+REPORT_SCHEMA = "s0.3-report-2"
 REQUIRED_SCENARIOS = (
     "ui-kill",
     "ui-force-stop",
@@ -173,10 +173,18 @@ def _evaluate_session(
         )
     elif scenario == "ui-force-stop":
         dispatched = (result or {}).get("dispatchedBacks")
+        authorization_reasons = (result or {}).get("authorizationReasons") or []
         checks.update(
             {
                 "uiPackageWasForceStopped": bool(fault and _zero(fault.get("uiPid"))),
                 "companionStateWasObserved": bool(fault and "companionPid" in fault),
+                "companionStoppedAfterForceStop": bool(
+                    fault and _zero(fault.get("companionPid"))
+                ),
+                "ownerAuthorizationWasRevoked": bool(
+                    (result or {}).get("authorizationRevocations", 0) >= 1
+                    and "owner_package_stopped" in authorization_reasons
+                ),
                 "noPrivilegedActionAfterForceStop": dispatched == 0,
             }
         )
@@ -303,9 +311,7 @@ def analyse(events: list[dict[str, Any]]) -> dict[str, Any]:
     sample_gate = not missing_or_invalid and not inconsistent_sessions
 
     force_stop_safe = any(
-        item["observationValid"]
-        and item["checks"].get("noPrivilegedActionAfterForceStop") is True
-        for item in by_scenario.get("ui-force-stop", [])
+        item["gatePassed"] for item in by_scenario.get("ui-force-stop", [])
     )
     shizuku_loss_safe = all(
         any(item["gatePassed"] for item in by_scenario.get(scenario, []))

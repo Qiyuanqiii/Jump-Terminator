@@ -42,6 +42,7 @@
 ## 证据
 
 - [Shizuku 聚合报告](results/miui14-23078rkd5c-s02-shizuku-block100-allow15-20260803.report.json)
+- [owner-bound v3 聚合报告](results/miui14-23078rkd5c-s02-shizuku-v003-owner-bound-block100-allow15-20260803.report.json)
 - [ADB/shell 上界报告](results/miui14-23078rkd5c-s02-adb-privileged-upper-bound-block100-allow15-20260803.report.json)
 - [S0.2 运行手册](README.md)
 - [原 S0 No-Go 记录](../s0/go-no-go.md)
@@ -50,4 +51,4 @@
 
 允许继续做 Advanced 架构设计、Shizuku 生命周期与断连验证、扩大负样本和最小安全协议。任何真实应用控制、持久系统状态修改或消费者发布仍需独立门槛和明确批准。
 
-后续 S0.3 已完成首轮验证：断连与重启路径通过，但 force-stop 失效安全失败。当前有效决策改由 [S0.3 生命周期门槛](../s03/decision.md)约束，状态为 `STOP_UNTIL_FORCE_STOP_FAIL_SAFE`。
+后续 S0.3 首轮验证发现 force-stop 失效安全失败；owner-bound v3 修复并重跑完整矩阵后，当前有效决策改由 [S0.3 生命周期门槛](../s03/decision.md)约束，状态为 `LIFECYCLE_GATE_PASSED`。该状态只授权继续 Advanced 架构与安全验证。

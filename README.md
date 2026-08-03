@@ -12,7 +12,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | --- | --- |
 | 文档版本 | v1.1 |
 | 文档日期 | 2026-08-03 |
-| 项目状态 | **Standard S0 No-Go；S0.2 执行面可行；S0.3 生命周期安全门失败**：force-stop 后特权伴侣仍可动作，修复前停止 Advanced 实现 |
+| 项目状态 | **Standard S0 No-Go；Advanced S0.2 执行面与 S0.3 生命周期 PoC 门通过**：仅授权继续架构与安全验证，不代表消费者版 Go |
 | 首要适配平台 | Redmi/Xiaomi，MIUI 14 |
 | 稳定版目标平台 | Android 9-Android 16 |
 | 前瞻兼容轨道 | Android 17 Beta/正式版兼容测试 |
@@ -21,7 +21,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | 基础权限 | 无障碍服务、使用情况访问；前台服务通知，以及 OEM 后台运行引导 |
 | 增强能力 | Shizuku，可选且不得影响基础模式 |
 
-## 当前执行状态：S0 No-Go；S0.3 停止等待 force-stop 失效安全
+## 当前执行状态：Standard S0 No-Go；Advanced PoC 生命周期门通过
 
 2026-08-01 启动 S0 技术可行性验证。仓库现已包含可编译的主诊断 App、测试来源 App、测试目标 App、无障碍与 UsageStats 双时间线、一次性 Back/Home 验证链、延迟真值、JSONL 导出、统计脚本和实体设备测试矩阵。Android 工程使用 Kotlin；当前诊断版本为 `v0.0.12-s0`。
 
@@ -37,7 +37,9 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 
 该结果只证明“固定测试来源 → 固定测试目标 → 至多一次 Back”的特权执行面在这台 MIUI 14 设备上可行。它不推翻 Standard S0 No-Go，也不授权消费者发布。
 
-2026-08-03 随后完成 S0.3 生命周期、断连与重启故障注入。七类场景证据覆盖 `7/7`：UI 崩溃韧性、Shizuku 正常结束与强制断连后的安全放行、断连恢复、重启冷启动以及解锁后的显式恢复均通过；但对 UI 包执行 force-stop 后，shell 伴侣仍存活并对后续测试跳转发送了 `1` 次 Back。安全门因此失败，机器决策为 `STOP_UNTIL_FORCE_STOP_FAIL_SAFE`。在短时授权租约、控制端死亡处理、原子解除武装和 UserService 确定性退出完成并复测前，不启动真实应用控制或完整 Advanced 实现。见 [S0.3 运行与证据](docs/s03/README.md)、[S0.3 门槛决策](docs/s03/decision.md)和[聚合报告](docs/s03/results/miui14-23078rkd5c-s03-lifecycle-20260803.report.json)。当前工程包含 26 项 Android 核心单元测试与 17 项报告工具测试；构建和复核命令记录在对应运行手册中。
+2026-08-03 随后完成 S0.3 生命周期、断连与重启故障注入。v2 首轮七类场景覆盖 `7/7`，但 force-stop 后 shell 伴侣仍发送 1 次 Back，因此先判定 `STOP_UNTIL_FORCE_STOP_FAIL_SAFE`。`0.0.3-s03` 将监控会话绑定到控制进程 Binder，在 owner 死亡及每次 Back 前复核对应用户下的包 stopped 状态：force-stop 新样本记录 `owner_package_stopped`、伴侣 PID 归零、后续 Back 为 0；普通崩溃只保留 10 秒宽限并在当前单次会话后退出。重新执行 UI 崩溃、force-stop、Shizuku 正常结束/强制断连、断连恢复、重启冷启动和解锁后恢复后，证据、安全、恢复与总门全部通过，机器决策为 `LIFECYCLE_GATE_PASSED`。
+
+v3 又完成 owner-bound 正样本 100 次与允许流程 15 次回归：检测、Back、离开目标、返回来源均 `100/100`，允许流程误动作 `0/15`；检测、Back、离开目标 P95 分别为 116、139、211 ms，机器判定继续为 `SHIZUKU_POC_FEASIBLE`。见 [S0.3 运行与证据](docs/s03/README.md)、[S0.3 当前决策](docs/s03/decision.md)、[生命周期通过报告](docs/s03/results/miui14-23078rkd5c-s03-lifecycle-v003-owner-bound-20260803.report.json)和[v3 性能报告](docs/s02/results/miui14-23078rkd5c-s02-shizuku-v003-owner-bound-block100-allow15-20260803.report.json)。当前工程包含 32 项 Android 核心/生命周期单元测试与 17 项报告工具测试。该结果只解除当前 PoC 的 force-stop 硬阻塞，不授权真实第三方应用控制、L3-L5 持久动作或消费者发布。
 
 ## 1. 立项结论与技术边界
 
@@ -95,7 +97,7 @@ Shizuku 在 Android 11 及以上可通过无线调试启动，无需 Root 或长
 
 S0.2 已在 Redmi `23078RKD5C`（Android 13、MIUI 14）验证 Kotlin UserService 能以 `shell` UID 独立监测固定测试 Activity 并发送一次 Back；此证据只覆盖非持久、测试包限定的 L1 动作，不覆盖 L3-L5。
 
-S0.3 进一步证明断连和重启可以安全降级并显式恢复，但也证明应用 force-stop 不会自动终止当前 UserService 的旧动作授权。Advanced 实现必须先通过短时租约、控制端死亡处理和确定性退出解决这一停止边界；在此之前状态为 `STOP_UNTIL_FORCE_STOP_FAIL_SAFE`。
+S0.3 先证明 force-stop 不会自动终止旧 UserService 授权，随后由 owner Binder、per-user stopped 复核、10 秒崩溃宽限和确定性退出修复；v3 七类生命周期场景全部通过。该结论仍限于固定测试包和一台 MIUI 14 设备。
 
 增强模式必须遵守：
 

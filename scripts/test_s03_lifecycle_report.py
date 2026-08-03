@@ -40,6 +40,10 @@ def action_result(actions=1):
             "terminalReason": "count_reached",
             "serviceErrors": 0,
             "timeouts": 0,
+            "authorizationRevocations": 0,
+            "authorizationReasons": [],
+            "ownerDetachments": 0,
+            "serviceExitRequests": 0,
         }
     return {
         "ready": True,
@@ -52,6 +56,10 @@ def action_result(actions=1):
         "terminalReason": None,
         "serviceErrors": 0,
         "timeouts": 0,
+        "authorizationRevocations": 0,
+        "authorizationReasons": [],
+        "ownerDetachments": 0,
+        "serviceExitRequests": 0,
     }
 
 
@@ -76,8 +84,16 @@ def scenario_events(scenario, force_stop_actions=0):
             fault = snapshot(ui=0)
             result = action_result(1)
         elif scenario == "ui-force-stop":
-            fault = snapshot(ui=0)
+            fault = snapshot(ui=0, companion=20 if force_stop_actions else 0)
             result = action_result(force_stop_actions)
+            if not force_stop_actions:
+                result.update(
+                    {
+                        "authorizationRevocations": 1,
+                        "authorizationReasons": ["owner_package_stopped"],
+                        "serviceExitRequests": 1,
+                    }
+                )
         elif scenario in {"shizuku-graceful-stop", "shizuku-disconnect"}:
             fault = snapshot(server=0, companion=0)
             result = action_result(0)

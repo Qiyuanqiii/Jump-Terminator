@@ -1,6 +1,6 @@
 # S0.3 Shizuku 生命周期与故障注入验证
 
-状态：**完成，结论为 `STOP_UNTIL_FORCE_STOP_FAIL_SAFE`**
+状态：**完成，owner-bound v3 结论为 `LIFECYCLE_GATE_PASSED`**
 
 设备：Redmi `23078RKD5C` / `corot`，Android 13，MIUI 14
 
@@ -8,7 +8,7 @@
 
 ## 1. 验证目标
 
-S0.2 已证明 Kotlin + Shizuku UserService 能在固定测试边界内稳定完成检测与一次 Back。S0.3 不再重复性能样本，而是验证特权伴侣在以下状态变化中是否安全：
+S0.2 已证明 Kotlin + Shizuku UserService 能在固定测试边界内稳定完成检测与一次 Back。S0.3 验证特权伴侣在以下状态变化中是否安全：
 
 - 普通 UI 进程崩溃；
 - 用户或系统显式 force-stop 应用包；
@@ -17,60 +17,70 @@ S0.2 已证明 Kotlin + Shizuku UserService 能在固定测试边界内稳定完
 - 手机重启时的冷启动状态；
 - 手机重启并解锁后的显式恢复。
 
-所有动作仍仅限 `com.jumpterminator.testsource/.SourceActivity` 到 `com.jumpterminator.testtarget/.TargetActivity`，每次会话最多一次 Back。普通 S0 观察器在测试前必须保持未武装。
+所有动作仍仅限 `com.jumpterminator.testsource/.SourceActivity` 到 `com.jumpterminator.testtarget/.TargetActivity`，每次生命周期会话最多一次 Back。普通 S0 观察器在测试前必须保持未武装。
 
-## 2. 结论
+## 2. 最终结论
 
-七类必测场景均取得有效证据，六类通过，安全门因 force-stop 场景失败：
+首次 v2 验证发现 force-stop 后旧 UserService 仍可动作，机器决策为 `STOP_UNTIL_FORCE_STOP_FAIL_SAFE`。加入所有权与撤权协议的 `0.0.3-s03` 重新执行全部七类场景后，结果如下：
 
-| 场景 | 故障注入与观察 | 结果 | 判定 |
+| 场景 | v3 故障注入与观察 | 动作结果 | 判定 |
 | --- | --- | --- | --- |
-| UI 进程崩溃 | `am crash` 后 UI PID `9435 → 0`，Shizuku 与伴侣存活 | 受控跳转检测、Back、离开目标、返回来源均 `1/1` | 通过韧性观察 |
-| UI 包 force-stop | UI PID `10290 → 0`，伴侣 PID `10359` 仍存活 | force-stop 后仍检测并发送 Back `1/1` | **硬失败** |
-| Shizuku 正常结束 | 服务 PID `11592 → 0`，伴侣 PID `11739 → 0` | 后续测试跳转发生，Back `0` | 通过，安全放行 |
-| Shizuku 强制断连 | 服务 PID `12333 → 0`，伴侣 PID `12416 → 0` | 后续测试跳转发生，Back `0` | 通过，安全放行 |
-| 断连后恢复 | 重新启动服务并绑定伴侣 | 检测、Back、离开目标、返回来源均 `1/1` | 通过 |
-| 手机重启 | boot ID 改变；启动完成时设备仍锁定 | Shizuku 服务、伴侣、测试 UI、来源和目标 PID 均为 `0` | 通过，冷启动安全 |
-| 重启后恢复 | 解锁后显式启动服务与探针 | 既有授权可用，检测与动作链 `1/1`，错误和超时均为 `0` | 通过 |
+| UI 进程崩溃 | UI PID `13107 → 0`；伴侣在故障快照仍为 `13156` | 10 秒宽限内完成检测、Back、离开与返回 `1/1`，随后请求退出 | 通过，有界韧性 |
+| UI 包 force-stop | UI PID `14099 → 0`；伴侣 PID `14147 → 0`；原因 `owner_package_stopped` | 后续测试跳转 Back `0` | 通过，立即撤权 |
+| Shizuku 正常结束 | 服务 PID `14514 → 0`，伴侣 PID `14579 → 0` | 后续测试跳转 Back `0` | 通过，安全放行 |
+| Shizuku 强制断连 | 服务 PID `14961 → 0`，伴侣 PID `15026 → 0` | 后续测试跳转 Back `0` | 通过，安全放行 |
+| 断连后恢复 | 重新启动服务并绑定伴侣 | 检测、Back、离开、返回均 `1/1` | 通过 |
+| 手机重启 | boot ID 改变；启动完成时设备锁定 | Shizuku、伴侣、UI、来源和目标 PID 均为 `0` | 通过，冷启动安全 |
+| 重启后恢复 | 解锁后显式启动服务与 owner-bound 探针 | 检测、Back、离开、返回均 `1/1`，错误和超时为 `0` | 通过 |
 
-机器汇总结果：
+新版机器报告为 `s0.3-report-2`：
 
 - 证据覆盖门：`7/7`，通过；
+- force-stop 失效安全门：通过；
 - Shizuku 失联安全门：通过；
 - 冷启动安全门：通过；
-- 断连与重启后恢复门：通过；
-- force-stop 失效安全门：失败；
-- 总安全门：失败；
-- 决策：`STOP_UNTIL_FORCE_STOP_FAIL_SAFE`。
+- UI 崩溃韧性门：通过；
+- 断连与重启恢复门：通过；
+- 总安全门：通过；
+- 决策：`LIFECYCLE_GATE_PASSED`。
 
-这不会推翻 S0.2 的“特权执行面性能可行”结论，但会阻止它进入真实应用控制、完整 Advanced 实现或消费者发布。
+## 3. 修复协议
 
-## 3. 为什么 force-stop 是硬失败
+v2 的根因不是 Shizuku 错误，而是 Jump Terminator 没有把普通控制进程的生命周期绑定到 shell UserService 的动作授权。[Shizuku API 的 UserService 文档](https://github.com/RikkaApps/Shizuku-API#userservice)说明 UserService 在独立 root/shell 进程中运行，`unbindUserService` 不会自动杀死进程，服务实现必须提供 destroy 事务并自行退出。
 
-普通 UI 崩溃和显式 force-stop 不能按同一产品语义处理：
+v3 实现以下最小协议：
 
-- UI 崩溃后的短时连续工作可以是韧性能力，但必须有明确、有限的授权租约；
-- force-stop 是一个明确的停止边界。应用包被停止后，特权伴侣不得继续依据旧的武装状态操作其他应用；
-- 本次 force-stop 后，普通 UI 已消失，但 shell UID 的 UserService 仍持有旧会话并完成了一次 Back，因此旧授权已经越过应用的停止边界。
+1. `startMonitor` 必须接收控制进程创建的 Binder owner token 与 `Process.myUid()`；
+2. UserService 对 owner token 注册 death recipient，并把完整 UID 映射到对应 Android 用户；
+3. owner 死亡后读取固定控制包在该用户下的 `stopped` 状态；
+4. `stopped=true` 或状态无法确认时立即原子撤权、中断监控并请求进程退出；
+5. 普通崩溃的 `stopped=false` 只获得 10 秒单调时钟宽限；会话完成或宽限到期后退出；
+6. 每次发送 Back 前重新查询 stopped 状态并复核当前会话授权；
+7. 官方 destroy 事务继续执行停止、解绑所有权和 `System.exit(0)`。
 
-这与 Shizuku 的进程模型一致，不是 Shizuku 自身缺陷。[Shizuku API 的 UserService 文档](https://github.com/RikkaApps/Shizuku-API#userservice)说明 UserService 在独立的 root/shell 进程中运行，`unbindUserService` 不会自动杀死该进程，服务实现需要提供 destroy 事务并自行清理、退出。因此，生命周期所有权必须由 Jump Terminator 的协议显式实现，不能假设 Android 会替普通应用自动回收 shell 伴侣。
+force-stop 新样本明确记录 `authorization_revoked(reason=owner_package_stopped)` 与 `service_exit_requested`，故障快照中伴侣已经归零；后续目标确实启动，但没有检测或 Back。
 
-在重新通过安全门之前，至少需要设计并验证：
+该协议选择 fail-safe：包状态输出无法解析时不执行动作。它仍是测试包限定的 PoC；`dumpsys package` 在其他 Android/OEM、多用户和工作资料上的输出及权限必须另行验证。
 
-1. 每次动作前检查短时、单调时钟驱动、不可重放的授权租约；
-2. 控制端 Binder 死亡或租约过期后原子解除武装，拒绝新动作；
-3. UserService 支持官方 destroy 事务并可确定性退出；
-4. 应用被 force-stop 后，伴侣必须退出或保持可证明的无动作状态；
-5. Shizuku 或手机重启后默认不隐式恢复武装，必须由用户可见流程重新启用；
-6. 用多次、延时和竞态故障注入证明 force-stop 后 Back 始终为 `0`。
+## 4. 性能回归
 
-若架构无法可靠区分普通崩溃与显式 force-stop，应选择安全优先：控制端死亡即解除武装，而不是保留无界后台动作能力。
+动作前新增 stopped 查询后重新执行 Shizuku 正样本 100 次和允许流程 15 次：
 
-## 4. 复现
+| 指标 | v3 结果 | P50 | P95 |
+| --- | ---: | ---: | ---: |
+| 目标检测 | 100/100 | 53 ms | 116 ms |
+| Back 请求 | 100/100 | 71 ms | 139 ms |
+| 离开目标 | 100/100 | 158 ms | 211 ms |
+| 返回来源 | 100/100 | — | — |
+| `input keyevent 4` | 100/100 | 37 ms | 56 ms |
+| 单次前台轮询 | 100/100 | 21 ms | 38 ms |
+| 允许流程误动作 | 0/15 | — | — |
 
-前置条件：安装项目四个测试 APK 与官方 Shizuku；手机通过 ADB 连接；除 `reboot` 外运行前均已解锁；Shizuku 权限已经通过手机上的可见对话框授予。Shizuku 的启动方式见[官方用户手册](https://shizuku.rikka.app/guide/setup/)。
+机器结论仍为 `SHIZUKU_POC_FEASIBLE`。`0/15` 的 Wilson 95% 上界仍为 20.39%，所以负样本只满足当前安全冒烟门，不代表发布级误动作率。
 
-逐场景执行：
+## 5. 复现
+
+前置条件：安装项目测试 APK 与官方 Shizuku；手机通过 ADB 连接；除 `reboot` 外运行前已解锁；Shizuku 权限经过手机上的可见对话框授予。启动方式见[官方用户手册](https://shizuku.rikka.app/guide/setup/)。
 
 ```powershell
 .\scripts\s03-lifecycle.ps1 -Scenario ui-kill
@@ -83,31 +93,32 @@ S0.2 已证明 Kotlin + Shizuku UserService 能在固定测试边界内稳定完
 .\scripts\s03-lifecycle.ps1 -Scenario post-reboot-recovery
 ```
 
-脚本在每个非重启场景启动一个至多执行一次动作的 S0.2 伴侣会话，按精确进程名注入故障，记录 PID、boot ID、锁屏状态和动作摘要，并在 finally 阶段停止特权服务、伴侣与测试应用后回到桌面。force-stop 和两种 Shizuku 失联场景使用固定 4 秒无动作观察窗口，不要求伴侣进程必须死亡；正常停止场景只发送 TERM，未停止即记为失败，不会静默升级成强杀。若设备处于锁定状态，交互场景会直接拒绝运行。
+force-stop 和两种 Shizuku 失联场景使用固定 4 秒无动作观察窗口；正常停止场景只发送 TERM，未停止即失败，不会静默升级成强杀。每场 finally 都停止特权服务、伴侣和测试应用后回到桌面。
 
-聚合选定的七份有效时间线：
+聚合本次七份有效时间线：
 
 ```powershell
 $inputs = @(
-  '.\docs\s03\results\s03-ui-kill-20260803-165751.jsonl',
-  '.\docs\s03\results\s03-ui-force-stop-20260803-165834.jsonl',
-  '.\docs\s03\results\s03-shizuku-graceful-stop-20260803-170027.jsonl',
-  '.\docs\s03\results\s03-shizuku-disconnect-20260803-170123.jsonl',
-  '.\docs\s03\results\s03-disconnect-recovery-20260803-170216.jsonl',
-  '.\docs\s03\results\s03-reboot-20260803-170257.jsonl',
-  '.\docs\s03\results\s03-post-reboot-recovery-20260803-170807.jsonl'
+  '.\docs\s03\results\s03-ui-kill-20260803-173752.jsonl',
+  '.\docs\s03\results\s03-ui-force-stop-20260803-173802.jsonl',
+  '.\docs\s03\results\s03-shizuku-graceful-stop-20260803-173813.jsonl',
+  '.\docs\s03\results\s03-shizuku-disconnect-20260803-173825.jsonl',
+  '.\docs\s03\results\s03-disconnect-recovery-20260803-173837.jsonl',
+  '.\docs\s03\results\s03-reboot-20260803-173934.jsonl',
+  '.\docs\s03\results\s03-post-reboot-recovery-20260803-174124.jsonl'
 )
-python .\scripts\s03_lifecycle_report.py @inputs --output .\docs\s03\results\miui14-23078rkd5c-s03-lifecycle-20260803.report.json
+python .\scripts\s03_lifecycle_report.py @inputs --output .\docs\s03\results\miui14-23078rkd5c-s03-lifecycle-v003-owner-bound-20260803.report.json --strict
 python -m unittest scripts.test_s03_lifecycle_report -v
 ```
 
-`--strict` 只有在机器决策为 `LIFECYCLE_GATE_PASSED` 时返回 0；本次证据会按设计返回 2。原始 JSONL 默认由 `.gitignore` 保留在本机，公开仓库只提交聚合报告及每份输入的 SHA-256。
+原始 JSONL 默认由 `.gitignore` 保留在本机，公开仓库只提交聚合报告及输入 SHA-256。
 
-## 5. 证据与授权边界
+## 6. 证据与授权边界
 
-- [S0.3 聚合报告](results/miui14-23078rkd5c-s03-lifecycle-20260803.report.json)
-- [S0.3 门槛决策](decision.md)
-- [S0.2 性能与安全边界](../s02/README.md)
+- [v3 生命周期通过报告](results/miui14-23078rkd5c-s03-lifecycle-v003-owner-bound-20260803.report.json)
+- [v2 force-stop 失败基线](results/miui14-23078rkd5c-s03-lifecycle-20260803.report.json)
+- [v3 S0.2 性能报告](../s02/results/miui14-23078rkd5c-s02-shizuku-v003-owner-bound-block100-allow15-20260803.report.json)
+- [S0.3 当前门槛决策](decision.md)
 - [S0 原架构 No-Go](../s0/go-no-go.md)
 
-当前只允许修订生命周期协议、实现最小失效安全机制并复测 S0.3。不得据此控制真实第三方包，不得开始 L3-L5 持久动作，也不得把项目状态描述为可发布。
+`LIFECYCLE_GATE_PASSED` 只授权继续 Advanced 架构和扩大安全验证。它不授权真实第三方包控制、L3-L5 持久动作或消费者发布。
