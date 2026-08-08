@@ -9,18 +9,19 @@ import android.graphics.Color
 import android.os.Binder
 import android.os.Bundle
 import android.os.IBinder
-import android.os.Process
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import rikka.shizuku.Shizuku
+import java.security.SecureRandom
 import java.util.UUID
 
 class MainActivity : Activity() {
     private lateinit var statusView: TextView
     private lateinit var serviceArgs: Shizuku.UserServiceArgs
     private val ownerToken = Binder()
+    private val secureRandom = SecureRandom()
     private var service: IPrivilegedCompanion? = null
     private var pendingCommand: MonitorCommand? = null
     private var pendingControl: String? = null
@@ -63,7 +64,7 @@ class MainActivity : Activity() {
             .daemon(true)
             .processNameSuffix("s02_companion")
             .debuggable(true)
-            .version(3)
+            .version(4)
             .tag("jump-terminator-s02")
         setContentView(buildContent())
         Shizuku.addBinderReceivedListenerSticky(binderReceivedListener)
@@ -90,7 +91,7 @@ class MainActivity : Activity() {
         addView(LinearLayout(this@MainActivity).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(24), dp(20), dp(32))
-            addView(text("Jump Terminator · S0.2", 26f, Color.rgb(74, 20, 140)))
+            addView(text("Jump Terminator · S0.4", 26f, Color.rgb(74, 20, 140)))
             addView(text(
                 "实验性 Kotlin + Shizuku UserService。只处理固定测试来源 → 固定测试目标；不是消费者版功能。",
                 15f,
@@ -105,6 +106,7 @@ class MainActivity : Activity() {
             addView(button("启动单次武装探针") {
                 pendingCommand = MonitorCommand(
                     UUID.randomUUID().toString().replace("-", ""),
+                    newCapability(),
                     1,
                     0,
                     true,
@@ -159,6 +161,7 @@ class MainActivity : Activity() {
         commandIntent.removeExtra(EXTRA_ARMED)
         pendingCommand = MonitorCommand(
             sessionId,
+            newCapability(),
             requestedBlock,
             requestedAllowed,
             armed,
@@ -183,16 +186,21 @@ class MainActivity : Activity() {
         }
         val command = pendingCommand ?: return
         if (connectedService != null) {
-            val result = connectedService.startMonitor(
-                command.sessionId,
-                command.requestedBlock,
-                command.requestedAllowed,
-                command.armed,
-                Process.myUid(),
-                ownerToken,
-            )
-            pendingCommand = null
-            renderStatus("监控已启动：$result")
+            try {
+                val result = connectedService.startMonitor(
+                    command.sessionId,
+                    command.capability,
+                    command.requestedBlock,
+                    command.requestedAllowed,
+                    command.armed,
+                    ownerToken,
+                )
+                pendingCommand = null
+                renderStatus("监控已启动：$result")
+            } catch (error: Throwable) {
+                pendingCommand = null
+                renderStatus("监控启动被拒绝：${error.javaClass.simpleName}: ${error.message}")
+            }
             return
         }
         if (hasPermission()) bindCompanion() else renderStatus("请先授予 Shizuku 权限")
@@ -265,8 +273,21 @@ class MainActivity : Activity() {
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
+    private fun newCapability(): String {
+        val bytes = ByteArray(CAPABILITY_BYTES)
+        secureRandom.nextBytes(bytes)
+        return buildString(bytes.size * 2) {
+            bytes.forEach { value ->
+                val unsigned = value.toInt() and 0xff
+                append(HEX[unsigned ushr 4])
+                append(HEX[unsigned and 0x0f])
+            }
+        }
+    }
+
     private data class MonitorCommand(
         val sessionId: String,
+        val capability: String,
         val requestedBlock: Int,
         val requestedAllowed: Int,
         val armed: Boolean,
@@ -280,5 +301,7 @@ class MainActivity : Activity() {
         private const val EXTRA_ARMED = "jt_s02_armed"
         private const val EXTRA_CONTROL = "jt_s02_control"
         private const val CONTROL_STOP = "stop"
+        private const val CAPABILITY_BYTES = 32
+        private const val HEX = "0123456789abcdef"
     }
 }

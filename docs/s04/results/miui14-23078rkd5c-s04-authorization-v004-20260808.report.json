@@ -1,0 +1,122 @@
+{
+  "schema": "s0.4-authorization-report-1",
+  "sessionCount": 2,
+  "sessions": [
+    {
+      "sessionId": "00572ea0f6a3443f8d1be83e70889a1e",
+      "scenario": "block",
+      "checks": {
+        "protocolIsS04": true,
+        "uidWasBinderDerived": true,
+        "ownerPackageIsFixed": true,
+        "ownerUidMatchesPackage": true,
+        "ownerPackageMatchesExpectation": true,
+        "signingIdentityResolved": true,
+        "oneTimeCapabilityDeclared": true,
+        "capabilityFingerprintIsRedacted": true,
+        "ruleSnapshotIsBound": true,
+        "leaseIsBounded": true,
+        "leaseDeadlinePresent": true,
+        "finalActionIsSerialized": true
+      },
+      "gatePassed": true,
+      "observed": {
+        "ownerUid": 10418,
+        "ownerUserId": 0,
+        "ownerPackage": "com.jumpterminator.s02",
+        "signingCertificateSha256": [
+          "70b55f3c28ddbad792e20fec515c5d3b2fefdd02e0ffe7f9feb1bb058cb62e10"
+        ],
+        "capabilityFingerprint": "36ae2618cac8c439",
+        "ruleSnapshotSha256": "119afe262efefae9ae378538c28cd7db715530be7c838216724c01510f735934",
+        "leaseDurationMs": 860000
+      }
+    },
+    {
+      "sessionId": "872f650bb8e94d0a8c4b3037a619efb6",
+      "scenario": "allowed-negative",
+      "checks": {
+        "protocolIsS04": true,
+        "uidWasBinderDerived": true,
+        "ownerPackageIsFixed": true,
+        "ownerUidMatchesPackage": true,
+        "ownerPackageMatchesExpectation": true,
+        "signingIdentityResolved": true,
+        "oneTimeCapabilityDeclared": true,
+        "capabilityFingerprintIsRedacted": true,
+        "ruleSnapshotIsBound": true,
+        "leaseIsBounded": true,
+        "leaseDeadlinePresent": true,
+        "finalActionIsSerialized": true
+      },
+      "gatePassed": true,
+      "observed": {
+        "ownerUid": 10418,
+        "ownerUserId": 0,
+        "ownerPackage": "com.jumpterminator.s02",
+        "signingCertificateSha256": [
+          "70b55f3c28ddbad792e20fec515c5d3b2fefdd02e0ffe7f9feb1bb058cb62e10"
+        ],
+        "capabilityFingerprint": "33373f58b5476202",
+        "ruleSnapshotSha256": "e2b163dbabde8aa9f5ee17a3e5acadfdd5a900bfc2bd89cb4741abe710655fc1",
+        "leaseDurationMs": 180000
+      }
+    }
+  ],
+  "securityChecks": {
+    "hasAuthorizationEvidence": true,
+    "allSessionsPassed": true,
+    "capabilityFingerprintsUnique": true,
+    "ruleSnapshotsUnique": true,
+    "noRawCapabilityFields": true,
+    "noActionsAfterRevocation": true,
+    "noRunnerOrServiceErrors": true
+  },
+  "securityGatePassed": true,
+  "performanceGatePassed": true,
+  "performance": {
+    "sampleGatePassed": true,
+    "thresholdGatePassed": true,
+    "decision": "SHIZUKU_POC_FEASIBLE",
+    "sampleCounts": {
+      "requestedBlock": 100,
+      "requestedAllowed": 15,
+      "targetDetected": 100,
+      "backDispatched": 100,
+      "leftTarget": 100,
+      "returnedSource": 100,
+      "allowedProbes": 15,
+      "allowedPreserved": 15
+    },
+    "latencyUpperBoundMs": {
+      "targetDetectionP50": 58,
+      "targetDetectionP95": 116,
+      "backRequestP50": 95,
+      "backRequestP95": 158,
+      "leaveTargetP50": 169,
+      "leaveTargetP95": 233,
+      "inputDurationP50": 24,
+      "inputDurationP95": 33,
+      "pollDurationP50": 24,
+      "pollDurationP95": 41
+    }
+  },
+  "actionsAfterRevocation": [],
+  "provisionalDecision": "S04_AUTHORIZATION_GATE_PASSED",
+  "notes": [
+    "The gate covers the fixed-package Shizuku PoC and does not authorize consumer release.",
+    "The local serialization point cannot make Android package stopped state and input injection one system transaction.",
+    "Raw capability values are forbidden from events and public evidence."
+  ],
+  "sourceEvidence": [
+    {
+      "file": "s04-v004-block100.jsonl",
+      "sha256": "FE57A9B51095033015ABA7CB66551BF9A1FAB00ABCAC0AC99DC31F7EDA9D86DB"
+    },
+    {
+      "file": "s04-v004-allow15.jsonl",
+      "sha256": "02757D1EEFC14CE7B9AFDEB692CD148B2F0BB1EDF9820F754C000818C20F80BA"
+    }
+  ],
+  "warnings": []
+}

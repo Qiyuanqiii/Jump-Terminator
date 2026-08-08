@@ -95,6 +95,17 @@ function Get-ExactProcessPid {
     return [int]$Matches.pid
 }
 
+function Get-PackageUid {
+    param([string]$PackageName)
+    $lines = Invoke-AdbText @('shell', 'dumpsys', 'package', $PackageName)
+    $uidLine = $lines | Where-Object { $_ -match '^\s*userId=(?<uid>\d+)\s*$' } |
+        Select-Object -First 1
+    if (-not $uidLine -or $uidLine -notmatch '^\s*userId=(?<uid>\d+)\s*$') {
+        throw "Unable to resolve package UID: $PackageName"
+    }
+    return [int]$Matches.uid
+}
+
 function Get-Snapshot {
     $processTable = Get-ProcessTable
     $bootId = ((Invoke-AdbText @('shell', 'cat', '/proc/sys/kernel/random/boot_id')) -join '').Trim()
@@ -107,6 +118,7 @@ function Get-Snapshot {
         uiPid = Get-ExactProcessPid $processTable 'com.jumpterminator.s02'
         sourcePid = Get-ExactProcessPid $processTable 'com.jumpterminator.testsource'
         targetPid = Get-ExactProcessPid $processTable 'com.jumpterminator.testtarget'
+        pocPackageUid = Get-PackageUid $pocPackage
         keyguardLocked = [bool]($windowState -match 'mDreamingLockscreen=true|mShowingLockscreen=true|isStatusBarKeyguard=true')
     }
 }
@@ -208,7 +220,14 @@ function Get-CompanionSummary {
     $backs = @($events | Where-Object kind -eq 'back_requested')
     $leaves = @($events | Where-Object kind -eq 'left_target')
     $revocations = @($events | Where-Object kind -eq 'authorization_revoked')
+    $readyEvent = @($events | Where-Object kind -eq 'ready' | Select-Object -Last 1)
     $terminal = @($events | Where-Object kind -in @('complete', 'timeout', 'service_error') | Select-Object -Last 1)
+    $ownerSigningDigests = [System.Collections.Generic.List[string]]::new()
+    if ($readyEvent.Count) {
+        foreach ($digest in @($readyEvent[0].data.ownerSigningCertificateSha256)) {
+            if ($null -ne $digest) { $ownerSigningDigests.Add([string]$digest) }
+        }
+    }
     return [ordered]@{
         ready = [bool](@($events | Where-Object kind -eq 'ready').Count)
         detections = $detections.Count
@@ -224,6 +243,17 @@ function Get-CompanionSummary {
         authorizationReasons = @($revocations | ForEach-Object { $_.data.reason } | Sort-Object -Unique)
         ownerDetachments = @($events | Where-Object kind -eq 'owner_detached').Count
         serviceExitRequests = @($events | Where-Object kind -eq 'service_exit_requested').Count
+        authorizationProtocol = if ($readyEvent.Count) { $readyEvent[0].data.authorizationProtocol } else { $null }
+        ownerUidSource = if ($readyEvent.Count) { $readyEvent[0].data.ownerUidSource } else { $null }
+        ownerUid = if ($readyEvent.Count) { $readyEvent[0].data.ownerUid } else { $null }
+        ownerUserId = if ($readyEvent.Count) { $readyEvent[0].data.ownerUserId } else { $null }
+        ownerPackage = if ($readyEvent.Count) { $readyEvent[0].data.ownerPackage } else { $null }
+        ownerSigningCertificateSha256 = $ownerSigningDigests
+        oneTimeCapability = if ($readyEvent.Count) { $readyEvent[0].data.oneTimeCapability } else { $false }
+        capabilityFingerprint = if ($readyEvent.Count) { $readyEvent[0].data.capabilityFingerprint } else { $null }
+        ruleSnapshotSha256 = if ($readyEvent.Count) { $readyEvent[0].data.ruleSnapshotSha256 } else { $null }
+        leaseDurationMs = if ($readyEvent.Count) { $readyEvent[0].data.leaseDurationMs } else { $null }
+        finalActionSerialization = if ($readyEvent.Count) { $readyEvent[0].data.finalActionSerialization } else { $null }
     }
 }
 

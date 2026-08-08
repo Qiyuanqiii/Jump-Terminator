@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -39,6 +40,8 @@ FAIL_OPEN_SCENARIOS = {
     "shizuku-graceful-stop",
     "shizuku-disconnect",
 }
+S04_DIGEST = re.compile(r"^[a-f0-9]{64}$")
+S04_FINGERPRINT = re.compile(r"^[a-f0-9]{16}$")
 
 
 def load_events(paths: Iterable[Path]) -> tuple[list[dict[str, Any]], list[str]]:
@@ -161,6 +164,42 @@ def _evaluate_session(
                 "probeHadUi": bool(probe and _positive(probe.get("uiPid"))),
             }
         )
+        if result and result.get("authorizationProtocol") is not None:
+            signers = result.get("ownerSigningCertificateSha256")
+            capability_fingerprint = str(result.get("capabilityFingerprint") or "")
+            rule_snapshot = str(result.get("ruleSnapshotSha256") or "")
+            checks.update(
+                {
+                    "authorizationProtocolIsS04": result.get("authorizationProtocol")
+                    == "s0.4-1",
+                    "ownerUidWasBinderDerived": result.get("ownerUidSource") == "binder",
+                    "ownerUidMatchesPackage": bool(
+                        probe
+                        and isinstance(probe.get("pocPackageUid"), int)
+                        and result.get("ownerUid") == probe.get("pocPackageUid")
+                    ),
+                    "ownerPackageIsFixed": result.get("ownerPackage")
+                    == "com.jumpterminator.s02",
+                    "ownerSigningIdentityResolved": isinstance(signers, list)
+                    and bool(signers)
+                    and all(
+                        isinstance(item, str) and S04_DIGEST.fullmatch(item)
+                        for item in signers
+                    ),
+                    "oneTimeCapabilityBound": result.get("oneTimeCapability") is True,
+                    "capabilityFingerprintIsRedacted": bool(
+                        S04_FINGERPRINT.fullmatch(capability_fingerprint)
+                    ),
+                    "ruleSnapshotIsBound": bool(S04_DIGEST.fullmatch(rule_snapshot)),
+                    "authorizationLeaseIsBounded": isinstance(
+                        result.get("leaseDurationMs"),
+                        (int, float),
+                    )
+                    and 0 < int(result.get("leaseDurationMs")) <= 900_000,
+                    "finalActionIsSerialized": result.get("finalActionSerialization")
+                    == "authorization_lock",
+                }
+            )
 
     if scenario == "ui-kill":
         checks.update(
@@ -327,6 +366,43 @@ def analyse(events: list[dict[str, Any]]) -> dict[str, Any]:
     ui_crash_resilience = any(
         item["gatePassed"] for item in by_scenario.get("ui-kill", [])
     )
+    s04_evaluations = [
+        item
+        for item in evaluations
+        if item["scenario"] != "reboot"
+        and "authorizationProtocolIsS04" in item["checks"]
+    ]
+    s04_required_scenarios = {
+        scenario for scenario in REQUIRED_SCENARIOS if scenario != "reboot"
+    }
+    s04_covered_scenarios = {
+        item["scenario"] for item in s04_evaluations if item["observationValid"]
+    }
+    s04_authorization_gate = (
+        s04_covered_scenarios == s04_required_scenarios
+        and all(
+            all(
+                value
+                for name, value in item["checks"].items()
+                if name
+                in {
+                    "authorizationProtocolIsS04",
+                    "ownerUidWasBinderDerived",
+                    "ownerUidMatchesPackage",
+                    "ownerPackageIsFixed",
+                    "ownerSigningIdentityResolved",
+                    "oneTimeCapabilityBound",
+                    "capabilityFingerprintIsRedacted",
+                    "ruleSnapshotIsBound",
+                    "authorizationLeaseIsBounded",
+                    "finalActionIsSerialized",
+                }
+            )
+            for item in s04_evaluations
+        )
+        if s04_evaluations
+        else None
+    )
     safety_gate = (
         sample_gate
         and force_stop_safe
@@ -388,6 +464,12 @@ def analyse(events: list[dict[str, Any]]) -> dict[str, Any]:
         "rebootColdStartSafePassed": reboot_safe,
         "recoveryGatePassed": recovery_gate,
         "uiCrashResiliencePassed": ui_crash_resilience,
+        "s04AuthorizationEvidenceSessions": len(s04_evaluations),
+        "s04AuthorizationScenarioCoverage": {
+            scenario: scenario in s04_covered_scenarios
+            for scenario in sorted(s04_required_scenarios)
+        },
+        "s04AuthorizationGatePassed": s04_authorization_gate,
         "safetyGatePassed": safety_gate,
         "safetyViolations": violations,
         "provisionalDecision": decision,

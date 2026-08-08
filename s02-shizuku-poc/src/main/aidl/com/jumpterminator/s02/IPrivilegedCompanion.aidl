@@ -6,10 +6,10 @@ interface IPrivilegedCompanion {
     void destroy() = 16777114;
     String startMonitor(
         String sessionId,
+        String capability,
         int requestedBlock,
         int requestedAllowed,
         boolean armed,
-        int ownerUid,
         IBinder ownerToken
     ) = 1;
     String status() = 2;

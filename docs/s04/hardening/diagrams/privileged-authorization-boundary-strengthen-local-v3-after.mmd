@@ -1,0 +1,9 @@
+flowchart LR
+    X["外部/ADB 命令 Intent"] --> UI["控制 UI（普通应用 UID）"]
+    UI -->|"sessionId + declared UID + Binder token"| US["Shizuku UserService（shell UID）"]
+    US --> V["局部 UID/包检查"]
+    V --> P["扩展 OwnerAuthorizationPolicy"]
+    US --> D["dumpsys package / activity"]
+    P -->|"允许"| I["input keyevent 4"]
+    UI -. "Binder death" .-> P
+    D -. "stopped / foreground" .-> P

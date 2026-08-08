@@ -1,0 +1,497 @@
+{
+  "documentType": "codex-security.hardening-analysis",
+  "schemaVersion": "1.0",
+  "analysisId": "s04_privileged_authorization_20260808",
+  "sourceEvidence": {
+    "kind": "source_and_experiment_collection",
+    "label": "S0.3 lifecycle reports and privileged companion source at 07a7be2",
+    "collectionSha256": "13359cef9d930c9b0691851de3cb981169c82b67df8bf460fe55285e8fa6248b",
+    "artifactCount": 6,
+    "targetRevision": "07a7be25bbbe3ce68778748066c5cdbbd01add6e",
+    "sourceDrift": "none"
+  },
+  "assessment": {
+    "outcome": "opportunities_identified",
+    "summary": "The evidence supports centralizing caller identity, replay resistance, monotonic lease state, and final action launch inside the privileged service boundary."
+  },
+  "constraints": {
+    "profile": "balanced",
+    "changeHorizons": [
+      "incremental",
+      "medium_term"
+    ],
+    "nonNegotiables": [
+      "Keep the S0.3 owner Binder, per-user stopped check, crash grace, and deterministic exit protections.",
+      "Limit all actions to the fixed test source, fixed test target, and non-persistent Back action.",
+      "Fail closed when caller identity, signing identity, package state, session state, or lease state is unknown.",
+      "Do not add network, root-only, Device Owner, or L3-L5 capabilities."
+    ],
+    "assumptions": [
+      "Shizuku v13 supplies the documented Context constructor to the UserService on the target device.",
+      "No release-grade memory budget was supplied.",
+      "The existing 250 ms Back P95 threshold remains the performance decision boundary."
+    ]
+  },
+  "opportunities": [
+    {
+      "opportunityId": "privileged-authorization-boundary",
+      "title": "Centralize privileged session identity, capability, and final action authorization",
+      "summary": "Make the shell UserService derive caller identity, consume one-time capabilities, own monotonic leases, and serialize final authorization with process launch.",
+      "diagnosis": "S0.3 fixed the observed force-stop failure, but identity, replay, lease, and final action controls remain split between caller conventions, the state machine, and the action launcher.",
+      "evidence": [
+        {
+          "claimType": "observed",
+          "sourceKind": "experiment",
+          "evidenceId": "E001",
+          "path": "docs/s03/results/miui14-23078rkd5c-s03-lifecycle-20260803.report.json",
+          "claim": "The v2 force-stop scenario dispatched one Back after the ordinary app package had been stopped."
+        },
+        {
+          "claimType": "observed",
+          "sourceKind": "experiment",
+          "evidenceId": "E002",
+          "path": "docs/s03/results/miui14-23078rkd5c-s03-lifecycle-v003-owner-bound-20260803.report.json",
+          "claim": "The owner-bound v3 protocol revoked with owner_package_stopped, stopped the companion, and dispatched zero Back actions after force-stop."
+        },
+        {
+          "claimType": "observed",
+          "sourceKind": "source",
+          "evidenceId": "E003",
+          "path": "s02-shizuku-poc/src/main/aidl/com/jumpterminator/s02/IPrivilegedCompanion.aidl",
+          "claim": "The startMonitor interface accepts ownerUid as caller-provided data."
+        },
+        {
+          "claimType": "observed",
+          "sourceKind": "source",
+          "evidenceId": "E004",
+          "path": "s02-shizuku-poc/src/main/java/com/jumpterminator/s02/MainActivity.kt",
+          "claim": "The client supplies Process.myUid and a correlation session ID but no separate unlogged one-time capability."
+        },
+        {
+          "claimType": "observed",
+          "sourceKind": "source",
+          "evidenceId": "E005",
+          "path": "s02-shizuku-poc/src/main/java/com/jumpterminator/s02/OwnerAuthorizationPolicy.kt",
+          "claim": "The policy tracks owner attachment and crash grace but has no consumed-session set or independent monotonic session lease."
+        },
+        {
+          "claimType": "observed",
+          "sourceKind": "source",
+          "evidenceId": "E006",
+          "path": "s02-shizuku-poc/src/main/java/com/jumpterminator/s02/PrivilegedCompanionService.kt",
+          "claim": "dispatchBack returns from actionDenialReason before starting the input process."
+        },
+        {
+          "claimType": "inferred",
+          "sourceKind": "source",
+          "evidenceId": "E003-E006",
+          "path": "s02-shizuku-poc/src/main",
+          "claim": "The privileged authorization invariant is maintained by several cooperating call sites instead of one service-owned boundary."
+        }
+      ],
+      "desiredInvariants": [
+        "Every owner UID is derived from Binder calling identity and cannot be changed by request fields.",
+        "The owner UID maps to the fixed owner package and a resolvable current signing certificate.",
+        "Each session ID and 256-bit capability is consumed at most once per UserService process.",
+        "Every authorization has an immutable rule snapshot and a server-generated monotonic lease deadline.",
+        "Unknown identity, signing, package, lease, replay, revocation, or session state denies the action.",
+        "The final stopped-state check, authorization decision, and input process start share one in-process serialization boundary.",
+        "Raw capabilities never enter logs or public evidence."
+      ],
+      "proposalPath": "proposals/privileged-authorization-boundary.md",
+      "options": [
+        {
+          "optionId": "strengthen-local-v3",
+          "title": "Strengthen local v3 guards",
+          "kind": "baseline",
+          "summary": "Retain caller-supplied UID and current call structure while adding validation, replay checks, and regression coverage.",
+          "diagramPaths": {
+            "before": "diagrams/privileged-authorization-boundary-before.mmd",
+            "after": "diagrams/privileged-authorization-boundary-strengthen-local-v3-after.mmd"
+          },
+          "evidenceCoverage": [
+            {
+              "evidenceId": "E001",
+              "effect": "mitigates",
+              "tacticalFixRequired": true,
+              "rationale": "It preserves the v3 stopped-state protection but does not create a single authorization owner."
+            },
+            {
+              "evidenceId": "E002",
+              "effect": "unaffected",
+              "tacticalFixRequired": true,
+              "rationale": "All v3 lifecycle controls remain necessary."
+            },
+            {
+              "evidenceId": "E003",
+              "effect": "mitigates",
+              "tacticalFixRequired": true,
+              "rationale": "Validation narrows malformed UID use while retaining a caller-declared identity field."
+            },
+            {
+              "evidenceId": "E004",
+              "effect": "mitigates",
+              "tacticalFixRequired": true,
+              "rationale": "Session replay can be cached, but correlation and authorization remain coupled."
+            },
+            {
+              "evidenceId": "E005",
+              "effect": "mitigates",
+              "tacticalFixRequired": true,
+              "rationale": "Local state additions handle known cases but control ownership remains dispersed."
+            },
+            {
+              "evidenceId": "E006",
+              "effect": "mitigates",
+              "tacticalFixRequired": true,
+              "rationale": "Reducing code distance narrows but does not structurally own the check/start transition."
+            }
+          ],
+          "tradeoffs": [
+            {
+              "dimension": "security",
+              "direction": "improves",
+              "confidence": "medium",
+              "basis": "source-derived",
+              "assessment": "Additional guards reject obvious invalid and replayed requests, but caller-declared identity and distributed enforcement remain.",
+              "validationPlan": "Add malformed UID, repeated session, and lifecycle regressions, then inspect every startMonitor caller."
+            },
+            {
+              "dimension": "performance",
+              "direction": "neutral",
+              "confidence": "medium",
+              "basis": "source-derived",
+              "assessment": "No process or mandatory package-manager hop is introduced.",
+              "validationPlan": "Compare the existing 100-action P50/P95 metrics with the candidate."
+            },
+            {
+              "dimension": "memory",
+              "direction": "neutral",
+              "confidence": "high",
+              "basis": "source-derived",
+              "assessment": "Only bounded replay identifiers and small state fields are added.",
+              "validationPlan": "Confirm replay history has a fixed maximum and inspect process RSS during the 100-action run."
+            },
+            {
+              "dimension": "reliability",
+              "direction": "neutral",
+              "confidence": "medium",
+              "basis": "source-derived",
+              "assessment": "The existing process and package-state behavior remains, so compatibility is high but control drift can recur.",
+              "validationPlan": "Rerun all S0.3 scenarios and repeated session-start cycles."
+            },
+            {
+              "dimension": "operability",
+              "direction": "neutral",
+              "confidence": "medium",
+              "basis": "hypothetical",
+              "assessment": "Only a few rejection events are added; no new component requires monitoring.",
+              "validationPlan": "Verify each rejection reason is visible without logging raw secrets."
+            },
+            {
+              "dimension": "migration",
+              "direction": "neutral",
+              "confidence": "high",
+              "basis": "source-derived",
+              "assessment": "The current AIDL and automation shape can remain compatible.",
+              "validationPlan": "Run existing scripts without argument changes and verify old UserService cleanup."
+            }
+          ],
+          "residualRisks": [
+            "Caller-declared identity remains part of the trusted request.",
+            "Future action call sites can drift from the final-check convention.",
+            "Replay protection ends with the UserService process."
+          ],
+          "implementationReadiness": {
+            "affectedComponents": [
+              "OwnerAuthorizationPolicy.kt",
+              "PrivilegedCompanionService.kt"
+            ],
+            "workPackages": [
+              "Add local UID/package validation and bounded replay history.",
+              "Reduce the check-to-start code gap and add regressions."
+            ],
+            "acceptanceCriteria": [
+              "Malformed and repeated requests are rejected.",
+              "S0.3 remains LIFECYCLE_GATE_PASSED."
+            ],
+            "migrationNotes": [
+              "Retains the weaker caller-declared identity contract."
+            ],
+            "rollback": "Revert the focused guard and test changes to v3."
+          }
+        },
+        {
+          "optionId": "server-derived-capability",
+          "title": "Server-derived identity and one-time capability",
+          "kind": "structural",
+          "summary": "Derive identity at the Binder boundary, consume a separate capability once, enforce a monotonic lease, and serialize final authorization with process start.",
+          "diagramPaths": {
+            "before": "diagrams/privileged-authorization-boundary-before.mmd",
+            "after": "diagrams/privileged-authorization-boundary-server-derived-capability-after.mmd"
+          },
+          "evidenceCoverage": [
+            {
+              "evidenceId": "E001",
+              "effect": "addresses",
+              "tacticalFixRequired": true,
+              "rationale": "It preserves and structurally extends the v3 force-stop protections at the privileged boundary."
+            },
+            {
+              "evidenceId": "E002",
+              "effect": "mitigates",
+              "tacticalFixRequired": true,
+              "rationale": "The proven owner Binder, stopped check, grace, and exit behavior remains mandatory during migration."
+            },
+            {
+              "evidenceId": "E003",
+              "effect": "addresses",
+              "tacticalFixRequired": false,
+              "rationale": "The caller UID field is removed and replaced with Binder-derived identity."
+            },
+            {
+              "evidenceId": "E004",
+              "effect": "addresses",
+              "tacticalFixRequired": false,
+              "rationale": "A separate client-internal capability is consumed once and only its fingerprint is observed."
+            },
+            {
+              "evidenceId": "E005",
+              "effect": "addresses",
+              "tacticalFixRequired": false,
+              "rationale": "Replay history and a server-generated monotonic lease become policy-owned state."
+            },
+            {
+              "evidenceId": "E006",
+              "effect": "addresses",
+              "tacticalFixRequired": false,
+              "rationale": "The policy owns a serialized final-check-and-start operation."
+            }
+          ],
+          "tradeoffs": [
+            {
+              "dimension": "security",
+              "direction": "improves",
+              "confidence": "high",
+              "basis": "source-derived",
+              "assessment": "Request fields cannot select owner identity, replay and lease state are explicit, and the local check/start gap is closed at one service-owned linearization point.",
+              "validationPlan": "Test mismatched identity, missing signature, repeated session/capability, lease expiry, revocation races, and the S0.3 force-stop scenario."
+            },
+            {
+              "dimension": "performance",
+              "direction": "regresses",
+              "confidence": "low",
+              "basis": "hypothetical",
+              "assessment": "Session start adds PackageManager and certificate digest work; the action path moves the existing stopped query under a lock but adds no extra process spawn.",
+              "validationPlan": "Measure session-start latency and compare 100-action detection/Back/leave P50/P95 against v3, with Back P95 limited to 250 ms."
+            },
+            {
+              "dimension": "memory",
+              "direction": "regresses",
+              "confidence": "low",
+              "basis": "source-derived",
+              "assessment": "A bounded replay set, owner certificate digests, and immutable snapshot are retained per service process.",
+              "validationPlan": "Cap replay entries, inspect retained object counts, and compare RSS before and after the 100-action run."
+            },
+            {
+              "dimension": "reliability",
+              "direction": "improves",
+              "confidence": "medium",
+              "basis": "source-derived",
+              "assessment": "Unknown identity and package state fail closed with explicit reasons, but Context or PackageManager incompatibility rejects the entire session.",
+              "validationPlan": "Run a single identity probe first, then the full lifecycle matrix; record all fail-safe reasons."
+            },
+            {
+              "dimension": "operability",
+              "direction": "improves",
+              "confidence": "medium",
+              "basis": "source-derived",
+              "assessment": "Events gain caller-identity source, signing digest, capability fingerprint, rule snapshot, and lease metadata without raw capability disclosure.",
+              "validationPlan": "Validate event fields and scan raw/public evidence for the capability value."
+            },
+            {
+              "dimension": "migration",
+              "direction": "regresses",
+              "confidence": "high",
+              "basis": "source-derived",
+              "assessment": "AIDL and UserService version change together, requiring a coordinated APK replacement and v3 process cleanup.",
+              "validationPlan": "Install over v3, confirm official destroy runs, and execute existing scripts with unchanged external intent arguments."
+            }
+          ],
+          "residualRisks": [
+            "Android package stopped changes and input injection cannot be one system-server transaction.",
+            "Replay history is process-local and resets when UserService restarts.",
+            "The exported command Intent remains a test harness rather than a consumer authorization boundary.",
+            "PackageManager behavior in other OEM, multi-user, work-profile, and clone environments remains unverified."
+          ],
+          "implementationReadiness": {
+            "affectedComponents": [
+              "IPrivilegedCompanion.aidl",
+              "MainActivity.kt",
+              "OwnerAuthorizationPolicy.kt",
+              "PrivilegedCompanionService.kt",
+              "new owner identity and rule snapshot types",
+              "unit and report tests"
+            ],
+            "workPackages": [
+              "Upgrade AIDL and generate client-internal 256-bit capabilities.",
+              "Derive and verify owner UID, package, user, and signing identity in UserService.",
+              "Implement bounded replay state, immutable rule snapshots, and monotonic leases.",
+              "Serialize final stopped-state validation and ProcessBuilder.start.",
+              "Run unit, build, lint, lifecycle, race, and performance validation."
+            ],
+            "acceptanceCriteria": [
+              "Ready evidence proves Binder-derived UID and non-empty owner signing identity.",
+              "Repeated session or capability and expired leases are rejected.",
+              "Revocation visible before the linearization point launches zero actions.",
+              "S0.3 remains LIFECYCLE_GATE_PASSED.",
+              "S0.2 remains SHIZUKU_POC_FEASIBLE with Back P95 at or below 250 ms."
+            ],
+            "migrationNotes": [
+              "Require Shizuku v13 Context constructor.",
+              "Bump UserService version so old v3 code is destroyed."
+            ],
+            "rollback": "Revert to the v3 AIDL, UserService version, policy, and reports; never bypass failed identity checks at runtime."
+          }
+        },
+        {
+          "optionId": "signed-policy-broker",
+          "title": "Independent signed policy broker",
+          "kind": "isolation",
+          "summary": "Use a normal-UID broker and Android Keystore to sign user-approved, one-time, expiring rule capabilities for UserService verification.",
+          "diagramPaths": {
+            "before": "diagrams/privileged-authorization-boundary-before.mmd",
+            "after": "diagrams/privileged-authorization-boundary-signed-policy-broker-after.mmd"
+          },
+          "evidenceCoverage": [
+            {
+              "evidenceId": "E001",
+              "effect": "addresses",
+              "tacticalFixRequired": true,
+              "rationale": "Signed expiry and revocation complement but do not replace the v3 force-stop tactical checks."
+            },
+            {
+              "evidenceId": "E002",
+              "effect": "mitigates",
+              "tacticalFixRequired": true,
+              "rationale": "Lifecycle controls remain required under the signed capability."
+            },
+            {
+              "evidenceId": "E003",
+              "effect": "addresses",
+              "tacticalFixRequired": false,
+              "rationale": "Binder identity and signed issuer identity replace caller-declared UID."
+            },
+            {
+              "evidenceId": "E004",
+              "effect": "addresses",
+              "tacticalFixRequired": false,
+              "rationale": "The authorization object becomes signed, one-time, and separable from correlation."
+            },
+            {
+              "evidenceId": "E005",
+              "effect": "addresses",
+              "tacticalFixRequired": false,
+              "rationale": "Persistent counters or revocation state can reject replay across UserService restarts."
+            },
+            {
+              "evidenceId": "E006",
+              "effect": "addresses",
+              "tacticalFixRequired": false,
+              "rationale": "UserService still owns the final serialized action gate."
+            }
+          ],
+          "tradeoffs": [
+            {
+              "dimension": "security",
+              "direction": "improves",
+              "confidence": "medium",
+              "basis": "hypothetical",
+              "assessment": "A dedicated issuer can centralize user-approved rule creation and support cross-process replay resistance, provided every signing path enforces the same user policy.",
+              "validationPlan": "Threat-model every issuer entry, test key misuse and replay across restarts, and verify UserService accepts only the pinned public key and Binder owner."
+            },
+            {
+              "dimension": "performance",
+              "direction": "regresses",
+              "confidence": "medium",
+              "basis": "analogous",
+              "assessment": "Authorization creation adds broker IPC and a Keystore signature; action verification adds signature work but can remain outside the polling loop.",
+              "validationPlan": "Benchmark grant creation, signature verification, and end-to-end action latency against Option 2."
+            },
+            {
+              "dimension": "memory",
+              "direction": "regresses",
+              "confidence": "medium",
+              "basis": "source-derived",
+              "assessment": "A broker process plus persistent replay and key metadata requires more resident and stored state.",
+              "validationPlan": "Measure broker and UserService RSS, stored metadata size, and growth under repeated grants."
+            },
+            {
+              "dimension": "reliability",
+              "direction": "regresses",
+              "confidence": "medium",
+              "basis": "hypothetical",
+              "assessment": "Key invalidation, broker death, restore, and rotation introduce failure modes that must fail closed without permanently locking out the user.",
+              "validationPlan": "Inject broker death, key invalidation, app restore, upgrade, and rollback while checking deterministic recovery."
+            },
+            {
+              "dimension": "operability",
+              "direction": "regresses",
+              "confidence": "medium",
+              "basis": "hypothetical",
+              "assessment": "The project must observe issuer health, key version, verification failures, revocation state, and rotation progress.",
+              "validationPlan": "Define telemetry and an incident runbook before enabling the broker outside tests."
+            },
+            {
+              "dimension": "migration",
+              "direction": "regresses",
+              "confidence": "high",
+              "basis": "source-derived",
+              "assessment": "A signed capability schema, key lifecycle, dual verifier window, and persistent replay migration are required.",
+              "validationPlan": "Prototype versioned capabilities and prove upgrade plus rollback while old capabilities drain."
+            }
+          ],
+          "residualRisks": [
+            "A signing broker that lacks a real user-policy gate can cryptographically authorize the same unsafe requests.",
+            "Key invalidation and restore can create availability failures.",
+            "The final Android system race after local authorization remains.",
+            "Complexity can move control drift into signing and rotation paths."
+          ],
+          "implementationReadiness": {
+            "affectedComponents": [
+              "new authorization broker",
+              "Keystore and capability schema",
+              "MainActivity.kt",
+              "PrivilegedCompanionService.kt",
+              "persistent replay and key migration"
+            ],
+            "workPackages": [
+              "Define the user-approved rule creation boundary.",
+              "Design and version a signed capability schema and key lifecycle.",
+              "Add broker IPC, UserService verification, persistent replay, and rotation.",
+              "Validate restore, invalidation, upgrade, rollback, and incident observability."
+            ],
+            "acceptanceCriteria": [
+              "Only user-approved broker paths can sign capabilities.",
+              "Replay is rejected across UserService restarts.",
+              "Key rotation and rollback preserve fail-safe behavior."
+            ],
+            "migrationNotes": [
+              "Defer until real dynamic rule and multi-entry authorization requirements exist."
+            ],
+            "rollback": "Retain old verification keys until all issued capabilities expire, disable new issuance, then roll back the broker and schema."
+          }
+        }
+      ],
+      "recommendedOptionId": "server-derived-capability",
+      "recommendation": "Use the server-derived capability boundary for the fixed-package S0.4 PoC; reconsider the signed broker when real rule creation, multiple entry points, or cross-process replay resistance becomes a requirement."
+    }
+  ],
+  "openQuestions": [
+    "Does Binder.getCallingUid in the target Shizuku UserService return the ordinary app UID on every supported backend?",
+    "Does the Shizuku v13 Context reliably support package and signing identity lookups across target OEMs and profiles?",
+    "Should production authorization reject replay across UserService restarts using a signed broker or persistent counter?",
+    "Which published residual-race threshold is acceptable when Android cannot atomically combine package stopped state and input injection?",
+    "How will the exported test command Intent be removed or protected before real product integration?"
+  ]
+}

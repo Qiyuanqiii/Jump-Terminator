@@ -24,6 +24,7 @@ def snapshot(server=10, companion=20, ui=30, source=0, target=0, boot="boot-a"):
         "sourcePid": source,
         "targetPid": target,
         "keyguardLocked": False,
+        "pocPackageUid": 10_418,
     }
 
 
@@ -63,7 +64,7 @@ def action_result(actions=1):
     }
 
 
-def scenario_events(scenario, force_stop_actions=0):
+def scenario_events(scenario, force_stop_actions=0, s04=False):
     events = [
         event(scenario, "scenario_started", {"model": "phone", "androidRelease": "13"}),
     ]
@@ -100,6 +101,22 @@ def scenario_events(scenario, force_stop_actions=0):
         else:
             fault = snapshot()
             result = action_result(1)
+        if s04:
+            result.update(
+                {
+                    "authorizationProtocol": "s0.4-1",
+                    "ownerUidSource": "binder",
+                    "ownerUid": 10_418,
+                    "ownerUserId": 0,
+                    "ownerPackage": "com.jumpterminator.s02",
+                    "ownerSigningCertificateSha256": ["a" * 64],
+                    "oneTimeCapability": True,
+                    "capabilityFingerprint": "b" * 16,
+                    "ruleSnapshotSha256": "c" * 64,
+                    "leaseDurationMs": 90_000,
+                    "finalActionSerialization": "authorization_lock",
+                }
+            )
         events.extend(
             [
                 event(scenario, "fault_injected", fault),
@@ -116,10 +133,16 @@ def scenario_events(scenario, force_stop_actions=0):
     return events
 
 
-def complete_matrix(force_stop_actions=0):
+def complete_matrix(force_stop_actions=0, s04=False):
     events = []
     for scenario in REQUIRED_SCENARIOS:
-        events.extend(scenario_events(scenario, force_stop_actions=force_stop_actions))
+        events.extend(
+            scenario_events(
+                scenario,
+                force_stop_actions=force_stop_actions,
+                s04=s04,
+            )
+        )
     return events
 
 
@@ -169,6 +192,26 @@ class S03LifecycleReportTest(unittest.TestCase):
         self.assertFalse(report["sampleGatePassed"])
         self.assertIn("post-reboot-recovery", report["missingOrInvalidScenarios"])
         self.assertEqual("NOT_READY", report["provisionalDecision"])
+
+    def test_s04_identity_evidence_is_checked_for_non_reboot_sessions(self):
+        report = analyse(complete_matrix(s04=True))
+
+        self.assertEqual(6, report["s04AuthorizationEvidenceSessions"])
+        self.assertTrue(report["s04AuthorizationGatePassed"])
+
+    def test_partial_s04_identity_evidence_does_not_pass_s04_gate(self):
+        events = complete_matrix(s04=True)
+        for item in events:
+            if (
+                item["scenario"] == "ui-kill"
+                and item["kind"] == "companion_result"
+            ):
+                item["data"].pop("authorizationProtocol")
+
+        report = analyse(events)
+
+        self.assertEqual(5, report["s04AuthorizationEvidenceSessions"])
+        self.assertFalse(report["s04AuthorizationGatePassed"])
 
 
 if __name__ == "__main__":

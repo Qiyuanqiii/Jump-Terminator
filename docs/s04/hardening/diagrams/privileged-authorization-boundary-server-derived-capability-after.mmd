@@ -1,0 +1,9 @@
+flowchart LR
+    X["外部/ADB 命令 Intent"] --> UI["控制 UI（普通应用 UID）"]
+    UI -->|"sessionId + random capability + Binder token"| US["Shizuku UserService（shell UID）"]
+    US --> ID["Binder caller UID + PackageManager signature"]
+    ID --> A["一次性能力、规则快照、单调租约"]
+    UI -. "Binder death" .-> A
+    D["最终 stopped / foreground 复核"] --> G["串行化授权与进程启动"]
+    A --> G
+    G -->|"仅在线性化点允许"| I["input keyevent 4"]

@@ -1,0 +1,8 @@
+flowchart LR
+    X["用户可见规则入口"] --> B["普通 UID 授权代理 + Keystore"]
+    B -->|"签名、一次性、限时规则能力"| UI["控制 UI"]
+    UI -->|"签名能力 + Binder token"| US["Shizuku UserService（shell UID）"]
+    US --> V["公钥、调用 UID、重放与租约验证"]
+    V --> G["最终状态复核与串行化启动"]
+    G --> I["input keyevent 4"]
+    B -. "撤权/密钥轮换" .-> V

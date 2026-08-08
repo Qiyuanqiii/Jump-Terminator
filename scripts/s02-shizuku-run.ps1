@@ -66,6 +66,18 @@ function Get-TopComponent {
     return 'unknown'
 }
 
+function Get-PackageUid {
+    param([string]$PackageName)
+    $lines = Invoke-AdbText @('shell', 'dumpsys', 'package', $PackageName)
+    $uidLine = $lines | Where-Object { $_ -match '^\s*userId=(?<uid>\d+)\s*$' } |
+        Select-Object -First 1
+    if (-not $uidLine) { throw "Unable to resolve package UID: $PackageName" }
+    if ($uidLine -notmatch '^\s*userId=(?<uid>\d+)\s*$') {
+        throw "Unable to parse package UID: $PackageName"
+    }
+    return [int]$Matches.uid
+}
+
 function Collect-SessionEvents {
     $lines = @(& $adb -s $script:Serial logcat -d -v raw -s "${logTag}:I" '*:S')
     if ($LASTEXITCODE -ne 0) { throw 'Unable to read the Shizuku companion log.' }
@@ -178,6 +190,11 @@ foreach ($packageName in @(
     if (-not $packagePath) { throw "Required package is not installed: $packageName" }
 }
 
+$windowState = (Invoke-AdbText @('shell', 'dumpsys', 'window')) -join "`n"
+if ($windowState -match 'mDreamingLockscreen=true|mShowingLockscreen=true|isStatusBarKeyguard=true|mInputRestricted=true') {
+    throw 'Device is locked. Unlock it before running an interactive S0.2/S0.4 scenario.'
+}
+
 $settingsXml = (Invoke-AdbText @(
     'shell', 'run-as', $mainPackage, 'cat', 'shared_prefs/s0_settings.xml'
 )) -join "`n"
@@ -229,6 +246,12 @@ try {
         '--ez', 'jt_s02_armed', $armedValue
     )
     Wait-ForEventKind -Kinds @('ready') -Seconds 20
+
+    Add-LocalEvent -Kind 'owner_identity_expected' -Data @{
+        packageName = $pocPackage
+        packageUid = Get-PackageUid -PackageName $pocPackage
+        uidSource = 'dumpsys_package'
+    }
 
     Add-LocalEvent -Kind 'batch_requested' -Data @{
         scenario = $Scenario

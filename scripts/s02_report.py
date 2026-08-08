@@ -90,6 +90,67 @@ def analyse(events: list[dict[str, Any]]) -> dict[str, Any]:
             if isinstance((event.get("data") or {}).get("ownerUserId"), (int, float))
         },
     )
+    authorization_protocols = sorted(
+        {
+            str((event.get("data") or {}).get("authorizationProtocol"))
+            for event in ready_events
+            if (event.get("data") or {}).get("authorizationProtocol")
+        },
+    )
+    owner_uid_sources = sorted(
+        {
+            str((event.get("data") or {}).get("ownerUidSource"))
+            for event in ready_events
+            if (event.get("data") or {}).get("ownerUidSource")
+        },
+    )
+    binder_derived_sessions = sum(
+        1
+        for event in ready_events
+        if (event.get("data") or {}).get("ownerUidSource") == "binder"
+    )
+    one_time_capability_sessions = sum(
+        1
+        for event in ready_events
+        if (event.get("data") or {}).get("oneTimeCapability") is True
+    )
+    signing_identity_sessions = sum(
+        1
+        for event in ready_events
+        if isinstance(
+            (event.get("data") or {}).get("ownerSigningCertificateSha256"),
+            list,
+        )
+        and bool((event.get("data") or {}).get("ownerSigningCertificateSha256"))
+    )
+    capability_fingerprints = sorted(
+        {
+            str((event.get("data") or {}).get("capabilityFingerprint"))
+            for event in ready_events
+            if (event.get("data") or {}).get("capabilityFingerprint")
+        },
+    )
+    rule_snapshot_hashes = sorted(
+        {
+            str((event.get("data") or {}).get("ruleSnapshotSha256"))
+            for event in ready_events
+            if (event.get("data") or {}).get("ruleSnapshotSha256")
+        },
+    )
+    lease_durations_ms = sorted(
+        {
+            int((event.get("data") or {}).get("leaseDurationMs"))
+            for event in ready_events
+            if isinstance((event.get("data") or {}).get("leaseDurationMs"), (int, float))
+        },
+    )
+    final_action_serializations = sorted(
+        {
+            str((event.get("data") or {}).get("finalActionSerialization"))
+            for event in ready_events
+            if (event.get("data") or {}).get("finalActionSerialization")
+        },
+    )
 
     all_detections = [event for event in events if event.get("kind") == "target_detected"]
     backs = [event for event in events if event.get("kind") == "back_requested"]
@@ -272,6 +333,15 @@ def analyse(events: list[dict[str, Any]]) -> dict[str, Any]:
             summary["ownerBound"] = data.get("ownerBound")
             summary["crashGraceMs"] = data.get("crashGraceMs")
             summary["ownerUserId"] = data.get("ownerUserId")
+            summary["authorizationProtocol"] = data.get("authorizationProtocol")
+            summary["ownerUidSource"] = data.get("ownerUidSource")
+            summary["ownerUid"] = data.get("ownerUid")
+            summary["ownerPackage"] = data.get("ownerPackage")
+            summary["oneTimeCapability"] = data.get("oneTimeCapability")
+            summary["capabilityFingerprint"] = data.get("capabilityFingerprint")
+            summary["ruleSnapshotSha256"] = data.get("ruleSnapshotSha256")
+            summary["leaseDurationMs"] = data.get("leaseDurationMs")
+            summary["finalActionSerialization"] = data.get("finalActionSerialization")
 
     return {
         "schema": "s0.2-report-1",
@@ -284,6 +354,23 @@ def analyse(events: list[dict[str, Any]]) -> dict[str, Any]:
             and owner_bound_sessions == len(ready_events),
             "crashGraceMs": crash_grace_values,
             "ownerUserIds": owner_user_ids,
+            "protocols": authorization_protocols,
+            "ownerUidSources": owner_uid_sources,
+            "binderDerivedSessions": binder_derived_sessions,
+            "allSessionsBinderDerived": bool(ready_events)
+            and binder_derived_sessions == len(ready_events),
+            "signingIdentitySessions": signing_identity_sessions,
+            "allSessionsSigningIdentityResolved": bool(ready_events)
+            and signing_identity_sessions == len(ready_events),
+            "oneTimeCapabilitySessions": one_time_capability_sessions,
+            "allSessionsOneTimeCapability": bool(ready_events)
+            and one_time_capability_sessions == len(ready_events),
+            "capabilityFingerprints": capability_fingerprints,
+            "ruleSnapshotSha256": rule_snapshot_hashes,
+            "allSessionsRuleSnapshotBound": bool(ready_events)
+            and len(rule_snapshot_hashes) == len(ready_events),
+            "leaseDurationsMs": lease_durations_ms,
+            "finalActionSerializations": final_action_serializations,
         },
         "sessions": dict(session_summaries),
         "sampleCounts": {

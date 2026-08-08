@@ -27,7 +27,22 @@ def complete_block_session(count=100, executor=None):
         ready_data["executor"] = executor
     if executor == "shizuku_user_service":
         ready_data.update(
-            {"ownerBound": True, "crashGraceMs": 10_000, "ownerUserId": 0},
+            {
+                "ownerBound": True,
+                "crashGraceMs": 10_000,
+                "ownerUserId": 0,
+                "authorizationProtocol": "s0.4-1",
+                "ownerUidSource": "binder",
+                "ownerUid": 10_418,
+                "ownerPackage": "com.jumpterminator.s02",
+                "ownerSigningCertificateSha256": ["a" * 64],
+                "oneTimeCapability": True,
+                "capabilityFingerprint": "b" * 16,
+                "ruleSnapshotSha256": "c" * 64,
+                "leaseDurationMs": max(90_000, count * 8_000 + 60_000),
+                "leaseDeadlineElapsedMs": 1_000_000,
+                "finalActionSerialization": "authorization_lock",
+            },
         )
     events = [
         event(
@@ -91,7 +106,22 @@ def allowed_session(count=15, executor=None):
         ready_data["executor"] = executor
     if executor == "shizuku_user_service":
         ready_data.update(
-            {"ownerBound": True, "crashGraceMs": 10_000, "ownerUserId": 0},
+            {
+                "ownerBound": True,
+                "crashGraceMs": 10_000,
+                "ownerUserId": 0,
+                "authorizationProtocol": "s0.4-1",
+                "ownerUidSource": "binder",
+                "ownerUid": 10_418,
+                "ownerPackage": "com.jumpterminator.s02",
+                "ownerSigningCertificateSha256": ["a" * 64],
+                "oneTimeCapability": True,
+                "capabilityFingerprint": "d" * 16,
+                "ruleSnapshotSha256": "e" * 64,
+                "leaseDurationMs": max(90_000, count * 8_000 + 60_000),
+                "leaseDeadlineElapsedMs": 1_000_000,
+                "finalActionSerialization": "authorization_lock",
+            },
         )
     events = [
         event(
@@ -160,6 +190,15 @@ class S02ReportTest(unittest.TestCase):
         self.assertEqual("SHIZUKU_POC_FEASIBLE", report["provisionalDecision"])
         self.assertEqual([executor], report["executors"])
         self.assertTrue(report["authorization"]["allSessionsOwnerBound"])
+        self.assertTrue(report["authorization"]["allSessionsBinderDerived"])
+        self.assertTrue(report["authorization"]["allSessionsSigningIdentityResolved"])
+        self.assertTrue(report["authorization"]["allSessionsOneTimeCapability"])
+        self.assertTrue(report["authorization"]["allSessionsRuleSnapshotBound"])
+        self.assertEqual(["s0.4-1"], report["authorization"]["protocols"])
+        self.assertEqual(
+            ["authorization_lock"],
+            report["authorization"]["finalActionSerializations"],
+        )
         self.assertEqual([10_000], report["authorization"]["crashGraceMs"])
         self.assertEqual([0], report["authorization"]["ownerUserIds"])
 
