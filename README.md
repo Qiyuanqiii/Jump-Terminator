@@ -12,7 +12,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | --- | --- |
 | 文档版本 | v1.1 |
 | 文档日期 | 2026-08-08 |
-| 项目状态 | **Standard S0 No-Go；Advanced S0.2 执行面、S0.3 生命周期与 S0.4 最小授权 PoC 门通过**：仅授权继续架构与安全验证，不代表消费者版 Go |
+| 项目状态 | **Standard S0 No-Go；Advanced S0.2 执行面、S0.3 生命周期、S0.4 最小授权与 S0.5 调试入口边界 PoC 门通过**：仅授权继续架构与安全验证，不代表消费者版 Go |
 | 首要适配平台 | Redmi/Xiaomi，MIUI 14 |
 | 稳定版目标平台 | Android 9-Android 16 |
 | 前瞻兼容轨道 | Android 17 Beta/正式版兼容测试 |
@@ -21,7 +21,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | 基础权限 | 无障碍服务、使用情况访问；前台服务通知，以及 OEM 后台运行引导 |
 | 增强能力 | Shizuku，可选且不得影响基础模式 |
 
-## 当前执行状态：Standard S0 No-Go；Advanced PoC 最小授权门通过
+## 当前执行状态：Standard S0 No-Go；Advanced PoC 调试入口边界通过
 
 2026-08-01 启动 S0 技术可行性验证。仓库现已包含可编译的主诊断 App、测试来源 App、测试目标 App、无障碍与 UsageStats 双时间线、一次性 Back/Home 验证链、延迟真值、JSONL 导出、统计脚本和实体设备测试矩阵。Android 工程使用 Kotlin；当前诊断版本为 `v0.0.12-s0`。
 
@@ -44,6 +44,10 @@ v3 又完成 owner-bound 正样本 100 次与允许流程 15 次回归：检测�
 2026-08-08 完成 S0.4 最小授权协议。`0.0.4-s04` 删除客户端声明的 owner UID，由 UserService 在 Binder 入口派生真实 UID、固定包映射和当前签名；每个会话绑定独立随机能力、不可变规则快照和单调租约，并把最终 stopped/前台复核、授权判定及 `input` 启动收进同一进程内串行化边界。实体身份探针确认 Binder UID `10418` 与控制包 UID 一致，签名解析成功且事件未记录能力明文。
 
 v4 正样本 100 次的检测、Back、离开目标和返回来源均为 `100/100`，允许流程误动作 `0/15`；检测、Back、离开目标 P95 为 `116/158/233 ms`。七类生命周期场景再次 `7/7` 通过，六个非重启会话的 S0.4 身份证据门全部通过；机器决策为 `S04_AUTHORIZATION_GATE_PASSED` 和 `LIFECYCLE_GATE_PASSED`。见 [S0.4 运行与证据](docs/s04/README.md)、[S0.4 最终决策](docs/s04/decision.md)、[授权报告](docs/s04/results/miui14-23078rkd5c-s04-authorization-v004-20260808.report.json)和[生命周期报告](docs/s04/results/miui14-23078rkd5c-s04-lifecycle-v004-20260808.report.json)。当前工程的 Android 单元测试为 46 项，Python 报告测试为 24 项，完整 Gradle build/lint 通过。
+
+2026-08-08 完成 S0.5 调试自动化入口收口。修复前，公开导出的 `MainActivity` 会解析 `jt_s02_*` extras；在控制包已获 Shizuku 权限时，外部调用者可借该入口驱动 UserService，形成受限但真实的 confused-deputy 路径。`0.0.5-s05` 让公开 Launcher 永远拒绝自动化 extras；自动化 Activity 只存在于 debug 构建，并由平台 `android.permission.DUMP` 保护，release 构建中完全不存在。ADB shell（UID `2000`、持有 `DUMP`）仍可运行测试，普通测试应用 UID `10417` 实测收到 `SecurityException`，且两条拒绝路径均没有产生特权 `ready` 事件。
+
+S0.2 block1 观察回归与 S0.3 `ui-force-stop` 生命周期回归均通过；后者再次记录 `owner_package_stopped` 撤权且后续 Back 为 0。当前工程共有 Android 单元测试 `48` 项、Python 测试 `28` 项，完整 Gradle build/lint 通过。见 [S0.5 运行与证据](docs/s05/README.md)、[S0.5 决策](docs/s05/decision.md)和[结构化报告](docs/s05/results/miui14-23078rkd5c-s05-entrypoint-v005-20260808.report.json)。
 
 ## 1. 立项结论与技术边界
 
@@ -104,6 +108,8 @@ S0.2 已在 Redmi `23078RKD5C`（Android 13、MIUI 14）验证 Kotlin UserServic
 S0.3 先证明 force-stop 不会自动终止旧 UserService 授权，随后由 owner Binder、per-user stopped 复核、10 秒崩溃宽限和确定性退出修复；v3 七类生命周期场景全部通过。该结论仍限于固定测试包和一台 MIUI 14 设备。
 
 S0.4 进一步把 owner 身份改为 Binder 服务端派生，加入一次性能力、进程内重放拒绝、规则快照、单调租约和最终动作串行化；同一设备上的安全、性能与生命周期回归通过。重放状态仍不跨 UserService 重启，系统外部竞态、多用户与真实应用仍未覆盖。
+
+S0.5 将测试命令入口从公开 Launcher 移到仅 debug 构建存在、受 `android.permission.DUMP` 保护的独立 Activity；公开 Launcher 同时保留默认拒绝作为纵深防御，release 构建不包含自动化组件。该边界只保护本地开发自动化，不构成消费者授权界面。
 
 增强模式必须遵守：
 

@@ -1,0 +1,102 @@
+{
+  "schema": "s0.5-entrypoint-report-1",
+  "executedAt": "2026-08-08",
+  "device": {
+    "serial": "LBEATC9LPBYPMVFA",
+    "model": "23078RKD5C",
+    "device": "corot",
+    "androidRelease": "13",
+    "oemRelease": "MIUI 14"
+  },
+  "build": {
+    "applicationId": "com.jumpterminator.s02",
+    "versionCode": 5,
+    "versionName": "0.0.5-s05",
+    "userServiceVersion": 5,
+    "releaseAutomationComponentCount": 0
+  },
+  "permissionBoundary": {
+    "component": "com.jumpterminator.s02/.AutomationActivity",
+    "debugOnly": true,
+    "requiredPermission": "android.permission.DUMP",
+    "adbShellUid": 2000,
+    "adbShellPermissionGranted": true,
+    "ordinaryProbePackage": "com.jumpterminator.testsource",
+    "ordinaryProbeUid": 10417
+  },
+  "preFixReproduction": {
+    "sessionId": "8e09b5ff760e43e7967fc53488640564",
+    "entrypoint": "com.jumpterminator.s02/.MainActivity",
+    "caller": "adb_shell_external_intent",
+    "readyCount": 1,
+    "ownerUid": 10418,
+    "result": "vulnerable_path_reproduced"
+  },
+  "postFixCases": [
+    {
+      "name": "adb_debug_allowed",
+      "sessionId": "45bc1cd749d741c98477d6b18bfa0b5a",
+      "callerUid": 2000,
+      "readyCount": 1,
+      "result": "allowed"
+    },
+    {
+      "name": "public_launcher_denied",
+      "sessionId": "f7b7a0246a0848caa79897ef8ea2ad13",
+      "entrypoint": "com.jumpterminator.s02/.MainActivity",
+      "denialEventCount": 1,
+      "readyCount": 0,
+      "result": "denied"
+    },
+    {
+      "name": "ordinary_uid_denied",
+      "sessionId": "2afbffea3e6b4a1eb0b366f78cfe6eb2",
+      "callerUid": 10417,
+      "error": "SecurityException",
+      "denialEventCount": 1,
+      "readyCount": 0,
+      "result": "denied"
+    }
+  ],
+  "regressions": {
+    "s02Block1Observe": {
+      "sessionId": "9fe264a51b8c49babdf166aebc486207",
+      "runnerExitCode": 0,
+      "eventCount": 12,
+      "targetDetected": 1,
+      "leftTarget": 1,
+      "returnedSource": 1,
+      "backDispatched": 0,
+      "safetyViolations": 0,
+      "note": "Observe mode intentionally dispatches no Back; sample and threshold gates are not evaluated as a release gate."
+    },
+    "s03UiForceStop": {
+      "sessionId": "c7ec51ec5cc64dedacf00c035b3a61d6",
+      "runnerExitCode": 0,
+      "scenarioComplete": true,
+      "authorizationRevocations": 1,
+      "authorizationReasons": [
+        "owner_package_stopped"
+      ],
+      "backDispatchesAfterForceStop": 0,
+      "shizukuRestoredAfterCleanup": true
+    }
+  },
+  "automatedVerification": {
+    "androidUnitTests": 48,
+    "pythonTests": 28,
+    "s05StaticTests": 4,
+    "debugAssemblePassed": true,
+    "releaseAssemblePassed": true,
+    "fullBuildPassed": true,
+    "lintPassed": true
+  },
+  "gates": {
+    "publicLauncherRejectsAutomation": true,
+    "ordinaryApplicationCannotReachDebugAutomation": true,
+    "adbDebugAutomationPreserved": true,
+    "releaseAutomationComponentAbsent": true,
+    "representativeRegressionPassed": true
+  },
+  "provisionalDecision": "S05_DEBUG_AUTOMATION_BOUNDARY_PASSED"
+}

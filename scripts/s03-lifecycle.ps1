@@ -14,7 +14,7 @@ $androidSdk = Join-Path $env:USERPROFILE '.cache\jump-terminator\toolchain\andro
 $adb = Join-Path $androidSdk 'platform-tools\adb.exe'
 $mainPackage = 'com.jumpterminator.app'
 $pocPackage = 'com.jumpterminator.s02'
-$pocComponent = 'com.jumpterminator.s02/.MainActivity'
+$pocAutomationComponent = 'com.jumpterminator.s02/.AutomationActivity'
 $sourcePackage = 'com.jumpterminator.testsource'
 $sourceComponent = 'com.jumpterminator.testsource/.SourceActivity'
 $targetPackage = 'com.jumpterminator.testtarget'
@@ -51,6 +51,14 @@ function Invoke-AdbText {
         throw "adb command failed with exit code ${LASTEXITCODE}: $($Arguments -join ' ')"
     }
     return $output
+}
+
+function Invoke-PocAutomation {
+    param([string[]]$Arguments)
+    return Invoke-AdbText (
+        @('shell', 'am', 'start', '-n', $pocAutomationComponent) +
+        $Arguments
+    )
 }
 
 function Write-LifecycleEvent {
@@ -267,8 +275,7 @@ function Assert-RegularObserverDisarmed {
 }
 
 function Start-CompanionProbe {
-    $null = Invoke-AdbText @(
-        'shell', 'am', 'start', '-n', $pocComponent,
+    $null = Invoke-PocAutomation @(
         '--es', 'jt_s02_session', $script:sessionId,
         '--ei', 'jt_s02_max_actions', '1',
         '--ei', 'jt_s02_requested_allowed', '0',

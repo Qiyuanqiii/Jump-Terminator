@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.os.Binder
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -17,7 +18,7 @@ import rikka.shizuku.Shizuku
 import java.security.SecureRandom
 import java.util.UUID
 
-class MainActivity : Activity() {
+open class MainActivity : Activity() {
     private lateinit var statusView: TextView
     private lateinit var serviceArgs: Shizuku.UserServiceArgs
     private val ownerToken = Binder()
@@ -25,6 +26,9 @@ class MainActivity : Activity() {
     private var service: IPrivilegedCompanion? = null
     private var pendingCommand: MonitorCommand? = null
     private var pendingControl: String? = null
+
+    protected open val automationCommandIngress: AutomationCommandIngress
+        get() = AutomationCommandIngress.PUBLIC_LAUNCHER
 
     private val binderReceivedListener = Shizuku.OnBinderReceivedListener {
         renderStatus("Shizuku Binder 已连接")
@@ -64,14 +68,14 @@ class MainActivity : Activity() {
             .daemon(true)
             .processNameSuffix("s02_companion")
             .debuggable(true)
-            .version(4)
+            .version(5)
             .tag("jump-terminator-s02")
         setContentView(buildContent())
         Shizuku.addBinderReceivedListenerSticky(binderReceivedListener)
         Shizuku.addBinderDeadListener(binderDeadListener)
         Shizuku.addRequestPermissionResultListener(permissionListener)
-        handleCommandIntent(intent)
         renderStatus(currentStatus())
+        handleCommandIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -91,7 +95,7 @@ class MainActivity : Activity() {
         addView(LinearLayout(this@MainActivity).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(24), dp(20), dp(32))
-            addView(text("Jump Terminator · S0.4", 26f, Color.rgb(74, 20, 140)))
+            addView(text("Jump Terminator · S0.5", 26f, Color.rgb(74, 20, 140)))
             addView(text(
                 "实验性 Kotlin + Shizuku UserService。只处理固定测试来源 → 固定测试目标；不是消费者版功能。",
                 15f,
@@ -134,6 +138,22 @@ class MainActivity : Activity() {
 
     private fun handleCommandIntent(commandIntent: Intent?) {
         if (commandIntent == null) return
+        if (
+            hasAutomationExtras(commandIntent) &&
+            !AutomationCommandGate.allows(automationCommandIngress)
+        ) {
+            val sessionId = commandIntent.getStringExtra(EXTRA_SESSION)
+                ?.takeIf(SESSION_ID_REGEX::matches)
+                .orEmpty()
+            Log.i(
+                BOUNDARY_LOG_TAG,
+                "{\"schema\":\"s0.5-entrypoint-1\",\"sessionId\":\"$sessionId\"," +
+                    "\"result\":\"denied\",\"ingress\":\"public_launcher\"}",
+            )
+            clearAutomationExtras(commandIntent)
+            renderStatus("已拒绝公开入口携带的自动化命令")
+            return
+        }
         val control = commandIntent.getStringExtra(EXTRA_CONTROL)
         if (control != null) {
             commandIntent.removeExtra(EXTRA_CONTROL)
@@ -151,7 +171,7 @@ class MainActivity : Activity() {
         val armed = commandIntent.getBooleanExtra(EXTRA_ARMED, false)
         val validBlock = requestedBlock in setOf(1, 10, 100) && requestedAllowed == 0
         val validAllowed = requestedBlock == 0 && requestedAllowed in 1..60 && armed
-        if (!sessionId.matches(Regex("[a-f0-9]{32}")) || (!validBlock && !validAllowed)) {
+        if (!SESSION_ID_REGEX.matches(sessionId) || (!validBlock && !validAllowed)) {
             renderStatus("拒绝无效自动化参数")
             return
         }
@@ -167,6 +187,13 @@ class MainActivity : Activity() {
             armed,
         )
         tryStartPending()
+    }
+
+    private fun hasAutomationExtras(commandIntent: Intent): Boolean =
+        AUTOMATION_EXTRAS.any(commandIntent::hasExtra)
+
+    private fun clearAutomationExtras(commandIntent: Intent) {
+        AUTOMATION_EXTRAS.forEach(commandIntent::removeExtra)
     }
 
     private fun tryStartPending() {
@@ -301,7 +328,16 @@ class MainActivity : Activity() {
         private const val EXTRA_ARMED = "jt_s02_armed"
         private const val EXTRA_CONTROL = "jt_s02_control"
         private const val CONTROL_STOP = "stop"
+        private const val BOUNDARY_LOG_TAG = "JT_S05_BOUNDARY"
         private const val CAPABILITY_BYTES = 32
         private const val HEX = "0123456789abcdef"
+        private val SESSION_ID_REGEX = Regex("[a-f0-9]{32}")
+        private val AUTOMATION_EXTRAS = listOf(
+            EXTRA_SESSION,
+            EXTRA_MAX_ACTIONS,
+            EXTRA_REQUESTED_ALLOWED,
+            EXTRA_ARMED,
+            EXTRA_CONTROL,
+        )
     }
 }
