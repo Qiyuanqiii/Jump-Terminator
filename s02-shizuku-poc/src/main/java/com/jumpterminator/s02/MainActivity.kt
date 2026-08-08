@@ -95,7 +95,7 @@ open class MainActivity : Activity() {
         addView(LinearLayout(this@MainActivity).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(24), dp(20), dp(32))
-            addView(text("Jump Terminator · S0.5", 26f, Color.rgb(74, 20, 140)))
+            addView(text("Jump Terminator · S0.6", 26f, Color.rgb(74, 20, 140)))
             addView(text(
                 "实验性 Kotlin + Shizuku UserService。只处理固定测试来源 → 固定测试目标；不是消费者版功能。",
                 15f,
@@ -267,7 +267,15 @@ open class MainActivity : Activity() {
     }
 
     private fun hasPermission(): Boolean = try {
-        Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
+        val platformPermissionGranted =
+            checkSelfPermission(SHIZUKU_PERMISSION) == PackageManager.PERMISSION_GRANTED
+        val shizukuPermissionGranted =
+            platformPermissionGranted &&
+                Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
+        ShizukuPermissionGate.isGranted(
+            platformPermissionGranted = platformPermissionGranted,
+            shizukuPermissionGranted = shizukuPermissionGranted,
+        )
     } catch (_: Throwable) {
         false
     }
@@ -322,6 +330,7 @@ open class MainActivity : Activity() {
 
     companion object {
         private const val REQUEST_CODE = 2002
+        private const val SHIZUKU_PERMISSION = "moe.shizuku.manager.permission.API_V23"
         private const val EXTRA_SESSION = "jt_s02_session"
         private const val EXTRA_MAX_ACTIONS = "jt_s02_max_actions"
         private const val EXTRA_REQUESTED_ALLOWED = "jt_s02_requested_allowed"

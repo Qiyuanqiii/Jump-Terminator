@@ -1,0 +1,12 @@
+{"schema":"s0.6-reauth-1","cycle":1,"kind":"permission_revoked","wallClockMs":1786193155324,"granted":false}
+{"schema":"s0.6-reauth-1","cycle":1,"kind":"revoked_probe","wallClockMs":1786193158764,"readyCount":0,"sessionId":"0825ad3a2e824489a6f5163885b09ae9"}
+{"schema":"s0.6-reauth-1","cycle":1,"kind":"permission_restored","wallClockMs":1786193158951,"granted":true}
+{"schema":"s0.6-reauth-1","cycle":1,"kind":"recovered_probe","wallClockMs":1786193159523,"readyCount":1,"sessionId":"ea8d4c468cec4c2c89b77d46e4dc3bdc"}
+{"schema":"s0.6-reauth-1","cycle":2,"kind":"permission_revoked","wallClockMs":1786193162626,"granted":false}
+{"schema":"s0.6-reauth-1","cycle":2,"kind":"revoked_probe","wallClockMs":1786193166025,"readyCount":0,"sessionId":"1a02d688ccec4f38a5d64001ed78cf58"}
+{"schema":"s0.6-reauth-1","cycle":2,"kind":"permission_restored","wallClockMs":1786193166225,"granted":true}
+{"schema":"s0.6-reauth-1","cycle":2,"kind":"recovered_probe","wallClockMs":1786193166748,"readyCount":1,"sessionId":"0c76d4eee8a14b9aa1235cd046391569"}
+{"schema":"s0.6-reauth-1","cycle":3,"kind":"permission_revoked","wallClockMs":1786193169979,"granted":false}
+{"schema":"s0.6-reauth-1","cycle":3,"kind":"revoked_probe","wallClockMs":1786193173403,"readyCount":0,"sessionId":"d687a62468484e788e57c171ccadfc9f"}
+{"schema":"s0.6-reauth-1","cycle":3,"kind":"permission_restored","wallClockMs":1786193173598,"granted":true}
+{"schema":"s0.6-reauth-1","cycle":3,"kind":"recovered_probe","wallClockMs":1786193174137,"readyCount":1,"sessionId":"b3a4db2ef6c94c09bf88e7ea9b20fcd3"}

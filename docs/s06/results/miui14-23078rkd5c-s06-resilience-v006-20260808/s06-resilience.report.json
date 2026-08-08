@@ -1,0 +1,634 @@
+{
+  "schema": "s0.6-resilience-report-1",
+  "expected": {
+    "crashCycles": 5,
+    "repeatedTargets": 10,
+    "reauthorizationCycles": 3
+  },
+  "crashStress": {
+    "observedCycles": 5,
+    "checks": {
+      "cycleCountReached": true,
+      "allObservationsValid": true,
+      "allLifecycleChecksPassed": true,
+      "allOwnersDetached": true,
+      "allServicesExited": true
+    },
+    "gatePassed": true,
+    "sessions": [
+      {
+        "sessionId": "1e1408aa67de4a3e8294d5a1d200045e",
+        "scenario": "ui-kill",
+        "eventCount": 7,
+        "observationValid": true,
+        "gatePassed": true,
+        "checks": {
+          "scenarioCompleted": true,
+          "runnerErrorFree": true,
+          "cleanupStoppedAllTestProcesses": true,
+          "probeHadShizukuServer": true,
+          "probeHadCompanion": true,
+          "probeHadUi": true,
+          "authorizationProtocolIsS04": true,
+          "ownerUidWasBinderDerived": true,
+          "ownerUidMatchesPackage": true,
+          "ownerPackageIsFixed": true,
+          "ownerSigningIdentityResolved": true,
+          "oneTimeCapabilityBound": true,
+          "capabilityFingerprintIsRedacted": true,
+          "ruleSnapshotIsBound": true,
+          "authorizationLeaseIsBounded": true,
+          "finalActionIsSerialized": true,
+          "uiProcessCrashed": true,
+          "companionSurvivedUiCrash": true,
+          "serverSurvivedUiCrash": true,
+          "boundedActionCompletedAfterUiCrash": true
+        },
+        "observed": {
+          "probe": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 18408,
+            "companionPid": 18472,
+            "uiPid": 18426,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "fault": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 18408,
+            "companionPid": 18472,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "companionResult": {
+            "ready": true,
+            "detections": 1,
+            "backs": 1,
+            "dispatchedBacks": 1,
+            "leaves": 1,
+            "returnedSource": 1,
+            "terminalKind": "complete",
+            "terminalReason": "count_reached",
+            "serviceErrors": 0,
+            "timeouts": 0,
+            "authorizationRevocations": 0,
+            "authorizationReasons": [],
+            "ownerDetachments": 1,
+            "serviceExitRequests": 1,
+            "authorizationProtocol": "s0.4-1",
+            "ownerUidSource": "binder",
+            "ownerUid": 10418,
+            "ownerUserId": 0,
+            "ownerPackage": "com.jumpterminator.s02",
+            "ownerSigningCertificateSha256": [
+              "70b55f3c28ddbad792e20fec515c5d3b2fefdd02e0ffe7f9feb1bb058cb62e10"
+            ],
+            "oneTimeCapability": true,
+            "capabilityFingerprint": "dc9df42130b504aa",
+            "ruleSnapshotSha256": "f51bcd5f5c60fe9157d30348572ebff7f85f7141aca8262cc13e502d2bb1eb71",
+            "leaseDurationMs": 90000,
+            "finalActionSerialization": "authorization_lock"
+          },
+          "preReboot": null,
+          "postReboot": null,
+          "cleanup": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 0,
+            "companionPid": 0,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          }
+        }
+      },
+      {
+        "sessionId": "270309274fee464ca15f789f0a9167fd",
+        "scenario": "ui-kill",
+        "eventCount": 7,
+        "observationValid": true,
+        "gatePassed": true,
+        "checks": {
+          "scenarioCompleted": true,
+          "runnerErrorFree": true,
+          "cleanupStoppedAllTestProcesses": true,
+          "probeHadShizukuServer": true,
+          "probeHadCompanion": true,
+          "probeHadUi": true,
+          "authorizationProtocolIsS04": true,
+          "ownerUidWasBinderDerived": true,
+          "ownerUidMatchesPackage": true,
+          "ownerPackageIsFixed": true,
+          "ownerSigningIdentityResolved": true,
+          "oneTimeCapabilityBound": true,
+          "capabilityFingerprintIsRedacted": true,
+          "ruleSnapshotIsBound": true,
+          "authorizationLeaseIsBounded": true,
+          "finalActionIsSerialized": true,
+          "uiProcessCrashed": true,
+          "companionSurvivedUiCrash": true,
+          "serverSurvivedUiCrash": true,
+          "boundedActionCompletedAfterUiCrash": true
+        },
+        "observed": {
+          "probe": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 20455,
+            "companionPid": 20520,
+            "uiPid": 20473,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "fault": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 20455,
+            "companionPid": 20520,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "companionResult": {
+            "ready": true,
+            "detections": 1,
+            "backs": 1,
+            "dispatchedBacks": 1,
+            "leaves": 1,
+            "returnedSource": 1,
+            "terminalKind": "complete",
+            "terminalReason": "count_reached",
+            "serviceErrors": 0,
+            "timeouts": 0,
+            "authorizationRevocations": 0,
+            "authorizationReasons": [],
+            "ownerDetachments": 1,
+            "serviceExitRequests": 1,
+            "authorizationProtocol": "s0.4-1",
+            "ownerUidSource": "binder",
+            "ownerUid": 10418,
+            "ownerUserId": 0,
+            "ownerPackage": "com.jumpterminator.s02",
+            "ownerSigningCertificateSha256": [
+              "70b55f3c28ddbad792e20fec515c5d3b2fefdd02e0ffe7f9feb1bb058cb62e10"
+            ],
+            "oneTimeCapability": true,
+            "capabilityFingerprint": "2a7ff085be435cd9",
+            "ruleSnapshotSha256": "508e703690c8e9d643ccec32903cd9bb391ce0b2965dd11d14f05736818fbb15",
+            "leaseDurationMs": 90000,
+            "finalActionSerialization": "authorization_lock"
+          },
+          "preReboot": null,
+          "postReboot": null,
+          "cleanup": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 0,
+            "companionPid": 0,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          }
+        }
+      },
+      {
+        "sessionId": "765c979689144cdf9a1bbda940585c7b",
+        "scenario": "ui-kill",
+        "eventCount": 7,
+        "observationValid": true,
+        "gatePassed": true,
+        "checks": {
+          "scenarioCompleted": true,
+          "runnerErrorFree": true,
+          "cleanupStoppedAllTestProcesses": true,
+          "probeHadShizukuServer": true,
+          "probeHadCompanion": true,
+          "probeHadUi": true,
+          "authorizationProtocolIsS04": true,
+          "ownerUidWasBinderDerived": true,
+          "ownerUidMatchesPackage": true,
+          "ownerPackageIsFixed": true,
+          "ownerSigningIdentityResolved": true,
+          "oneTimeCapabilityBound": true,
+          "capabilityFingerprintIsRedacted": true,
+          "ruleSnapshotIsBound": true,
+          "authorizationLeaseIsBounded": true,
+          "finalActionIsSerialized": true,
+          "uiProcessCrashed": true,
+          "companionSurvivedUiCrash": true,
+          "serverSurvivedUiCrash": true,
+          "boundedActionCompletedAfterUiCrash": true
+        },
+        "observed": {
+          "probe": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 17023,
+            "companionPid": 17804,
+            "uiPid": 17634,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "fault": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 17023,
+            "companionPid": 17804,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "companionResult": {
+            "ready": true,
+            "detections": 1,
+            "backs": 1,
+            "dispatchedBacks": 1,
+            "leaves": 1,
+            "returnedSource": 1,
+            "terminalKind": "complete",
+            "terminalReason": "count_reached",
+            "serviceErrors": 0,
+            "timeouts": 0,
+            "authorizationRevocations": 0,
+            "authorizationReasons": [],
+            "ownerDetachments": 1,
+            "serviceExitRequests": 1,
+            "authorizationProtocol": "s0.4-1",
+            "ownerUidSource": "binder",
+            "ownerUid": 10418,
+            "ownerUserId": 0,
+            "ownerPackage": "com.jumpterminator.s02",
+            "ownerSigningCertificateSha256": [
+              "70b55f3c28ddbad792e20fec515c5d3b2fefdd02e0ffe7f9feb1bb058cb62e10"
+            ],
+            "oneTimeCapability": true,
+            "capabilityFingerprint": "662c36a3341de181",
+            "ruleSnapshotSha256": "0867da1eb7083e227df8800f43e493a195dfb7badc17e415a0ad9911d702044b",
+            "leaseDurationMs": 90000,
+            "finalActionSerialization": "authorization_lock"
+          },
+          "preReboot": null,
+          "postReboot": null,
+          "cleanup": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 0,
+            "companionPid": 0,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          }
+        }
+      },
+      {
+        "sessionId": "81bc166d137b4a6d83d142848cd8184f",
+        "scenario": "ui-kill",
+        "eventCount": 7,
+        "observationValid": true,
+        "gatePassed": true,
+        "checks": {
+          "scenarioCompleted": true,
+          "runnerErrorFree": true,
+          "cleanupStoppedAllTestProcesses": true,
+          "probeHadShizukuServer": true,
+          "probeHadCompanion": true,
+          "probeHadUi": true,
+          "authorizationProtocolIsS04": true,
+          "ownerUidWasBinderDerived": true,
+          "ownerUidMatchesPackage": true,
+          "ownerPackageIsFixed": true,
+          "ownerSigningIdentityResolved": true,
+          "oneTimeCapabilityBound": true,
+          "capabilityFingerprintIsRedacted": true,
+          "ruleSnapshotIsBound": true,
+          "authorizationLeaseIsBounded": true,
+          "finalActionIsSerialized": true,
+          "uiProcessCrashed": true,
+          "companionSurvivedUiCrash": true,
+          "serverSurvivedUiCrash": true,
+          "boundedActionCompletedAfterUiCrash": true
+        },
+        "observed": {
+          "probe": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 19739,
+            "companionPid": 19803,
+            "uiPid": 19758,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "fault": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 19739,
+            "companionPid": 19803,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "companionResult": {
+            "ready": true,
+            "detections": 1,
+            "backs": 1,
+            "dispatchedBacks": 1,
+            "leaves": 1,
+            "returnedSource": 1,
+            "terminalKind": "complete",
+            "terminalReason": "count_reached",
+            "serviceErrors": 0,
+            "timeouts": 0,
+            "authorizationRevocations": 0,
+            "authorizationReasons": [],
+            "ownerDetachments": 1,
+            "serviceExitRequests": 1,
+            "authorizationProtocol": "s0.4-1",
+            "ownerUidSource": "binder",
+            "ownerUid": 10418,
+            "ownerUserId": 0,
+            "ownerPackage": "com.jumpterminator.s02",
+            "ownerSigningCertificateSha256": [
+              "70b55f3c28ddbad792e20fec515c5d3b2fefdd02e0ffe7f9feb1bb058cb62e10"
+            ],
+            "oneTimeCapability": true,
+            "capabilityFingerprint": "ae6c214c9edaf535",
+            "ruleSnapshotSha256": "92cdecf81050e219e7a45314c8e87b7a13647cb6bd01ff37cab7fbbf94aed009",
+            "leaseDurationMs": 90000,
+            "finalActionSerialization": "authorization_lock"
+          },
+          "preReboot": null,
+          "postReboot": null,
+          "cleanup": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 0,
+            "companionPid": 0,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          }
+        }
+      },
+      {
+        "sessionId": "b51e2606f8e8401d9845ef5b2eefbdf9",
+        "scenario": "ui-kill",
+        "eventCount": 7,
+        "observationValid": true,
+        "gatePassed": true,
+        "checks": {
+          "scenarioCompleted": true,
+          "runnerErrorFree": true,
+          "cleanupStoppedAllTestProcesses": true,
+          "probeHadShizukuServer": true,
+          "probeHadCompanion": true,
+          "probeHadUi": true,
+          "authorizationProtocolIsS04": true,
+          "ownerUidWasBinderDerived": true,
+          "ownerUidMatchesPackage": true,
+          "ownerPackageIsFixed": true,
+          "ownerSigningIdentityResolved": true,
+          "oneTimeCapabilityBound": true,
+          "capabilityFingerprintIsRedacted": true,
+          "ruleSnapshotIsBound": true,
+          "authorizationLeaseIsBounded": true,
+          "finalActionIsSerialized": true,
+          "uiProcessCrashed": true,
+          "companionSurvivedUiCrash": true,
+          "serverSurvivedUiCrash": true,
+          "boundedActionCompletedAfterUiCrash": true
+        },
+        "observed": {
+          "probe": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 19062,
+            "companionPid": 19136,
+            "uiPid": 19087,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "fault": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 19062,
+            "companionPid": 19136,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          },
+          "companionResult": {
+            "ready": true,
+            "detections": 1,
+            "backs": 1,
+            "dispatchedBacks": 1,
+            "leaves": 1,
+            "returnedSource": 1,
+            "terminalKind": "complete",
+            "terminalReason": "count_reached",
+            "serviceErrors": 0,
+            "timeouts": 0,
+            "authorizationRevocations": 0,
+            "authorizationReasons": [],
+            "ownerDetachments": 1,
+            "serviceExitRequests": 1,
+            "authorizationProtocol": "s0.4-1",
+            "ownerUidSource": "binder",
+            "ownerUid": 10418,
+            "ownerUserId": 0,
+            "ownerPackage": "com.jumpterminator.s02",
+            "ownerSigningCertificateSha256": [
+              "70b55f3c28ddbad792e20fec515c5d3b2fefdd02e0ffe7f9feb1bb058cb62e10"
+            ],
+            "oneTimeCapability": true,
+            "capabilityFingerprint": "c5f08fdd5369acb9",
+            "ruleSnapshotSha256": "874683c9c0bb03ee4838a28259d4752574d3e92504f3c7a3376ada829a1c9168",
+            "leaseDurationMs": 90000,
+            "finalActionSerialization": "authorization_lock"
+          },
+          "preReboot": null,
+          "postReboot": null,
+          "cleanup": {
+            "bootId": "1fdc66d3-f952-4b71-af90-19df80e35632",
+            "bootCompleted": true,
+            "shizukuServerPid": 0,
+            "companionPid": 0,
+            "uiPid": 0,
+            "sourcePid": 0,
+            "targetPid": 0,
+            "pocPackageUid": 10418,
+            "keyguardLocked": false
+          }
+        }
+      }
+    ]
+  },
+  "repeatedTargetStress": {
+    "checks": {
+      "reportSchemaIsS02": true,
+      "usesShizukuUserService": true,
+      "reportHasNoWarnings": true,
+      "requestedCountMatched": true,
+      "allTargetsDetected": true,
+      "allBacksDispatched": true,
+      "allTargetsLeft": true,
+      "allSourcesReturned": true,
+      "sessionCompleted": true,
+      "noSafetyViolations": true,
+      "noTimeouts": true,
+      "noFailedEvents": true,
+      "ownerIdentityBound": true,
+      "capabilityAndRuleBound": true
+    },
+    "gatePassed": true,
+    "sampleCounts": {
+      "requestedBlock": 10,
+      "requestedAllowed": 0,
+      "targetDetected": 10,
+      "backDispatched": 10,
+      "leftTarget": 10,
+      "returnedSource": 10,
+      "allowedProbes": 0,
+      "allowedPreserved": 0
+    },
+    "latencyUpperBoundMs": {
+      "targetDetectionP50": 70,
+      "targetDetectionP95": 131,
+      "backRequestP50": 110,
+      "backRequestP95": 175,
+      "leaveTargetP50": 186,
+      "leaveTargetP95": 318,
+      "inputDurationP50": 27,
+      "inputDurationP95": 95,
+      "pollDurationP50": 30,
+      "pollDurationP95": 47
+    }
+  },
+  "reauthorizationStress": {
+    "expectedCycles": 3,
+    "observedCycles": 3,
+    "missingCycles": [],
+    "unexpectedCycles": [],
+    "coveragePassed": true,
+    "allProbeSessionIdsUnique": true,
+    "gatePassed": true,
+    "cycles": [
+      {
+        "cycle": 1,
+        "gatePassed": true,
+        "checks": {
+          "eventSequenceIsExact": true,
+          "permissionWasRevoked": true,
+          "revokedProbeHadNoReady": true,
+          "permissionWasRestored": true,
+          "recoveredProbeHadOneReady": true,
+          "probeSessionIdsAreDistinctAndValid": true
+        },
+        "revokedSessionId": "0825ad3a2e824489a6f5163885b09ae9",
+        "recoveredSessionId": "ea8d4c468cec4c2c89b77d46e4dc3bdc"
+      },
+      {
+        "cycle": 2,
+        "gatePassed": true,
+        "checks": {
+          "eventSequenceIsExact": true,
+          "permissionWasRevoked": true,
+          "revokedProbeHadNoReady": true,
+          "permissionWasRestored": true,
+          "recoveredProbeHadOneReady": true,
+          "probeSessionIdsAreDistinctAndValid": true
+        },
+        "revokedSessionId": "1a02d688ccec4f38a5d64001ed78cf58",
+        "recoveredSessionId": "0c76d4eee8a14b9aa1235cd046391569"
+      },
+      {
+        "cycle": 3,
+        "gatePassed": true,
+        "checks": {
+          "eventSequenceIsExact": true,
+          "permissionWasRevoked": true,
+          "revokedProbeHadNoReady": true,
+          "permissionWasRestored": true,
+          "recoveredProbeHadOneReady": true,
+          "probeSessionIdsAreDistinctAndValid": true
+        },
+        "revokedSessionId": "d687a62468484e788e57c171ccadfc9f",
+        "recoveredSessionId": "b3a4db2ef6c94c09bf88e7ea9b20fcd3"
+      }
+    ]
+  },
+  "sampleGatePassed": true,
+  "safetyGatePassed": true,
+  "safetyViolations": [],
+  "provisionalDecision": "S06_RESILIENCE_STRESS_PASSED",
+  "notes": [
+    "The crash grace covers only the already bounded one-action session.",
+    "Revoked Shizuku permission must produce no privileged ready event.",
+    "This stress gate covers fixed test packages on one MIUI 14 device only."
+  ],
+  "sourceEvidence": [
+    {
+      "file": "s06-ui-kill-01.jsonl",
+      "sha256": "9D325469A783E3487DC743681D6FEA7DCF486B2C9B6E64D1BEF2BFC8AD3D1F98"
+    },
+    {
+      "file": "s06-ui-kill-02.jsonl",
+      "sha256": "108F397592F473163736E600F75556C3CE0222900E75162D3B9C078B5720FE8E"
+    },
+    {
+      "file": "s06-ui-kill-03.jsonl",
+      "sha256": "8D8F0FC9A79641C1474A693D3BE77BC95B72C70130FABF64EC579FDC7143DA3F"
+    },
+    {
+      "file": "s06-ui-kill-04.jsonl",
+      "sha256": "AE1B14BAC8C840EDF24320F5DC8F0B67C781F49E61BD7045F29F26A8EEE44F9D"
+    },
+    {
+      "file": "s06-ui-kill-05.jsonl",
+      "sha256": "70168BABAA022386054EBDB0E3469D7AF789B610AF8FE559BE024B639B318385"
+    },
+    {
+      "file": "s06-repeated-targets.jsonl",
+      "sha256": "3F61497C2FC3AA79FDD04986E816E766CDEFE70F720C6157A2531B2D9BBDF6BC"
+    },
+    {
+      "file": "s06-repeated-targets.report.json",
+      "sha256": "CE50D80AF8AA65B45B92A5DE60ABDC831C81DCE99F24C1B8AC086D96C2BAE3E4"
+    },
+    {
+      "file": "s06-reauthorization.jsonl",
+      "sha256": "68D60D8431ED28F94866AFA76562B211CB3D4E79678CA2B335263098CA24995E"
+    }
+  ],
+  "warnings": []
+}

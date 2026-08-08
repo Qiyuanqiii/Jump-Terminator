@@ -10,8 +10,8 @@ android {
         applicationId = "com.jumpterminator.s02"
         minSdk = 28
         targetSdk = 36
-        versionCode = 5
-        versionName = "0.0.5-s05"
+        versionCode = 6
+        versionName = "0.0.6-s06"
     }
 
     buildFeatures {

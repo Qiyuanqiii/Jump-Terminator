@@ -12,7 +12,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | --- | --- |
 | 文档版本 | v1.1 |
 | 文档日期 | 2026-08-08 |
-| 项目状态 | **Standard S0 No-Go；Advanced S0.2 执行面、S0.3 生命周期、S0.4 最小授权与 S0.5 调试入口边界 PoC 门通过**：仅授权继续架构与安全验证，不代表消费者版 Go |
+| 项目状态 | **Standard S0 No-Go；Advanced S0.2 执行面、S0.3 生命周期、S0.4 最小授权、S0.5 调试入口边界与 S0.6 韧性压力 PoC 门通过**：仅授权继续架构与安全验证，不代表消费者版 Go |
 | 首要适配平台 | Redmi/Xiaomi，MIUI 14 |
 | 稳定版目标平台 | Android 9-Android 16 |
 | 前瞻兼容轨道 | Android 17 Beta/正式版兼容测试 |
@@ -21,7 +21,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | 基础权限 | 无障碍服务、使用情况访问；前台服务通知，以及 OEM 后台运行引导 |
 | 增强能力 | Shizuku，可选且不得影响基础模式 |
 
-## 当前执行状态：Standard S0 No-Go；Advanced PoC 调试入口边界通过
+## 当前执行状态：Standard S0 No-Go；Advanced PoC 韧性与撤权门通过
 
 2026-08-01 启动 S0 技术可行性验证。仓库现已包含可编译的主诊断 App、测试来源 App、测试目标 App、无障碍与 UsageStats 双时间线、一次性 Back/Home 验证链、延迟真值、JSONL 导出、统计脚本和实体设备测试矩阵。Android 工程使用 Kotlin；当前诊断版本为 `v0.0.12-s0`。
 
@@ -48,6 +48,10 @@ v4 正样本 100 次的检测、Back、离开目标和返回来源均为 `100/10
 2026-08-08 完成 S0.5 调试自动化入口收口。修复前，公开导出的 `MainActivity` 会解析 `jt_s02_*` extras；在控制包已获 Shizuku 权限时，外部调用者可借该入口驱动 UserService，形成受限但真实的 confused-deputy 路径。`0.0.5-s05` 让公开 Launcher 永远拒绝自动化 extras；自动化 Activity 只存在于 debug 构建，并由平台 `android.permission.DUMP` 保护，release 构建中完全不存在。ADB shell（UID `2000`、持有 `DUMP`）仍可运行测试，普通测试应用 UID `10417` 实测收到 `SecurityException`，且两条拒绝路径均没有产生特权 `ready` 事件。
 
 S0.2 block1 观察回归与 S0.3 `ui-force-stop` 生命周期回归均通过；后者再次记录 `owner_package_stopped` 撤权且后续 Back 为 0。当前工程共有 Android 单元测试 `48` 项、Python 测试 `28` 项，完整 Gradle build/lint 通过。见 [S0.5 运行与证据](docs/s05/README.md)、[S0.5 决策](docs/s05/decision.md)和[结构化报告](docs/s05/results/miui14-23078rkd5c-s05-entrypoint-v005-20260808.report.json)。
+
+2026-08-08 完成 S0.6 韧性压力与权限撤销验证。首次冒烟发现 `0.0.5-s05` 只信任 Shizuku 的正向授权缓存：Android 运行时权限已经撤销时，新的调试会话仍可能产生 `ready`。`0.0.6-s06` 将连接门改为 Android 运行时权限与 Shizuku 授权视图同时为真；原失败样例不再复现，正常已授权路径保持可用。
+
+正式矩阵中，普通 UI 崩溃生命周期 `5/5`、固定目标检测/Back/离开/返回 `10/10`、平台权限撤销 `ready=0` 与恢复后 `ready=1` 均为 `3/3`，安全违规、超时和失败事件为 0，机器决策为 `S06_RESILIENCE_STRESS_PASSED`。当前工程共有 Android 单元测试 `52` 项、Python 测试 `35` 项，完整 Gradle build/lint 通过。见 [S0.6 运行与证据](docs/s06/README.md)、[S0.6 决策](docs/s06/decision.md)和[聚合报告](docs/s06/results/miui14-23078rkd5c-s06-resilience-v006-20260808/s06-resilience.report.json)。
 
 ## 1. 立项结论与技术边界
 
@@ -110,6 +114,8 @@ S0.3 先证明 force-stop 不会自动终止旧 UserService 授权，随后由 o
 S0.4 进一步把 owner 身份改为 Binder 服务端派生，加入一次性能力、进程内重放拒绝、规则快照、单调租约和最终动作串行化；同一设备上的安全、性能与生命周期回归通过。重放状态仍不跨 UserService 重启，系统外部竞态、多用户与真实应用仍未覆盖。
 
 S0.5 将测试命令入口从公开 Launcher 移到仅 debug 构建存在、受 `android.permission.DUMP` 保护的独立 Activity；公开 Launcher 同时保留默认拒绝作为纵深防御，release 构建不包含自动化组件。该边界只保护本地开发自动化，不构成消费者授权界面。
+
+S0.6 以 5 次普通 UI 崩溃、10 次重复目标和 3 次平台权限撤销/恢复验证有界会话的收尾、重复执行与 fail-closed。客户端现在同时核对 Android 运行时权限和 Shizuku 授权视图，避免正向授权缓存掩盖直接撤权；该修复不改变 UserService v5 的固定规则或合法已授权行为。
 
 增强模式必须遵守：
 
