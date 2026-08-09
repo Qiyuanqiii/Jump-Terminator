@@ -128,6 +128,81 @@ class OwnerAuthorizationPolicyTest {
     }
 
     @Test
+    fun `split screen ambiguity fails safe`() {
+        val policy = policyWithActive()
+
+        assertEquals(
+            "foreground_ambiguous",
+            policy.actionDenialReason(
+                SESSION_A,
+                CAPABILITY_A,
+                1_000L,
+                environment(foregroundAmbiguous = true),
+            ),
+        )
+    }
+
+    @Test
+    fun `screen off fails safe`() {
+        val policy = policyWithActive()
+
+        assertEquals(
+            "device_not_interactive",
+            policy.actionDenialReason(
+                SESSION_A,
+                CAPABILITY_A,
+                1_000L,
+                environment(deviceInteractive = false),
+            ),
+        )
+    }
+
+    @Test
+    fun `locked device fails safe`() {
+        val policy = policyWithActive()
+
+        assertEquals(
+            "device_locked",
+            policy.actionDenialReason(
+                SESSION_A,
+                CAPABILITY_A,
+                1_000L,
+                environment(keyguardLocked = true),
+            ),
+        )
+    }
+
+    @Test
+    fun `unknown device interaction state fails safe`() {
+        val policy = policyWithActive()
+
+        assertEquals(
+            "device_state_unknown",
+            policy.actionDenialReason(
+                SESSION_A,
+                CAPABILITY_A,
+                1_000L,
+                environment(deviceInteractive = null),
+            ),
+        )
+    }
+
+    @Test
+    fun `unknown keyguard state fails safe`() {
+        val policy = policyWithActive()
+
+        assertEquals(
+            "keyguard_state_unknown",
+            policy.actionDenialReason(
+                SESSION_A,
+                CAPABILITY_A,
+                1_000L,
+                environment(keyguardLocked = null),
+            ),
+        )
+    }
+
+    @Test
     fun `stale owner death cannot revoke a newer session`() {
         val policy = OwnerAuthorizationPolicy(crashGraceMs = 10_000L)
         assertTrue(policy.begin(authorization(SESSION_A, CAPABILITY_A)).accepted)
@@ -316,7 +391,16 @@ class OwnerAuthorizationPolicyTest {
     private fun environment(
         ownerPackageStopped: Boolean? = false,
         topComponent: String = TARGET_COMPONENT,
-    ) = ActionEnvironment(ownerPackageStopped, topComponent)
+        foregroundAmbiguous: Boolean = false,
+        deviceInteractive: Boolean? = true,
+        keyguardLocked: Boolean? = false,
+    ) = ActionEnvironment(
+        ownerPackageStopped = ownerPackageStopped,
+        topComponent = topComponent,
+        foregroundAmbiguous = foregroundAmbiguous,
+        deviceInteractive = deviceInteractive,
+        keyguardLocked = keyguardLocked,
+    )
 
     private companion object {
         const val SESSION_A = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

@@ -200,11 +200,32 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
         val armed = authorizationSession.armed
         val mode = if (armed) "armed" else "observe"
         var lastState = ""
+        var lastForegroundSignature = ""
         var sourceContext = false
         var targetHandled = false
         var pendingLeave = false
         var lastSourceSample = System.currentTimeMillis()
         var entryLowerBound = lastSourceSample
+        var unknownSinceMs: Long? = null
+
+        fun invalidateSourceContext(
+            reason: String,
+            foreground: ForegroundSnapshot,
+            deviceState: DeviceInteractionState? = null,
+        ) {
+            if (!sourceContext) return
+            emit(
+                sessionId,
+                "source_context_invalidated",
+                data = mapOf(
+                    "reason" to reason,
+                    "resumedComponents" to foreground.resumedComponents,
+                    "deviceInteractive" to deviceState?.interactive,
+                    "keyguardLocked" to deviceState?.keyguardLocked,
+                ),
+            )
+            sourceContext = false
+        }
 
         emit(
             sessionId,
@@ -249,22 +270,50 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
                     return
                 }
                 val pollStart = System.currentTimeMillis()
-                val component = readTopComponent()
+                val foreground = readForegroundSnapshot()
+                val component = foreground.topComponent
                 val pollEnd = System.currentTimeMillis()
-                val state = when (component) {
-                    SOURCE_COMPONENT -> "source"
-                    TARGET_COMPONENT -> "target"
-                    "unknown" -> "unknown"
+                val state = when {
+                    foreground.ambiguous -> "ambiguous"
+                    component == SOURCE_COMPONENT -> "source"
+                    component == TARGET_COMPONENT -> "target"
+                    component == "unknown" -> "unknown"
                     else -> "other"
                 }
+                unknownSinceMs = if (state == "unknown") {
+                    unknownSinceMs ?: pollEnd
+                } else {
+                    null
+                }
+                val foregroundUnknownSustained = state == "unknown" &&
+                    pollEnd - (unknownSinceMs ?: pollEnd) >= UNKNOWN_INVALIDATION_MS
+                val deviceState = if (
+                    sourceContext || state == "source" || state == "target" || state == "unknown"
+                ) {
+                    readDeviceInteractionState()
+                } else {
+                    null
+                }
+                val deviceInvalidationReason = when {
+                    deviceState?.interactive == false -> "device_not_interactive"
+                    deviceState?.interactive == null && deviceState != null -> "device_state_unknown"
+                    deviceState?.keyguardLocked == true -> "device_locked"
+                    deviceState?.keyguardLocked == null && deviceState != null -> "keyguard_state_unknown"
+                    else -> null
+                }
+                val foregroundSignature = foreground.resumedComponents.joinToString("|")
 
-                if (state != lastState) {
+                if (state != lastState || foregroundSignature != lastForegroundSignature) {
                     emit(
                         sessionId,
                         "foreground_changed",
                         packageName = component,
                         timeMs = pollEnd,
-                        data = mapOf("state" to state, "component" to component),
+                        data = mapOf(
+                            "state" to state,
+                            "component" to component,
+                            "resumedComponents" to foreground.resumedComponents,
+                        ),
                     )
                 }
 
@@ -285,7 +334,13 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
                     pendingLeave = false
                 }
 
-                when (state) {
+                if (deviceInvalidationReason != null) {
+                    invalidateSourceContext(
+                        reason = deviceInvalidationReason,
+                        foreground = foreground,
+                        deviceState = deviceState,
+                    )
+                } else when (state) {
                     "source" -> {
                         sourceContext = true
                         targetHandled = false
@@ -313,10 +368,24 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
                         )
                         if (armed && !dispatchBack(authorizationSession, entryLowerBound)) return
                     }
-                    "other" -> sourceContext = false
+                    "other" -> invalidateSourceContext(
+                        reason = "foreground_changed",
+                        foreground = foreground,
+                    )
+                    "ambiguous" -> invalidateSourceContext(
+                        reason = "foreground_ambiguous",
+                        foreground = foreground,
+                    )
+                    "unknown" -> if (foregroundUnknownSustained) {
+                        invalidateSourceContext(
+                            reason = "foreground_changed",
+                            foreground = foreground,
+                        )
+                    }
                 }
 
                 lastState = state
+                lastForegroundSignature = foregroundSignature
                 if (
                     scenario == "block" &&
                     detections >= requestedBlock &&
@@ -384,11 +453,16 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
             expectedCapability = authorizationSession.capability,
             nowElapsedProvider = SystemClock::elapsedRealtime,
             environmentProvider = {
+                val foreground = readForegroundSnapshot()
+                val deviceState = readDeviceInteractionState()
                 ActionEnvironment(
                     ownerPackageStopped = readOwnerPackageStopped(
                         authorizationSession.owner.userId,
                     ),
-                    topComponent = readTopComponent(),
+                    topComponent = foreground.topComponent,
+                    foregroundAmbiguous = foreground.ambiguous,
+                    deviceInteractive = deviceState.interactive,
+                    keyguardLocked = deviceState.keyguardLocked,
                 )
             },
             launcher = {
@@ -602,17 +676,33 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
         }
     }
 
-    private fun readTopComponent(): String = try {
+    private fun readForegroundSnapshot(): ForegroundSnapshot = try {
         val process = ProcessBuilder(
             SH,
             "-c",
-            "dumpsys activity activities 2>/dev/null | grep -m1 'topResumedActivity='",
+            "dumpsys activity activities 2>/dev/null | grep 'topResumedActivity='",
         ).redirectErrorStream(true).start()
-        val line = BufferedReader(InputStreamReader(process.inputStream)).use { it.readLine() }
+        val output = BufferedReader(InputStreamReader(process.inputStream)).use { it.readText() }
         process.waitFor()
-        TOP_COMPONENT.find(line.orEmpty())?.groupValues?.getOrNull(1) ?: "unknown"
+        ForegroundSnapshotParser.parse(output)
     } catch (_: Throwable) {
-        "unknown"
+        ForegroundSnapshot("unknown", emptyList(), ambiguous = false)
+    }
+
+    private fun readDeviceInteractionState(): DeviceInteractionState = try {
+        val process = ProcessBuilder(
+            SH,
+            "-c",
+            "dumpsys power 2>/dev/null | grep -m1 'mWakefulness='; " +
+                "dumpsys window 2>/dev/null | " +
+                "grep -E 'mDreamingLockscreen=|mShowingLockscreen=|" +
+                "isStatusBarKeyguard=|mInputRestricted='",
+        ).redirectErrorStream(true).start()
+        val output = BufferedReader(InputStreamReader(process.inputStream)).use { it.readText() }
+        process.waitFor()
+        DeviceInteractionStateParser.parse(output)
+    } catch (_: Throwable) {
+        DeviceInteractionState(interactive = null, keyguardLocked = null)
     }
 
     private fun emit(
@@ -662,7 +752,7 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
         private const val FINGERPRINT_LOG_LENGTH = 16
         private const val MAX_QUEUED_EVENTS = 1_000
         private const val MAX_ALLOWED_PROBES = 60
+        private const val UNKNOWN_INVALIDATION_MS = 500L
         private val ALLOWED_COUNTS = setOf(1, 10, 100)
-        private val TOP_COMPONENT = Regex(" u\\d+ ([^}\\s]+)")
     }
 }

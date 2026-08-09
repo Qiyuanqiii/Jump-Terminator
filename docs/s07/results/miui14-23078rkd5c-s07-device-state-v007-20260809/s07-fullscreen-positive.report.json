@@ -1,0 +1,154 @@
+{
+  "schema": "s0.2-report-1",
+  "eventCount": 58,
+  "sessionCount": 1,
+  "executors": [
+    "shizuku_user_service"
+  ],
+  "authorization": {
+    "ownerBoundSessions": 1,
+    "allSessionsOwnerBound": true,
+    "crashGraceMs": [
+      10000
+    ],
+    "ownerUserIds": [
+      0
+    ],
+    "protocols": [
+      "s0.4-1"
+    ],
+    "ownerUidSources": [
+      "binder"
+    ],
+    "binderDerivedSessions": 1,
+    "allSessionsBinderDerived": true,
+    "signingIdentitySessions": 1,
+    "allSessionsSigningIdentityResolved": true,
+    "oneTimeCapabilitySessions": 1,
+    "allSessionsOneTimeCapability": true,
+    "capabilityFingerprints": [
+      "058b44dab43ed276"
+    ],
+    "ruleSnapshotSha256": [
+      "7a30285342df7950b2b3a022a32eba01d10b5ec71efaefa5bbf77b7ba3a4dad4"
+    ],
+    "allSessionsRuleSnapshotBound": true,
+    "leaseDurationsMs": [
+      140000
+    ],
+    "finalActionSerializations": [
+      "authorization_lock"
+    ]
+  },
+  "sessions": {
+    "be61eef9e03b4f5fa59b5fff7443c4ba": {
+      "scenario": "block",
+      "mode": "armed",
+      "events": 58,
+      "ownerBound": true,
+      "crashGraceMs": 10000,
+      "ownerUserId": 0,
+      "authorizationProtocol": "s0.4-1",
+      "ownerUidSource": "binder",
+      "ownerUid": 10418,
+      "ownerPackage": "com.jumpterminator.s02",
+      "oneTimeCapability": true,
+      "capabilityFingerprint": "058b44dab43ed276",
+      "ruleSnapshotSha256": "7a30285342df7950b2b3a022a32eba01d10b5ec71efaefa5bbf77b7ba3a4dad4",
+      "leaseDurationMs": 140000,
+      "finalActionSerialization": "authorization_lock"
+    }
+  },
+  "sampleCounts": {
+    "requestedBlock": 10,
+    "requestedAllowed": 0,
+    "targetDetected": 10,
+    "backDispatched": 10,
+    "leftTarget": 10,
+    "returnedSource": 10,
+    "allowedProbes": 0,
+    "allowedPreserved": 0
+  },
+  "metrics": {
+    "targetDetection": {
+      "successes": 10,
+      "total": 10,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.7224672001371107,
+        0.9999999999999999
+      ]
+    },
+    "backDispatch": {
+      "successes": 10,
+      "total": 10,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.7224672001371107,
+        0.9999999999999999
+      ]
+    },
+    "finalLeaveTarget": {
+      "successes": 10,
+      "total": 10,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.7224672001371107,
+        0.9999999999999999
+      ]
+    },
+    "returnToSource": {
+      "successes": 10,
+      "total": 10,
+      "pointEstimate": 1.0,
+      "wilson95": [
+        0.7224672001371107,
+        0.9999999999999999
+      ]
+    },
+    "allowedFlowFalseBlock": {
+      "successes": 0,
+      "total": 0,
+      "pointEstimate": null,
+      "wilson95": [
+        null,
+        null
+      ]
+    },
+    "allowedProbePreserved": {
+      "successes": 0,
+      "total": 0,
+      "pointEstimate": null,
+      "wilson95": [
+        null,
+        null
+      ]
+    }
+  },
+  "latencyUpperBoundMs": {
+    "targetDetectionP50": 134,
+    "targetDetectionP95": 274,
+    "backRequestP50": 305,
+    "backRequestP95": 409,
+    "leaveTargetP50": 380,
+    "leaveTargetP95": 504,
+    "inputDurationP50": 25,
+    "inputDurationP95": 34,
+    "pollDurationP50": 21,
+    "pollDurationP95": 36
+  },
+  "safetyViolations": [],
+  "timeoutCount": 0,
+  "failedEventCount": 0,
+  "blockSessionsComplete": true,
+  "allowedSessionsComplete": false,
+  "sampleGatePassed": false,
+  "thresholdGatePassed": false,
+  "provisionalDecision": "NOT_READY",
+  "notes": [
+    "This is a bounded privileged-companion experiment, not a consumer-app S0 Go.",
+    "Latency values are conservative upper bounds from the last observed source sample.",
+    "SHIZUKU_POC_FEASIBLE authorizes architecture work, not consumer release."
+  ],
+  "warnings": []
+}

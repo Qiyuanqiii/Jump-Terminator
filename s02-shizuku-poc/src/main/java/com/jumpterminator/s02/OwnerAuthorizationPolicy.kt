@@ -127,6 +127,9 @@ internal class OwnerAuthorizationPolicy(
             ActionEnvironment(
                 ownerPackageStopped = null,
                 topComponent = "unknown",
+                foregroundAmbiguous = true,
+                deviceInteractive = null,
+                keyguardLocked = null,
             )
         }
         val denialReason = actionDenialReasonLocked(
@@ -229,6 +232,19 @@ internal class OwnerAuthorizationPolicy(
             true -> return setRevokedLocked("owner_package_stopped")
             null -> return setRevokedLocked("owner_state_unknown")
             false -> Unit
+        }
+        when (environment.deviceInteractive) {
+            false -> return setRevokedLocked("device_not_interactive")
+            null -> return setRevokedLocked("device_state_unknown")
+            true -> Unit
+        }
+        when (environment.keyguardLocked) {
+            true -> return setRevokedLocked("device_locked")
+            null -> return setRevokedLocked("keyguard_state_unknown")
+            false -> Unit
+        }
+        if (environment.foregroundAmbiguous) {
+            return setRevokedLocked("foreground_ambiguous")
         }
         if (environment.topComponent == "unknown") {
             return setRevokedLocked("foreground_state_unknown")

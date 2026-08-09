@@ -11,8 +11,8 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | 项目 | 内容 |
 | --- | --- |
 | 文档版本 | v1.1 |
-| 文档日期 | 2026-08-08 |
-| 项目状态 | **Standard S0 No-Go；Advanced S0.2 执行面、S0.3 生命周期、S0.4 最小授权、S0.5 调试入口边界与 S0.6 韧性压力 PoC 门通过**：仅授权继续架构与安全验证，不代表消费者版 Go |
+| 文档日期 | 2026-08-09 |
+| 项目状态 | **Standard S0 No-Go；Advanced S0.2-S0.7 执行面、生命周期、最小授权、调试入口、韧性与设备状态上下文 PoC 门通过**：仅授权继续架构与安全验证，不代表消费者版 Go |
 | 首要适配平台 | Redmi/Xiaomi，MIUI 14 |
 | 稳定版目标平台 | Android 9-Android 16 |
 | 前瞻兼容轨道 | Android 17 Beta/正式版兼容测试 |
@@ -21,7 +21,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | 基础权限 | 无障碍服务、使用情况访问；前台服务通知，以及 OEM 后台运行引导 |
 | 增强能力 | Shizuku，可选且不得影响基础模式 |
 
-## 当前执行状态：Standard S0 No-Go；Advanced PoC 韧性与撤权门通过
+## 当前执行状态：Standard S0 No-Go；Advanced PoC 设备状态上下文门通过
 
 2026-08-01 启动 S0 技术可行性验证。仓库现已包含可编译的主诊断 App、测试来源 App、测试目标 App、无障碍与 UsageStats 双时间线、一次性 Back/Home 验证链、延迟真值、JSONL 导出、统计脚本和实体设备测试矩阵。Android 工程使用 Kotlin；当前诊断版本为 `v0.0.12-s0`。
 
@@ -52,6 +52,10 @@ S0.2 block1 观察回归与 S0.3 `ui-force-stop` 生命周期回归均通过；�
 2026-08-08 完成 S0.6 韧性压力与权限撤销验证。首次冒烟发现 `0.0.5-s05` 只信任 Shizuku 的正向授权缓存：Android 运行时权限已经撤销时，新的调试会话仍可能产生 `ready`。`0.0.6-s06` 将连接门改为 Android 运行时权限与 Shizuku 授权视图同时为真；原失败样例不再复现，正常已授权路径保持可用。
 
 正式矩阵中，普通 UI 崩溃生命周期 `5/5`、固定目标检测/Back/离开/返回 `10/10`、平台权限撤销 `ready=0` 与恢复后 `ready=1` 均为 `3/3`，安全违规、超时和失败事件为 0，机器决策为 `S06_RESILIENCE_STRESS_PASSED`。当前工程共有 Android 单元测试 `52` 项、Python 测试 `35` 项，完整 Gradle build/lint 通过。见 [S0.6 运行与证据](docs/s06/README.md)、[S0.6 决策](docs/s06/decision.md)和[聚合报告](docs/s06/results/miui14-23078rkd5c-s06-resilience-v006-20260808/s06-resilience.report.json)。
+
+2026-08-09 完成 S0.7 设备状态与多窗口上下文失效验证。修复前 `0.0.6-s06` 只读取第一条 `topResumedActivity`，在来源与目标同时 resumed 的真实分屏中误产生 1 次检测和 1 次 Back。`0.0.7-s07` 改为解析完整前台集合：多前台、息屏或锁屏立即使来源上下文失效，最终动作同时复核交互状态、锁屏状态和前台歧义；仅 MIUI 普通切换中的瞬时前台空洞采用 500 ms 持续门。
+
+正式矩阵中，最近任务 `5/5`、分屏 `5/5`、息屏/安全锁屏恢复 `1/1` 均为目标检测 `0`、Back `0`；全屏正向对照的检测、Back、离开目标和返回来源均为 `10/10`。11 个零动作会话 ID 唯一，证据警告、安全违规、超时和失败事件均为 0，机器决策为 `S07_DEVICE_STATE_GATE_PASSED`。当前工程共有 Android 单元测试 `63` 项、Python 测试 `41` 项，完整 Gradle build/lint 通过。见 [S0.7 运行与证据](docs/s07/README.md)、[S0.7 决策](docs/s07/decision.md)和[聚合报告](docs/s07/results/miui14-23078rkd5c-s07-device-state-v007-20260809/s07-device-state.report.json)。
 
 ## 1. 立项结论与技术边界
 
@@ -116,6 +120,8 @@ S0.4 进一步把 owner 身份改为 Binder 服务端派生，加入一次性能
 S0.5 将测试命令入口从公开 Launcher 移到仅 debug 构建存在、受 `android.permission.DUMP` 保护的独立 Activity；公开 Launcher 同时保留默认拒绝作为纵深防御，release 构建不包含自动化组件。该边界只保护本地开发自动化，不构成消费者授权界面。
 
 S0.6 以 5 次普通 UI 崩溃、10 次重复目标和 3 次平台权限撤销/恢复验证有界会话的收尾、重复执行与 fail-closed。客户端现在同时核对 Android 运行时权限和 Shizuku 授权视图，避免正向授权缓存掩盖直接撤权；该修复不改变 UserService v5 的固定规则或合法已授权行为。
+
+S0.7 将动作授权扩展到完整 top-resumed 集合、设备交互状态和安全锁屏状态。最近任务、分屏歧义、息屏或锁屏都会撤销来源上下文；前台集合、设备状态或锁屏状态未知时最终动作拒绝。v7 在同一设备上的 5/5 最近任务、5/5 分屏和 1/1 锁屏恢复零动作门通过，同时保留 10/10 全屏固定目标行为。
 
 增强模式必须遵守：
 

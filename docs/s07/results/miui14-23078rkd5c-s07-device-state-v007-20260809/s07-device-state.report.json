@@ -1,0 +1,597 @@
+{
+  "schema": "s0.7-device-state-report-1",
+  "expected": {
+    "recents": 5,
+    "split-screen": 5,
+    "screen-lock": 1
+  },
+  "deviceStateStress": {
+    "recents": {
+      "expectedCycles": 5,
+      "observedCycles": 5,
+      "coveragePassed": true,
+      "gatePassed": true,
+      "sessions": [
+        {
+          "scenario": "recents",
+          "cycle": 1,
+          "sessionId": "6446342d386b4b6db8eff55292f4662e",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "sourceContextInvalidatedByRecents": true,
+            "recentsRemovedSourceFromTop": true
+          },
+          "observed": {
+            "companionEventCount": 8,
+            "invalidationReasons": [
+              "foreground_changed"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.miui.home/.launcher.Launcher"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [],
+              "splitScreenMarkerCount": 0
+            },
+            "recovery": null
+          }
+        },
+        {
+          "scenario": "recents",
+          "cycle": 2,
+          "sessionId": "5f20f0e3e6b846d081f80f674ed85cd2",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "sourceContextInvalidatedByRecents": true,
+            "recentsRemovedSourceFromTop": true
+          },
+          "observed": {
+            "companionEventCount": 8,
+            "invalidationReasons": [
+              "foreground_changed"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.miui.home/.launcher.Launcher"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [],
+              "splitScreenMarkerCount": 0
+            },
+            "recovery": null
+          }
+        },
+        {
+          "scenario": "recents",
+          "cycle": 3,
+          "sessionId": "295c8c044fb145359c8a5ebd01407173",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "sourceContextInvalidatedByRecents": true,
+            "recentsRemovedSourceFromTop": true
+          },
+          "observed": {
+            "companionEventCount": 8,
+            "invalidationReasons": [
+              "foreground_changed"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.miui.home/.launcher.Launcher"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [],
+              "splitScreenMarkerCount": 0
+            },
+            "recovery": null
+          }
+        },
+        {
+          "scenario": "recents",
+          "cycle": 4,
+          "sessionId": "b9a7e8583b8041c1a6448aa7b5f602a1",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "sourceContextInvalidatedByRecents": true,
+            "recentsRemovedSourceFromTop": true
+          },
+          "observed": {
+            "companionEventCount": 8,
+            "invalidationReasons": [
+              "foreground_changed"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.miui.home/.launcher.Launcher"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [],
+              "splitScreenMarkerCount": 0
+            },
+            "recovery": null
+          }
+        },
+        {
+          "scenario": "recents",
+          "cycle": 5,
+          "sessionId": "9f14f7cfe4fa4690bf12b11a1465eb78",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "sourceContextInvalidatedByRecents": true,
+            "recentsRemovedSourceFromTop": true
+          },
+          "observed": {
+            "companionEventCount": 8,
+            "invalidationReasons": [
+              "foreground_changed"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.miui.home/.launcher.Launcher"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [],
+              "splitScreenMarkerCount": 0
+            },
+            "recovery": null
+          }
+        }
+      ]
+    },
+    "split-screen": {
+      "expectedCycles": 5,
+      "observedCycles": 5,
+      "coveragePassed": true,
+      "gatePassed": true,
+      "sessions": [
+        {
+          "scenario": "split-screen",
+          "cycle": 1,
+          "sessionId": "bd35294d145541c5bb99f11c49ade873",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "bothTestActivitiesResumed": true,
+            "splitScreenStateObserved": true,
+            "ambiguousForegroundObserved": true,
+            "sourceContextInvalidatedByAmbiguity": true
+          },
+          "observed": {
+            "companionEventCount": 6,
+            "invalidationReasons": [
+              "foreground_ambiguous"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testtarget/.TargetActivity",
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 3
+            },
+            "recovery": null
+          }
+        },
+        {
+          "scenario": "split-screen",
+          "cycle": 2,
+          "sessionId": "58816ade13e2471c95bb94f149691a4a",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "bothTestActivitiesResumed": true,
+            "splitScreenStateObserved": true,
+            "ambiguousForegroundObserved": true,
+            "sourceContextInvalidatedByAmbiguity": true
+          },
+          "observed": {
+            "companionEventCount": 6,
+            "invalidationReasons": [
+              "foreground_ambiguous"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testtarget/.TargetActivity",
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 3
+            },
+            "recovery": null
+          }
+        },
+        {
+          "scenario": "split-screen",
+          "cycle": 3,
+          "sessionId": "bf5a1d49c29b48b4a454504d1d8532fd",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "bothTestActivitiesResumed": true,
+            "splitScreenStateObserved": true,
+            "ambiguousForegroundObserved": true,
+            "sourceContextInvalidatedByAmbiguity": true
+          },
+          "observed": {
+            "companionEventCount": 6,
+            "invalidationReasons": [
+              "foreground_ambiguous"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testtarget/.TargetActivity",
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 3
+            },
+            "recovery": null
+          }
+        },
+        {
+          "scenario": "split-screen",
+          "cycle": 4,
+          "sessionId": "d0c0163567fc486a9d260fcd3ed7c3d7",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "bothTestActivitiesResumed": true,
+            "splitScreenStateObserved": true,
+            "ambiguousForegroundObserved": true,
+            "sourceContextInvalidatedByAmbiguity": true
+          },
+          "observed": {
+            "companionEventCount": 6,
+            "invalidationReasons": [
+              "foreground_ambiguous"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testtarget/.TargetActivity",
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 3
+            },
+            "recovery": null
+          }
+        },
+        {
+          "scenario": "split-screen",
+          "cycle": 5,
+          "sessionId": "a123900a900a42a880b6e7db48882638",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "bothTestActivitiesResumed": true,
+            "splitScreenStateObserved": true,
+            "ambiguousForegroundObserved": true,
+            "sourceContextInvalidatedByAmbiguity": true
+          },
+          "observed": {
+            "companionEventCount": 6,
+            "invalidationReasons": [
+              "foreground_ambiguous"
+            ],
+            "boundary": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": true,
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testtarget/.TargetActivity",
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 3
+            },
+            "recovery": null
+          }
+        }
+      ]
+    },
+    "screen-lock": {
+      "expectedCycles": 1,
+      "observedCycles": 1,
+      "coveragePassed": true,
+      "gatePassed": true,
+      "sessions": [
+        {
+          "scenario": "screen-lock",
+          "cycle": 1,
+          "sessionId": "167a7abb751a42b0b374f297778f8bef",
+          "gatePassed": true,
+          "checks": {
+            "scenarioCompleted": true,
+            "runnerErrorFree": true,
+            "readyExactlyOnce": true,
+            "sourceWasObserved": true,
+            "targetLaunchSucceeded": true,
+            "targetWasObserved": true,
+            "noTargetDetection": true,
+            "noBackRequested": true,
+            "noServiceError": true,
+            "nonInteractiveBoundaryObserved": true,
+            "sourceContextInvalidatedWhileAsleep": true,
+            "deviceRecoveredInteractive": true,
+            "deviceRecoveredUnlocked": true
+          },
+          "observed": {
+            "companionEventCount": 7,
+            "invalidationReasons": [
+              "device_not_interactive"
+            ],
+            "boundary": {
+              "interactive": false,
+              "wakefulness": "Dozing",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testsource/.SourceActivity"
+              ],
+              "splitScreenMarkerCount": 0
+            },
+            "target": {
+              "exitCode": 0,
+              "interactive": false,
+              "keyguardLocked": true,
+              "topResumedComponents": [],
+              "splitScreenMarkerCount": 0
+            },
+            "recovery": {
+              "interactive": true,
+              "wakefulness": "Awake",
+              "keyguardLocked": false,
+              "topResumedComponents": [
+                "com.jumpterminator.testtarget/.TargetActivity"
+              ],
+              "splitScreenMarkerCount": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "sessionIdsUnique": true,
+  "fullscreenPositiveControl": {
+    "checks": {
+      "reportSchemaIsS02": true,
+      "usesShizukuUserService": true,
+      "requestedTen": true,
+      "detectedTen": true,
+      "backDispatchedTen": true,
+      "leftTargetTen": true,
+      "returnedSourceTen": true,
+      "sessionCompleted": true,
+      "ownerIdentityBound": true,
+      "capabilityAndRuleBound": true,
+      "noSafetyViolations": true,
+      "noTimeouts": true,
+      "noFailedEvents": true,
+      "reportHasNoWarnings": true
+    },
+    "gatePassed": true,
+    "sampleCounts": {
+      "requestedBlock": 10,
+      "requestedAllowed": 0,
+      "targetDetected": 10,
+      "backDispatched": 10,
+      "leftTarget": 10,
+      "returnedSource": 10,
+      "allowedProbes": 0,
+      "allowedPreserved": 0
+    },
+    "latencyUpperBoundMs": {
+      "targetDetectionP50": 134,
+      "targetDetectionP95": 274,
+      "backRequestP50": 305,
+      "backRequestP95": 409,
+      "leaveTargetP50": 380,
+      "leaveTargetP95": 504,
+      "inputDurationP50": 25,
+      "inputDurationP95": 34,
+      "pollDurationP50": 21,
+      "pollDurationP95": 36
+    }
+  },
+  "sampleGatePassed": true,
+  "safetyGatePassed": true,
+  "safetyViolations": [],
+  "provisionalDecision": "S07_DEVICE_STATE_GATE_PASSED",
+  "notes": [
+    "Recents, split-screen and screen-lock samples are zero-action contexts.",
+    "The fullscreen positive control preserves the fixed-package Back behavior.",
+    "This gate covers one MIUI 14 device and debug automation only."
+  ],
+  "sourceEvidence": [
+    {
+      "file": "s07-device-state.jsonl",
+      "sha256": "37D994A654795CFD5A506FCA7086FC2F596C06EBB60CC3B1DB4BEC65122A279F"
+    },
+    {
+      "file": "s07-fullscreen-positive.jsonl",
+      "sha256": "039D9A401D2BDABE2354EDC3C15139A23A417503D59C361481EE43495100D8DD"
+    },
+    {
+      "file": "s07-fullscreen-positive.report.json",
+      "sha256": "BB0377C38128E7729AE47FD595B688B8E15C776268031174717340D95F14085A"
+    }
+  ],
+  "warnings": []
+}
