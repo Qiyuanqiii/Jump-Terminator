@@ -3,11 +3,20 @@ package com.jumpterminator.s02
 internal data class ForegroundSnapshot(
     val topComponent: String,
     val resumedComponents: List<String>,
+    val pinnedPackages: List<String>,
+    val pictureInPictureActive: Boolean,
     val ambiguous: Boolean,
 )
 
 internal object ForegroundSnapshotParser {
     private val componentPattern = Regex(" u\\d+ ([^}\\s]+)")
+    private val pinnedTaskPackagePattern = Regex(
+        "Task\\{[^\\r\\n]*\\bA=\\d+:([^\\s}]+)[^\\r\\n]*\\bmode=pinned\\b",
+    )
+    private val activePictureInPicturePattern = Regex(
+        "(?:\\bmode=pinned\\b|\\bmWindowingMode=pinned\\b|" +
+            "\\bmLastReportedPictureInPictureMode=true\\b)",
+    )
 
     fun parse(output: String): ForegroundSnapshot {
         val components = output.lineSequence()
@@ -17,10 +26,17 @@ internal object ForegroundSnapshotParser {
             }
             .distinct()
             .toList()
+        val pinnedPackages = pinnedTaskPackagePattern.findAll(output)
+            .map { match -> match.groupValues[1] }
+            .distinct()
+            .toList()
+        val pictureInPictureActive = activePictureInPicturePattern.containsMatchIn(output)
         return ForegroundSnapshot(
             topComponent = components.firstOrNull() ?: "unknown",
             resumedComponents = components,
-            ambiguous = components.size > 1,
+            pinnedPackages = pinnedPackages,
+            pictureInPictureActive = pictureInPictureActive,
+            ambiguous = components.size > 1 || pictureInPictureActive,
         )
     }
 }

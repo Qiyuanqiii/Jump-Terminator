@@ -15,6 +15,8 @@ class ForegroundSafetyTest {
 
         assertEquals("example.source/.MainActivity", snapshot.topComponent)
         assertEquals(listOf("example.source/.MainActivity"), snapshot.resumedComponents)
+        assertTrue(snapshot.pinnedPackages.isEmpty())
+        assertFalse(snapshot.pictureInPictureActive)
         assertFalse(snapshot.ambiguous)
     }
 
@@ -39,6 +41,50 @@ class ForegroundSafetyTest {
         assertEquals("unknown", snapshot.topComponent)
         assertTrue(snapshot.resumedComponents.isEmpty())
         assertFalse(snapshot.ambiguous)
+    }
+
+    @Test
+    fun `active pinned task makes an otherwise single foreground fail closed`() {
+        val snapshot = ForegroundSnapshotParser.parse(
+            """
+            Task{abc #42 type=standard A=10416:example.pip U=0 visible=true mode=pinned translucent=true sz=1}
+              mWindowingMode=pinned
+              mLastReportedPictureInPictureMode=true
+            topResumedActivity=ActivityRecord{def u0 example.target/.MainActivity t43}
+            """.trimIndent(),
+        )
+
+        assertEquals("example.target/.MainActivity", snapshot.topComponent)
+        assertEquals(listOf("example.pip"), snapshot.pinnedPackages)
+        assertTrue(snapshot.pictureInPictureActive)
+        assertTrue(snapshot.ambiguous)
+    }
+
+    @Test
+    fun `manifest capability without an active pinned task is not picture in picture`() {
+        val snapshot = ForegroundSnapshotParser.parse(
+            """
+            supportsPictureInPicture=true
+            topResumedActivity=ActivityRecord{abc u0 example.target/.MainActivity t43}
+            """.trimIndent(),
+        )
+
+        assertFalse(snapshot.pictureInPictureActive)
+        assertFalse(snapshot.ambiguous)
+    }
+
+    @Test
+    fun `reported picture in picture transition fails closed without a task package`() {
+        val snapshot = ForegroundSnapshotParser.parse(
+            """
+            mLastReportedPictureInPictureMode=true
+            topResumedActivity=ActivityRecord{abc u0 example.target/.MainActivity t43}
+            """.trimIndent(),
+        )
+
+        assertTrue(snapshot.pinnedPackages.isEmpty())
+        assertTrue(snapshot.pictureInPictureActive)
+        assertTrue(snapshot.ambiguous)
     }
 
     @Test

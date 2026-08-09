@@ -143,6 +143,21 @@ class OwnerAuthorizationPolicyTest {
     }
 
     @Test
+    fun `picture in picture fails safe even when target is top resumed`() {
+        val policy = policyWithActive()
+
+        assertEquals(
+            "picture_in_picture",
+            policy.actionDenialReason(
+                SESSION_A,
+                CAPABILITY_A,
+                1_000L,
+                environment(pictureInPictureActive = true),
+            ),
+        )
+    }
+
+    @Test
     fun `screen off fails safe`() {
         val policy = policyWithActive()
 
@@ -391,12 +406,14 @@ class OwnerAuthorizationPolicyTest {
     private fun environment(
         ownerPackageStopped: Boolean? = false,
         topComponent: String = TARGET_COMPONENT,
+        pictureInPictureActive: Boolean = false,
         foregroundAmbiguous: Boolean = false,
         deviceInteractive: Boolean? = true,
         keyguardLocked: Boolean? = false,
     ) = ActionEnvironment(
         ownerPackageStopped = ownerPackageStopped,
         topComponent = topComponent,
+        pictureInPictureActive = pictureInPictureActive,
         foregroundAmbiguous = foregroundAmbiguous,
         deviceInteractive = deviceInteractive,
         keyguardLocked = keyguardLocked,

@@ -17,7 +17,9 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".TargetActivity"
-            android:exported="true" />
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:exported="true"
+            android:supportsPictureInPicture="true" />
     </application>
 
 </manifest>

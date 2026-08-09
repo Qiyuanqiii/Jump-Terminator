@@ -1,14 +1,19 @@
 package com.jumpterminator.testsource
 
 import android.app.Activity
+import android.app.PictureInPictureParams
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.provider.Settings
+import android.util.Log
+import android.util.Rational
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -31,18 +36,29 @@ class SourceActivity : Activity() {
     private var activeTriggerType = ""
     private var activeExpected = ""
     private var activeTargetPackage = ""
+    private var pipSessionId = "unknown"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(buildContent())
         handleS02Automation(intent)
+        handleS08PiP(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         handleS02Automation(intent)
+        handleS08PiP(intent)
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration,
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        logPipEvent("pip_mode_changed", "\"active\":$isInPictureInPictureMode")
     }
 
     override fun onResume() {
@@ -255,6 +271,33 @@ class SourceActivity : Activity() {
         }, S02_PROBE_START_DELAY_MS)
     }
 
+    private fun handleS08PiP(commandIntent: Intent?) {
+        if (commandIntent?.getBooleanExtra(EXTRA_S08_ENTER_PIP, false) != true) return
+        commandIntent.removeExtra(EXTRA_S08_ENTER_PIP)
+        pipSessionId = commandIntent.getStringExtra(EXTRA_S08_SESSION)
+            ?.takeIf(S08_SESSION_PATTERN::matches)
+            ?: "unknown"
+        logPipEvent("pip_scheduled", "\"delayMs\":$S08_PIP_DELAY_MS")
+        handler.postDelayed({
+            val accepted = enterPictureInPictureMode(
+                PictureInPictureParams.Builder()
+                    .setAspectRatio(Rational(16, 9))
+                    .build(),
+            )
+            logPipEvent("pip_requested", "\"accepted\":$accepted")
+        }, S08_PIP_DELAY_MS)
+    }
+
+    private fun logPipEvent(kind: String, details: String) {
+        Log.i(
+            S08_PIP_LOG_TAG,
+            "{\"schema\":\"s0.8-pip-1\",\"kind\":\"$kind\"," +
+                "\"sessionId\":\"$pipSessionId\",\"role\":\"source\"," +
+                "\"wallClockMs\":${System.currentTimeMillis()}," +
+                "\"elapsedRealtimeMs\":${SystemClock.elapsedRealtime()},$details}",
+        )
+    }
+
     private fun emitIssued(triggerType: String, expected: String, targetPackage: String) {
         activeTriggerType = triggerType
         activeExpected = expected
@@ -303,10 +346,15 @@ class SourceActivity : Activity() {
         private const val STRESS_LOOP_GAP_MS = 1_200L
         private const val EXTRA_S02_BATCH_COUNT = "jt_s02_batch_count"
         private const val EXTRA_S02_ALLOWED_PROBE = "jt_s02_allowed_probe"
+        private const val EXTRA_S08_ENTER_PIP = "jt_s08_enter_pip"
+        private const val EXTRA_S08_SESSION = "jt_s08_session"
+        private const val S08_PIP_LOG_TAG = "JT_S08_PIP"
+        private const val S08_PIP_DELAY_MS = 1_500L
         private const val S02_PROBE_SETTINGS = "settings"
         private const val S02_PROBE_BROWSER = "browser"
         private const val S02_PROBE_HOME = "home"
         private const val S02_PROBE_START_DELAY_MS = 500L
         private val S02_ALLOWED_BATCH_COUNTS = setOf(1, 10, 100)
+        private val S08_SESSION_PATTERN = Regex("[a-f0-9]{32}")
     }
 }

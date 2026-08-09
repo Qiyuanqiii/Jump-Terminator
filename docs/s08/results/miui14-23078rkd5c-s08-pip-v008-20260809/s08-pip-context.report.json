@@ -1,0 +1,2606 @@
+{
+  "schema": "s0.8-pip-context-report-1",
+  "expected": {
+    "target-preexisting-pip": 5,
+    "source-pip-target": 5
+  },
+  "pipNegativeStress": {
+    "target-preexisting-pip": {
+      "expectedCycles": 5,
+      "observedCycles": 5,
+      "coveragePassed": true,
+      "readinessPassed": true,
+      "hardStopObserved": false,
+      "gatePassed": true,
+      "sessions": [
+        {
+          "scenario": "target-preexisting-pip",
+          "cycle": 1,
+          "sessionId": "5208ca2ddc014037902d3eec98f37a45",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "pipEnteredEvidenceExactlyOnce": true,
+            "sourcePresentedWhileTargetPinnedExactlyOnce": true,
+            "sourceContextNeverEstablishedWhilePip": true,
+            "preexistingPipCausalOrder": true,
+            "pipEntered.snapshotSchema": true,
+            "pipEntered.snapshotDualClock": true,
+            "pipEntered.snapshotDigest": true,
+            "pipEntered.structuredDisplays": true,
+            "pipEntered.structuredTopResumed": true,
+            "pipEntered.structuredWindowingTasks": true,
+            "pipEntered.structuredPinnedTasks": true,
+            "pipEntered.expectedTopResumed": true,
+            "pipEntered.expectedPinnedState": true,
+            "pipEntered.pictureInPictureState": true,
+            "sourcePresented.snapshotSchema": true,
+            "sourcePresented.snapshotDualClock": true,
+            "sourcePresented.snapshotDigest": true,
+            "sourcePresented.structuredDisplays": true,
+            "sourcePresented.structuredTopResumed": true,
+            "sourcePresented.structuredWindowingTasks": true,
+            "sourcePresented.structuredPinnedTasks": true,
+            "sourcePresented.expectedTopResumed": true,
+            "sourcePresented.expectedPinnedState": true,
+            "sourcePresented.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 5,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "expand_pinned_target",
+              "expectedPinnedPackage": "com.jumpterminator.testtarget",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271675059,
+                "capturedElapsedRealtimeMs": 83039260,
+                "rawActivitySha256": "9B1E66B6EE8953F9667F7D59E3CFB40708D7D6C01D387BA3A31E1D2FE0A12F82",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42752,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42753,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testsource/.SourceActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42752,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42753,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42753,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "expanded_from_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271676320,
+                "capturedElapsedRealtimeMs": 83040530,
+                "rawActivitySha256": "44FD67B580B614C4F66C0609AAB78768F48FC314C655855DC445070D81B6F69A",
+                "pictureInPictureActive": false,
+                "pictureInPictureReportedCount": 0,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42753,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42753,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": []
+              }
+            }
+          }
+        },
+        {
+          "scenario": "target-preexisting-pip",
+          "cycle": 2,
+          "sessionId": "f21fb0a4e2624e1eb5be966da38d9c21",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "pipEnteredEvidenceExactlyOnce": true,
+            "sourcePresentedWhileTargetPinnedExactlyOnce": true,
+            "sourceContextNeverEstablishedWhilePip": true,
+            "preexistingPipCausalOrder": true,
+            "pipEntered.snapshotSchema": true,
+            "pipEntered.snapshotDualClock": true,
+            "pipEntered.snapshotDigest": true,
+            "pipEntered.structuredDisplays": true,
+            "pipEntered.structuredTopResumed": true,
+            "pipEntered.structuredWindowingTasks": true,
+            "pipEntered.structuredPinnedTasks": true,
+            "pipEntered.expectedTopResumed": true,
+            "pipEntered.expectedPinnedState": true,
+            "pipEntered.pictureInPictureState": true,
+            "sourcePresented.snapshotSchema": true,
+            "sourcePresented.snapshotDualClock": true,
+            "sourcePresented.snapshotDigest": true,
+            "sourcePresented.structuredDisplays": true,
+            "sourcePresented.structuredTopResumed": true,
+            "sourcePresented.structuredWindowingTasks": true,
+            "sourcePresented.structuredPinnedTasks": true,
+            "sourcePresented.expectedTopResumed": true,
+            "sourcePresented.expectedPinnedState": true,
+            "sourcePresented.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 6,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "expand_pinned_target",
+              "expectedPinnedPackage": "com.jumpterminator.testtarget",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271690877,
+                "capturedElapsedRealtimeMs": 83055080,
+                "rawActivitySha256": "8ACAAC9A880D17DAAD0A682577749C7141C1F02B99CBBBF10BCF68F8A6068CD9",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42755,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42756,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testsource/.SourceActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42755,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42756,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42756,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "expanded_from_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271692108,
+                "capturedElapsedRealtimeMs": 83056310,
+                "rawActivitySha256": "32E0126EA785BBF7EA0D13A48B20A32B0AD4554BD9E8B0A8132F7EBAB80A6E55",
+                "pictureInPictureActive": false,
+                "pictureInPictureReportedCount": 0,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42756,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42756,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": []
+              }
+            }
+          }
+        },
+        {
+          "scenario": "target-preexisting-pip",
+          "cycle": 3,
+          "sessionId": "a6de508ee8ed4300b21230209d70068c",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "pipEnteredEvidenceExactlyOnce": true,
+            "sourcePresentedWhileTargetPinnedExactlyOnce": true,
+            "sourceContextNeverEstablishedWhilePip": true,
+            "preexistingPipCausalOrder": true,
+            "pipEntered.snapshotSchema": true,
+            "pipEntered.snapshotDualClock": true,
+            "pipEntered.snapshotDigest": true,
+            "pipEntered.structuredDisplays": true,
+            "pipEntered.structuredTopResumed": true,
+            "pipEntered.structuredWindowingTasks": true,
+            "pipEntered.structuredPinnedTasks": true,
+            "pipEntered.expectedTopResumed": true,
+            "pipEntered.expectedPinnedState": true,
+            "pipEntered.pictureInPictureState": true,
+            "sourcePresented.snapshotSchema": true,
+            "sourcePresented.snapshotDualClock": true,
+            "sourcePresented.snapshotDigest": true,
+            "sourcePresented.structuredDisplays": true,
+            "sourcePresented.structuredTopResumed": true,
+            "sourcePresented.structuredWindowingTasks": true,
+            "sourcePresented.structuredPinnedTasks": true,
+            "sourcePresented.expectedTopResumed": true,
+            "sourcePresented.expectedPinnedState": true,
+            "sourcePresented.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 5,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "expand_pinned_target",
+              "expectedPinnedPackage": "com.jumpterminator.testtarget",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271706800,
+                "capturedElapsedRealtimeMs": 83071010,
+                "rawActivitySha256": "5B397CBBCAED51967A64A0D691FEF4842A35EF01E97BB82E830E98CCEEE579B4",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42758,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42759,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testsource/.SourceActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42758,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42759,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42759,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "expanded_from_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271708355,
+                "capturedElapsedRealtimeMs": 83072560,
+                "rawActivitySha256": "7D1E351328E49B2C2D41E701FD9A7E49B978741DA3EB603F41D3F579998AFFEC",
+                "pictureInPictureActive": false,
+                "pictureInPictureReportedCount": 0,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42759,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42759,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": []
+              }
+            }
+          }
+        },
+        {
+          "scenario": "target-preexisting-pip",
+          "cycle": 4,
+          "sessionId": "7c88568d425d491085492a929ca2924c",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "pipEnteredEvidenceExactlyOnce": true,
+            "sourcePresentedWhileTargetPinnedExactlyOnce": true,
+            "sourceContextNeverEstablishedWhilePip": true,
+            "preexistingPipCausalOrder": true,
+            "pipEntered.snapshotSchema": true,
+            "pipEntered.snapshotDualClock": true,
+            "pipEntered.snapshotDigest": true,
+            "pipEntered.structuredDisplays": true,
+            "pipEntered.structuredTopResumed": true,
+            "pipEntered.structuredWindowingTasks": true,
+            "pipEntered.structuredPinnedTasks": true,
+            "pipEntered.expectedTopResumed": true,
+            "pipEntered.expectedPinnedState": true,
+            "pipEntered.pictureInPictureState": true,
+            "sourcePresented.snapshotSchema": true,
+            "sourcePresented.snapshotDualClock": true,
+            "sourcePresented.snapshotDigest": true,
+            "sourcePresented.structuredDisplays": true,
+            "sourcePresented.structuredTopResumed": true,
+            "sourcePresented.structuredWindowingTasks": true,
+            "sourcePresented.structuredPinnedTasks": true,
+            "sourcePresented.expectedTopResumed": true,
+            "sourcePresented.expectedPinnedState": true,
+            "sourcePresented.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 6,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "expand_pinned_target",
+              "expectedPinnedPackage": "com.jumpterminator.testtarget",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271722764,
+                "capturedElapsedRealtimeMs": 83086970,
+                "rawActivitySha256": "C96EA943C869A40ECCF0D7C3A9671D0151AB734C2320E01DDC9F11662987AA14",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42761,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42762,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testsource/.SourceActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42761,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42762,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42762,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "expanded_from_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271724027,
+                "capturedElapsedRealtimeMs": 83088230,
+                "rawActivitySha256": "A94F87C777998D8F80E08F8DCE482D2CC0C86E94756F5B6681F7C7F3507A523A",
+                "pictureInPictureActive": false,
+                "pictureInPictureReportedCount": 0,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42762,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42762,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": []
+              }
+            }
+          }
+        },
+        {
+          "scenario": "target-preexisting-pip",
+          "cycle": 5,
+          "sessionId": "b741f3a2fc2c4ccb88c7d2ef91f1a4ab",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "pipEnteredEvidenceExactlyOnce": true,
+            "sourcePresentedWhileTargetPinnedExactlyOnce": true,
+            "sourceContextNeverEstablishedWhilePip": true,
+            "preexistingPipCausalOrder": true,
+            "pipEntered.snapshotSchema": true,
+            "pipEntered.snapshotDualClock": true,
+            "pipEntered.snapshotDigest": true,
+            "pipEntered.structuredDisplays": true,
+            "pipEntered.structuredTopResumed": true,
+            "pipEntered.structuredWindowingTasks": true,
+            "pipEntered.structuredPinnedTasks": true,
+            "pipEntered.expectedTopResumed": true,
+            "pipEntered.expectedPinnedState": true,
+            "pipEntered.pictureInPictureState": true,
+            "sourcePresented.snapshotSchema": true,
+            "sourcePresented.snapshotDualClock": true,
+            "sourcePresented.snapshotDigest": true,
+            "sourcePresented.structuredDisplays": true,
+            "sourcePresented.structuredTopResumed": true,
+            "sourcePresented.structuredWindowingTasks": true,
+            "sourcePresented.structuredPinnedTasks": true,
+            "sourcePresented.expectedTopResumed": true,
+            "sourcePresented.expectedPinnedState": true,
+            "sourcePresented.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 7,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "expand_pinned_target",
+              "expectedPinnedPackage": "com.jumpterminator.testtarget",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271738396,
+                "capturedElapsedRealtimeMs": 83102600,
+                "rawActivitySha256": "84DEE45BBD3ECF47D22C9224F8E91229F3C7DC92F497B0C5304E8DD09FB3368A",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42764,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42765,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testsource/.SourceActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42764,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42765,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42765,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "expanded_from_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271739653,
+                "capturedElapsedRealtimeMs": 83103860,
+                "rawActivitySha256": "B81072C75B976BDAB909DB4F7AD0FBDE9B142F4159F5F055DA29B8C6EA9F9553",
+                "pictureInPictureActive": false,
+                "pictureInPictureReportedCount": 0,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42765,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42765,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": []
+              }
+            }
+          }
+        }
+      ]
+    },
+    "source-pip-target": {
+      "expectedCycles": 5,
+      "observedCycles": 5,
+      "coveragePassed": true,
+      "readinessPassed": true,
+      "hardStopObserved": false,
+      "gatePassed": true,
+      "sessions": [
+        {
+          "scenario": "source-pip-target",
+          "cycle": 1,
+          "sessionId": "571fd0b3c60340f48e32b98b3063a919",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "targetUnderlayEvidenceExactlyOnce": true,
+            "sourceContextEvidenceExactlyOnce": true,
+            "sourceContextInvalidatedByPipExactlyOnce": true,
+            "sourceInvalidationCarriesPipTopology": true,
+            "sourcePipCausalOrder": true,
+            "targetUnderlay.snapshotSchema": true,
+            "targetUnderlay.snapshotDualClock": true,
+            "targetUnderlay.snapshotDigest": true,
+            "targetUnderlay.structuredDisplays": true,
+            "targetUnderlay.structuredTopResumed": true,
+            "targetUnderlay.structuredWindowingTasks": true,
+            "targetUnderlay.structuredPinnedTasks": true,
+            "targetUnderlay.expectedTopResumed": true,
+            "targetUnderlay.expectedPinnedState": true,
+            "targetUnderlay.pictureInPictureState": true,
+            "sourceObserved.snapshotSchema": true,
+            "sourceObserved.snapshotDualClock": true,
+            "sourceObserved.snapshotDigest": true,
+            "sourceObserved.structuredDisplays": true,
+            "sourceObserved.structuredTopResumed": true,
+            "sourceObserved.structuredWindowingTasks": true,
+            "sourceObserved.structuredPinnedTasks": true,
+            "sourceObserved.expectedTopResumed": true,
+            "sourceObserved.expectedPinnedState": true,
+            "sourceObserved.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 9,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [
+              "picture_in_picture"
+            ],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "source_pip_reveals_target",
+              "expectedPinnedPackage": "com.jumpterminator.testsource",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271754112,
+                "capturedElapsedRealtimeMs": 83118320,
+                "rawActivitySha256": "163E287BD165D4F4EC143DD4B10488E450789C312823B79D6F72B81EE67E0140",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42768,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42769,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42768,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42769,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42769,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "revealed_by_source_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271754112,
+                "capturedElapsedRealtimeMs": 83118320,
+                "rawActivitySha256": "163E287BD165D4F4EC143DD4B10488E450789C312823B79D6F72B81EE67E0140",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42768,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42769,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42768,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42769,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42769,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "scenario": "source-pip-target",
+          "cycle": 2,
+          "sessionId": "51243d2ea1e643908a9eadca254ccb83",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "targetUnderlayEvidenceExactlyOnce": true,
+            "sourceContextEvidenceExactlyOnce": true,
+            "sourceContextInvalidatedByPipExactlyOnce": true,
+            "sourceInvalidationCarriesPipTopology": true,
+            "sourcePipCausalOrder": true,
+            "targetUnderlay.snapshotSchema": true,
+            "targetUnderlay.snapshotDualClock": true,
+            "targetUnderlay.snapshotDigest": true,
+            "targetUnderlay.structuredDisplays": true,
+            "targetUnderlay.structuredTopResumed": true,
+            "targetUnderlay.structuredWindowingTasks": true,
+            "targetUnderlay.structuredPinnedTasks": true,
+            "targetUnderlay.expectedTopResumed": true,
+            "targetUnderlay.expectedPinnedState": true,
+            "targetUnderlay.pictureInPictureState": true,
+            "sourceObserved.snapshotSchema": true,
+            "sourceObserved.snapshotDualClock": true,
+            "sourceObserved.snapshotDigest": true,
+            "sourceObserved.structuredDisplays": true,
+            "sourceObserved.structuredTopResumed": true,
+            "sourceObserved.structuredWindowingTasks": true,
+            "sourceObserved.structuredPinnedTasks": true,
+            "sourceObserved.expectedTopResumed": true,
+            "sourceObserved.expectedPinnedState": true,
+            "sourceObserved.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 9,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [
+              "picture_in_picture"
+            ],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "source_pip_reveals_target",
+              "expectedPinnedPackage": "com.jumpterminator.testsource",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271769063,
+                "capturedElapsedRealtimeMs": 83133270,
+                "rawActivitySha256": "E5FC9BF0C654BAD72A277DF7AF78BE2B14567F8CBEE9469845AD440BD1523EE8",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42771,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42772,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42771,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42772,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42772,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "revealed_by_source_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271769063,
+                "capturedElapsedRealtimeMs": 83133270,
+                "rawActivitySha256": "E5FC9BF0C654BAD72A277DF7AF78BE2B14567F8CBEE9469845AD440BD1523EE8",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42771,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42772,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42771,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42772,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42772,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "scenario": "source-pip-target",
+          "cycle": 3,
+          "sessionId": "64c5236585b64f519ac92c76879d67f2",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "targetUnderlayEvidenceExactlyOnce": true,
+            "sourceContextEvidenceExactlyOnce": true,
+            "sourceContextInvalidatedByPipExactlyOnce": true,
+            "sourceInvalidationCarriesPipTopology": true,
+            "sourcePipCausalOrder": true,
+            "targetUnderlay.snapshotSchema": true,
+            "targetUnderlay.snapshotDualClock": true,
+            "targetUnderlay.snapshotDigest": true,
+            "targetUnderlay.structuredDisplays": true,
+            "targetUnderlay.structuredTopResumed": true,
+            "targetUnderlay.structuredWindowingTasks": true,
+            "targetUnderlay.structuredPinnedTasks": true,
+            "targetUnderlay.expectedTopResumed": true,
+            "targetUnderlay.expectedPinnedState": true,
+            "targetUnderlay.pictureInPictureState": true,
+            "sourceObserved.snapshotSchema": true,
+            "sourceObserved.snapshotDualClock": true,
+            "sourceObserved.snapshotDigest": true,
+            "sourceObserved.structuredDisplays": true,
+            "sourceObserved.structuredTopResumed": true,
+            "sourceObserved.structuredWindowingTasks": true,
+            "sourceObserved.structuredPinnedTasks": true,
+            "sourceObserved.expectedTopResumed": true,
+            "sourceObserved.expectedPinnedState": true,
+            "sourceObserved.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 10,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [
+              "picture_in_picture"
+            ],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "source_pip_reveals_target",
+              "expectedPinnedPackage": "com.jumpterminator.testsource",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271784204,
+                "capturedElapsedRealtimeMs": 83148410,
+                "rawActivitySha256": "5030CA836AAF5E306A089A769F6123E8E777713430C7E4420997E4BAFC24D95A",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42774,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42775,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42774,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42775,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42775,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "revealed_by_source_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271784204,
+                "capturedElapsedRealtimeMs": 83148410,
+                "rawActivitySha256": "5030CA836AAF5E306A089A769F6123E8E777713430C7E4420997E4BAFC24D95A",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42774,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42775,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42774,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42775,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42775,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "scenario": "source-pip-target",
+          "cycle": 4,
+          "sessionId": "464bda87574e47bcbe7c77a06a5d40ab",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "targetUnderlayEvidenceExactlyOnce": true,
+            "sourceContextEvidenceExactlyOnce": true,
+            "sourceContextInvalidatedByPipExactlyOnce": true,
+            "sourceInvalidationCarriesPipTopology": true,
+            "sourcePipCausalOrder": true,
+            "targetUnderlay.snapshotSchema": true,
+            "targetUnderlay.snapshotDualClock": true,
+            "targetUnderlay.snapshotDigest": true,
+            "targetUnderlay.structuredDisplays": true,
+            "targetUnderlay.structuredTopResumed": true,
+            "targetUnderlay.structuredWindowingTasks": true,
+            "targetUnderlay.structuredPinnedTasks": true,
+            "targetUnderlay.expectedTopResumed": true,
+            "targetUnderlay.expectedPinnedState": true,
+            "targetUnderlay.pictureInPictureState": true,
+            "sourceObserved.snapshotSchema": true,
+            "sourceObserved.snapshotDualClock": true,
+            "sourceObserved.snapshotDigest": true,
+            "sourceObserved.structuredDisplays": true,
+            "sourceObserved.structuredTopResumed": true,
+            "sourceObserved.structuredWindowingTasks": true,
+            "sourceObserved.structuredPinnedTasks": true,
+            "sourceObserved.expectedTopResumed": true,
+            "sourceObserved.expectedPinnedState": true,
+            "sourceObserved.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 9,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [
+              "picture_in_picture"
+            ],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "source_pip_reveals_target",
+              "expectedPinnedPackage": "com.jumpterminator.testsource",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271798948,
+                "capturedElapsedRealtimeMs": 83163150,
+                "rawActivitySha256": "113EC8A60DD706144ED3C9682E5D833DFBBFF4ED19627572F6729A9990228158",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42777,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42778,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42777,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42778,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42778,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "revealed_by_source_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271798948,
+                "capturedElapsedRealtimeMs": 83163150,
+                "rawActivitySha256": "113EC8A60DD706144ED3C9682E5D833DFBBFF4ED19627572F6729A9990228158",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42777,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42778,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42777,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42778,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42778,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "scenario": "source-pip-target",
+          "cycle": 5,
+          "sessionId": "5c34df69a5134982b7bf5dc07b7486cd",
+          "readinessPassed": true,
+          "hardStopObserved": false,
+          "gatePassed": true,
+          "readinessChecks": {
+            "scenarioStartedExactlyOnce": true,
+            "scenarioCompletedExactlyOnce": true,
+            "runnerErrorFree": true,
+            "wrapperDualClocksValid": true,
+            "ready.exactlyOnce": true,
+            "ready.dualClock": true,
+            "ready.armedBlockConfiguration": true,
+            "ready.fixedTransitionBound": true,
+            "ready.shizukuExecutor": true,
+            "ready.ownerIdentityBound": true,
+            "ready.capabilityRuleAndLeaseBound": true,
+            "monitorStopRequestedExactlyOnce": true,
+            "monitorCompletedExactlyOnce": true,
+            "monitorCompletedByStop": true,
+            "monitorCompletionCountsMatchEmbeddedEvents": true,
+            "monitorCompletedWithZeroActionCounts": true,
+            "authorizationLeaseCoversPipObservation": true,
+            "monitorClosedBeforeScenarioSummary": true,
+            "scenarioSummaryMatchesEmbeddedEvents": true,
+            "noCompanionTimeout": true,
+            "noServiceError": true,
+            "embeddedCompanionIdentityAndRawValid": true,
+            "embeddedPipIdentityAndRawValid": true,
+            "pipRequestAcceptedExactlyOnce": true,
+            "pipModeActiveEventObservedExactlyOnce": true,
+            "pipEventsPrecedeBoundary": true,
+            "pipForegroundStateObserved": true,
+            "oneStructuredPipBoundary": true,
+            "oneTargetPresentation": true,
+            "targetPresentedAtOrAfterBoundary": true,
+            "targetForegroundObserved": true,
+            "boundary.snapshotSchema": true,
+            "boundary.snapshotDualClock": true,
+            "boundary.snapshotDigest": true,
+            "boundary.structuredDisplays": true,
+            "boundary.structuredTopResumed": true,
+            "boundary.structuredWindowingTasks": true,
+            "boundary.structuredPinnedTasks": true,
+            "boundary.boundaryOperationBound": true,
+            "boundary.expectedPinnedPackageBound": true,
+            "boundary.expectedTopResumed": true,
+            "boundary.pictureInPictureActive": true,
+            "boundary.expectedPackagePinned": true,
+            "boundary.windowingModePinned": true,
+            "target.targetCommandSucceeded": true,
+            "target.targetTopResumed": true,
+            "target.targetSnapshotStructured": true,
+            "target.expectedPostLaunchPipTopology": true,
+            "targetUnderlayEvidenceExactlyOnce": true,
+            "sourceContextEvidenceExactlyOnce": true,
+            "sourceContextInvalidatedByPipExactlyOnce": true,
+            "sourceInvalidationCarriesPipTopology": true,
+            "sourcePipCausalOrder": true,
+            "targetUnderlay.snapshotSchema": true,
+            "targetUnderlay.snapshotDualClock": true,
+            "targetUnderlay.snapshotDigest": true,
+            "targetUnderlay.structuredDisplays": true,
+            "targetUnderlay.structuredTopResumed": true,
+            "targetUnderlay.structuredWindowingTasks": true,
+            "targetUnderlay.structuredPinnedTasks": true,
+            "targetUnderlay.expectedTopResumed": true,
+            "targetUnderlay.expectedPinnedState": true,
+            "targetUnderlay.pictureInPictureState": true,
+            "sourceObserved.snapshotSchema": true,
+            "sourceObserved.snapshotDualClock": true,
+            "sourceObserved.snapshotDigest": true,
+            "sourceObserved.structuredDisplays": true,
+            "sourceObserved.structuredTopResumed": true,
+            "sourceObserved.structuredWindowingTasks": true,
+            "sourceObserved.structuredPinnedTasks": true,
+            "sourceObserved.expectedTopResumed": true,
+            "sourceObserved.expectedPinnedState": true,
+            "sourceObserved.pictureInPictureState": true
+          },
+          "safetyChecks": {
+            "noTargetDetectionInPipContext": true,
+            "noBackRequestedInPipContext": true,
+            "monitorCompletionReportsNoPipActions": true
+          },
+          "observed": {
+            "companionEventCount": 9,
+            "pipEventCount": 3,
+            "targetDetectionCount": 0,
+            "backRequestedCount": 0,
+            "backDispatchedCount": 0,
+            "monitorCompletionDetections": 0,
+            "monitorCompletionActions": 0,
+            "invalidationReasons": [
+              "picture_in_picture"
+            ],
+            "monitorCompletionReason": "stop_requested",
+            "boundary": {
+              "operation": "source_pip_reveals_target",
+              "expectedPinnedPackage": "com.jumpterminator.testsource",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271814308,
+                "capturedElapsedRealtimeMs": 83178520,
+                "rawActivitySha256": "FDF7B8B2CF744D41DB30CD63F148D5B990B9FDAE6BDC3E2AAE481CE72C3CBB83",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42780,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42781,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42780,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42781,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42781,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            },
+            "target": {
+              "exitCode": 0,
+              "transition": "revealed_by_source_pip",
+              "snapshot": {
+                "schema": "s0.8-activity-snapshot-1",
+                "capturedWallClockMs": 1786271814308,
+                "capturedElapsedRealtimeMs": 83178520,
+                "rawActivitySha256": "FDF7B8B2CF744D41DB30CD63F148D5B990B9FDAE6BDC3E2AAE481CE72C3CBB83",
+                "pictureInPictureActive": true,
+                "pictureInPictureReportedCount": 1,
+                "displays": [
+                  {
+                    "displayId": 0,
+                    "topResumedComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ],
+                    "tasks": [
+                      {
+                        "displayId": 0,
+                        "taskId": 42780,
+                        "packageName": "com.jumpterminator.testtarget",
+                        "windowingMode": "fullscreen",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testtarget/.TargetActivity"
+                        ]
+                      },
+                      {
+                        "displayId": 0,
+                        "taskId": 42781,
+                        "packageName": "com.jumpterminator.testsource",
+                        "windowingMode": "pinned",
+                        "visible": true,
+                        "activityComponents": [
+                          "com.jumpterminator.testsource/.SourceActivity"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "topResumed": [
+                  {
+                    "displayId": 0,
+                    "component": "com.jumpterminator.testtarget/.TargetActivity"
+                  }
+                ],
+                "windowingTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42780,
+                    "packageName": "com.jumpterminator.testtarget",
+                    "windowingMode": "fullscreen",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testtarget/.TargetActivity"
+                    ]
+                  },
+                  {
+                    "displayId": 0,
+                    "taskId": 42781,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ],
+                "pinnedTasks": [
+                  {
+                    "displayId": 0,
+                    "taskId": 42781,
+                    "packageName": "com.jumpterminator.testsource",
+                    "windowingMode": "pinned",
+                    "visible": true,
+                    "activityComponents": [
+                      "com.jumpterminator.testsource/.SourceActivity"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "sessionIdsUnique": true,
+  "coverageGatePassed": true,
+  "fullscreenPositiveControl": {
+    "checks": {
+      "reportSchemaIsS02": true,
+      "timelinePresent": true,
+      "timelineHasOneSession": true,
+      "timelineSessionMatchesReport": true,
+      "timelineEventCountMatchesReport": true,
+      "timelineReady.exactlyOnce": true,
+      "timelineReady.dualClock": true,
+      "timelineReady.armedBlockConfiguration": true,
+      "timelineReady.fixedTransitionBound": true,
+      "timelineReady.shizukuExecutor": true,
+      "timelineReady.ownerIdentityBound": true,
+      "timelineReady.capabilityRuleAndLeaseBound": true,
+      "timelineDetectedTen": true,
+      "timelineBackDispatchedTen": true,
+      "timelineLeftAndReturnedTen": true,
+      "timelineSequencesExactlyOneToTen": true,
+      "timelineSequencesCausallyPaired": true,
+      "timelineReadyActionsCompleteCausalChain": true,
+      "timelineActionsWithinReadyLease": true,
+      "timelineCompletedTen": true,
+      "timelineHasNoFailureEvents": true,
+      "reportCountsMatchTimeline": true,
+      "usesShizukuUserService": true,
+      "requestedTen": true,
+      "detectedTen": true,
+      "backDispatchedTen": true,
+      "leftTargetTen": true,
+      "returnedSourceTen": true,
+      "sessionCompleted": true,
+      "ownerIdentityBound": true,
+      "capabilityAndRuleBound": true,
+      "noSafetyViolations": true,
+      "noTimeouts": true,
+      "noFailedEvents": true,
+      "reportHasNoWarnings": true
+    },
+    "gatePassed": true,
+    "sampleCounts": {
+      "requestedBlock": 10,
+      "requestedAllowed": 0,
+      "targetDetected": 10,
+      "backDispatched": 10,
+      "leftTarget": 10,
+      "returnedSource": 10,
+      "allowedProbes": 0,
+      "allowedPreserved": 0
+    },
+    "timelineCounts": {
+      "targetDetected": 10,
+      "backDispatched": 10,
+      "leftTarget": 10,
+      "returnedSource": 10
+    },
+    "latencyUpperBoundMs": {
+      "targetDetectionP50": 153,
+      "targetDetectionP95": 186,
+      "backRequestP50": 335,
+      "backRequestP95": 391,
+      "leaveTargetP50": 418,
+      "leaveTargetP95": 494,
+      "inputDurationP50": 25,
+      "inputDurationP95": 31,
+      "pollDurationP50": 29,
+      "pollDurationP95": 47
+    }
+  },
+  "sampleGatePassed": true,
+  "hardStopObserved": false,
+  "safetyGatePassed": true,
+  "readinessGaps": [],
+  "safetyViolations": [],
+  "provisionalDecision": "S08_PIP_CONTEXT_GATE_PASSED",
+  "notes": [
+    "Both PiP scenarios are zero-action contexts and require a system-confirmed pinned task.",
+    "Any target detection or Back request in a PiP session is a hard stop.",
+    "Missing topology evidence, runner errors, timeouts and an incomplete 10/10 fullscreen control are NOT_READY.",
+    "This gate covers fixed test packages on one MIUI 14 device only."
+  ],
+  "sourceEvidence": [
+    {
+      "file": "s08-pip-context.jsonl",
+      "sha256": "BECD83691971F769DD788CF8BE84E6AA7B8C8B09961876EA78C9F66F3C70EA02"
+    },
+    {
+      "file": "s08-fullscreen-positive.jsonl",
+      "sha256": "530C595351F1A76FAE8F4BD88AC9D9E24C973AB75976059C5CC645A986CE4315"
+    },
+    {
+      "file": "s08-fullscreen-positive.report.json",
+      "sha256": "18AEA639182BC2FADA508F46C12D2000199CDB50F9A0883020324E81061F73BA"
+    }
+  ],
+  "warnings": []
+}

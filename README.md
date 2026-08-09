@@ -12,7 +12,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | --- | --- |
 | 文档版本 | v1.1 |
 | 文档日期 | 2026-08-09 |
-| 项目状态 | **Standard S0 No-Go；Advanced S0.2-S0.7 执行面、生命周期、最小授权、调试入口、韧性与设备状态上下文 PoC 门通过**：仅授权继续架构与安全验证，不代表消费者版 Go |
+| 项目状态 | **Standard S0 No-Go；Advanced S0.2-S0.8 执行面、生命周期、最小授权、调试入口、韧性、设备状态与 PiP 窗口拓扑 PoC 门通过**：仅授权继续架构与安全验证，不代表消费者版 Go |
 | 首要适配平台 | Redmi/Xiaomi，MIUI 14 |
 | 稳定版目标平台 | Android 9-Android 16 |
 | 前瞻兼容轨道 | Android 17 Beta/正式版兼容测试 |
@@ -21,7 +21,7 @@ Jump Terminator 是一款面向普通 Android 用户的跨应用跳转控制工�
 | 基础权限 | 无障碍服务、使用情况访问；前台服务通知，以及 OEM 后台运行引导 |
 | 增强能力 | Shizuku，可选且不得影响基础模式 |
 
-## 当前执行状态：Standard S0 No-Go；Advanced PoC 设备状态上下文门通过
+## 当前执行状态：Standard S0 No-Go；Advanced PoC PiP 窗口拓扑门通过
 
 2026-08-01 启动 S0 技术可行性验证。仓库现已包含可编译的主诊断 App、测试来源 App、测试目标 App、无障碍与 UsageStats 双时间线、一次性 Back/Home 验证链、延迟真值、JSONL 导出、统计脚本和实体设备测试矩阵。Android 工程使用 Kotlin；当前诊断版本为 `v0.0.12-s0`。
 
@@ -56,6 +56,10 @@ S0.2 block1 观察回归与 S0.3 `ui-force-stop` 生命周期回归均通过；�
 2026-08-09 完成 S0.7 设备状态与多窗口上下文失效验证。修复前 `0.0.6-s06` 只读取第一条 `topResumedActivity`，在来源与目标同时 resumed 的真实分屏中误产生 1 次检测和 1 次 Back。`0.0.7-s07` 改为解析完整前台集合：多前台、息屏或锁屏立即使来源上下文失效，最终动作同时复核交互状态、锁屏状态和前台歧义；仅 MIUI 普通切换中的瞬时前台空洞采用 500 ms 持续门。
 
 正式矩阵中，最近任务 `5/5`、分屏 `5/5`、息屏/安全锁屏恢复 `1/1` 均为目标检测 `0`、Back `0`；全屏正向对照的检测、Back、离开目标和返回来源均为 `10/10`。11 个零动作会话 ID 唯一，证据警告、安全违规、超时和失败事件均为 0，机器决策为 `S07_DEVICE_STATE_GATE_PASSED`。当前工程共有 Android 单元测试 `63` 项、Python 测试 `41` 项，完整 Gradle build/lint 通过。见 [S0.7 运行与证据](docs/s07/README.md)、[S0.7 决策](docs/s07/decision.md)和[聚合报告](docs/s07/results/miui14-23078rkd5c-s07-device-state-v007-20260809/s07-device-state.report.json)。
+
+2026-08-09 完成 S0.8 画中画窗口拓扑失效安全验证。修复前 `0.0.7-s07` 仍只保留 top-resumed 组件集合：目标已稳定进入 PiP 后再建立来源上下文并展开目标，会误产生 1 次检测和 1 次 Back。`0.0.8-s08` 同时解析 active pinned/PiP 状态；任意 PiP 都进入显式 `picture_in_picture` fail-closed 状态，已有来源立即失效，最终动作授权也会再次复核该状态。
+
+正式矩阵中，目标预先 PiP 后展开 `5/5`、来源 PiP 露出目标 `5/5` 均由系统 `mode=pinned` 快照确认，目标检测和 Back 均为 0；全屏正向对照的检测、Back、离开目标和返回来源均为 `10/10`。10 个 PiP 会话 ID 唯一，readiness gap、证据警告和安全违规均为 0，机器决策为 `S08_PIP_CONTEXT_GATE_PASSED`。当前工程共有 Android 单元测试 `67` 项、Python 测试 `60` 项，完整 Gradle build/lint 通过。见 [S0.8 运行与证据](docs/s08/README.md)、[S0.8 决策](docs/s08/decision.md)和[聚合报告](docs/s08/results/miui14-23078rkd5c-s08-pip-v008-20260809/s08-pip-context.report.json)。
 
 ## 1. 立项结论与技术边界
 
@@ -122,6 +126,8 @@ S0.5 将测试命令入口从公开 Launcher 移到仅 debug 构建存在、受 
 S0.6 以 5 次普通 UI 崩溃、10 次重复目标和 3 次平台权限撤销/恢复验证有界会话的收尾、重复执行与 fail-closed。客户端现在同时核对 Android 运行时权限和 Shizuku 授权视图，避免正向授权缓存掩盖直接撤权；该修复不改变 UserService v5 的固定规则或合法已授权行为。
 
 S0.7 将动作授权扩展到完整 top-resumed 集合、设备交互状态和安全锁屏状态。最近任务、分屏歧义、息屏或锁屏都会撤销来源上下文；前台集合、设备状态或锁屏状态未知时最终动作拒绝。v7 在同一设备上的 5/5 最近任务、5/5 分屏和 1/1 锁屏恢复零动作门通过，同时保留 10/10 全屏固定目标行为。
+
+S0.8 进一步保留 active pinned/PiP 拓扑，不再把“唯一 top-resumed”误当作“唯一可交互窗口”。任何 PiP 都使来源上下文失效并在最终动作门拒绝；v8 的两个 PiP 场景各 5/5 保持零检测、零 Back，同时保留全屏固定目标 `10/10`。正式证据只有真实内置 `displayId=0`，所以多显示器仍未通过硬门。
 
 增强模式必须遵守：
 

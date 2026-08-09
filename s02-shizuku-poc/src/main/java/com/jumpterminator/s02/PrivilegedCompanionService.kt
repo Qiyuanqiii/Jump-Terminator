@@ -220,6 +220,8 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
                 data = mapOf(
                     "reason" to reason,
                     "resumedComponents" to foreground.resumedComponents,
+                    "pinnedPackages" to foreground.pinnedPackages,
+                    "pictureInPictureActive" to foreground.pictureInPictureActive,
                     "deviceInteractive" to deviceState?.interactive,
                     "keyguardLocked" to deviceState?.keyguardLocked,
                 ),
@@ -274,6 +276,7 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
                 val component = foreground.topComponent
                 val pollEnd = System.currentTimeMillis()
                 val state = when {
+                    foreground.pictureInPictureActive -> "picture_in_picture"
                     foreground.ambiguous -> "ambiguous"
                     component == SOURCE_COMPONENT -> "source"
                     component == TARGET_COMPONENT -> "target"
@@ -301,7 +304,11 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
                     deviceState?.keyguardLocked == null && deviceState != null -> "keyguard_state_unknown"
                     else -> null
                 }
-                val foregroundSignature = foreground.resumedComponents.joinToString("|")
+                val foregroundSignature = listOf(
+                    foreground.resumedComponents.joinToString("|"),
+                    foreground.pinnedPackages.joinToString("|"),
+                    foreground.pictureInPictureActive.toString(),
+                ).joinToString(";")
 
                 if (state != lastState || foregroundSignature != lastForegroundSignature) {
                     emit(
@@ -313,6 +320,8 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
                             "state" to state,
                             "component" to component,
                             "resumedComponents" to foreground.resumedComponents,
+                            "pinnedPackages" to foreground.pinnedPackages,
+                            "pictureInPictureActive" to foreground.pictureInPictureActive,
                         ),
                     )
                 }
@@ -374,6 +383,10 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
                     )
                     "ambiguous" -> invalidateSourceContext(
                         reason = "foreground_ambiguous",
+                        foreground = foreground,
+                    )
+                    "picture_in_picture" -> invalidateSourceContext(
+                        reason = "picture_in_picture",
                         foreground = foreground,
                     )
                     "unknown" -> if (foregroundUnknownSustained) {
@@ -460,6 +473,7 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
                         authorizationSession.owner.userId,
                     ),
                     topComponent = foreground.topComponent,
+                    pictureInPictureActive = foreground.pictureInPictureActive,
                     foregroundAmbiguous = foreground.ambiguous,
                     deviceInteractive = deviceState.interactive,
                     keyguardLocked = deviceState.keyguardLocked,
@@ -680,13 +694,21 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
         val process = ProcessBuilder(
             SH,
             "-c",
-            "dumpsys activity activities 2>/dev/null | grep 'topResumedActivity='",
+            "dumpsys activity activities 2>/dev/null | " +
+                "grep -E 'topResumedActivity=|mode=pinned|mWindowingMode=pinned|" +
+                "mLastReportedPictureInPictureMode=true'",
         ).redirectErrorStream(true).start()
         val output = BufferedReader(InputStreamReader(process.inputStream)).use { it.readText() }
         process.waitFor()
         ForegroundSnapshotParser.parse(output)
     } catch (_: Throwable) {
-        ForegroundSnapshot("unknown", emptyList(), ambiguous = false)
+        ForegroundSnapshot(
+            topComponent = "unknown",
+            resumedComponents = emptyList(),
+            pinnedPackages = emptyList(),
+            pictureInPictureActive = false,
+            ambiguous = false,
+        )
     }
 
     private fun readDeviceInteractionState(): DeviceInteractionState = try {
@@ -717,6 +739,7 @@ class PrivilegedCompanionService : IPrivilegedCompanion.Stub {
             .put("sessionId", sessionId)
             .put("kind", kind)
             .put("wallClockMs", timeMs)
+            .put("elapsedRealtimeMs", SystemClock.elapsedRealtime())
         if (packageName != null) payload.put("packageName", packageName)
         val dataObject = JSONObject()
         data.forEach { (key, value) ->

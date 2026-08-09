@@ -34,6 +34,7 @@ internal data class MonitorAuthorization(
 internal data class ActionEnvironment(
     val ownerPackageStopped: Boolean?,
     val topComponent: String,
+    val pictureInPictureActive: Boolean,
     val foregroundAmbiguous: Boolean,
     val deviceInteractive: Boolean?,
     val keyguardLocked: Boolean?,

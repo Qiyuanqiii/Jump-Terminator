@@ -127,6 +127,7 @@ internal class OwnerAuthorizationPolicy(
             ActionEnvironment(
                 ownerPackageStopped = null,
                 topComponent = "unknown",
+                pictureInPictureActive = true,
                 foregroundAmbiguous = true,
                 deviceInteractive = null,
                 keyguardLocked = null,
@@ -242,6 +243,9 @@ internal class OwnerAuthorizationPolicy(
             true -> return setRevokedLocked("device_locked")
             null -> return setRevokedLocked("keyguard_state_unknown")
             false -> Unit
+        }
+        if (environment.pictureInPictureActive) {
+            return setRevokedLocked("picture_in_picture")
         }
         if (environment.foregroundAmbiguous) {
             return setRevokedLocked("foreground_ambiguous")

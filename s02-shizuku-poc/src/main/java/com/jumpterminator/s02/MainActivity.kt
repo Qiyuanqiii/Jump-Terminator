@@ -68,7 +68,7 @@ open class MainActivity : Activity() {
             .daemon(true)
             .processNameSuffix("s02_companion")
             .debuggable(true)
-            .version(6)
+            .version(7)
             .tag("jump-terminator-s02")
         setContentView(buildContent())
         Shizuku.addBinderReceivedListenerSticky(binderReceivedListener)
@@ -95,7 +95,7 @@ open class MainActivity : Activity() {
         addView(LinearLayout(this@MainActivity).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(24), dp(20), dp(32))
-            addView(text("Jump Terminator · S0.7", 26f, Color.rgb(74, 20, 140)))
+            addView(text("Jump Terminator · S0.8", 26f, Color.rgb(74, 20, 140)))
             addView(text(
                 "实验性 Kotlin + Shizuku UserService。只处理固定测试来源 → 固定测试目标；不是消费者版功能。",
                 15f,
